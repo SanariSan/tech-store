@@ -5,7 +5,7 @@ volumes:
     external: false
   online_shop_backend_redis_data:
     external: false
-  fullstack-panel-front-build-volume:
+  online-shop-front-build-volume:
     external: true
 networks:
   inbound:
