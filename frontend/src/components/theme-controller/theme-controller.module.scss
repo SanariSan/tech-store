@@ -1,0 +1,31 @@
+@import '../../scss/index.custom';
+
+.light {
+  @include lightTheme;
+}
+
+.dark {
+  @include darkTheme;
+  // color: map-get($darkThemeAlt, color) !important;
+}
+
+.controllerWrap {
+  position: fixed;
+  z-index: 1;
+  top: 1.5%;
+  right: 0.8%;
+  background-color: transparent !important;
+  transition-property: all;
+  transition-duration: 0.15s;
+  transition-timing-function: linear;
+
+  &:hover {
+    transform: scale(1.25);
+  }
+
+  .symbol {
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+  }
+}
