@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { FC } from 'react';
-import { Container } from 'react-bootstrap';
 import { Route, Switch } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
 import style from './app.module.scss';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
 import { DashboardContainer } from './containers/dashboard';
@@ -20,16 +20,19 @@ const App: FC = () => {
 
   return (
     <ErrorBoundaryGenericContainer>
-      <Container
-        fluid
-        className={
-          'h-100 p-0 d-flex align-items-center justify-content-center flex-column overflow-hidden'
-        }
+      <Box
+        display={'flex'}
+        w={'100%'}
+        h={'100%'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        flexDirection={'column'}
+        // overflow={'hidden'}
       >
         <LoadingTrackerProgressContainer />
         <Switch>
           <Route exact path="/">
-            <LandingNavbarContainer />
+            {/* <LandingNavbarContainer /> */}
             <LandingContainer />
           </Route>
           <Route exact path="/login">
@@ -60,7 +63,7 @@ const App: FC = () => {
           </Route>
         </Switch>
         <DebugContainer />
-      </Container>
+      </Box>
       <div id="bg" className={classNames(style.app, style[theme])} />
     </ErrorBoundaryGenericContainer>
   );

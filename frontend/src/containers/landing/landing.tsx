@@ -8,7 +8,7 @@ const LandingContainer: React.FC = () => {
 
   return (
     <>
-      <LandingComponent theme={theme} />;
+      <LandingComponent theme={theme} />
     </>
   );
 };

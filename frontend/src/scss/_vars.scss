@@ -65,25 +65,25 @@ $screen-xl-min: 1439px;
 $screen-xxl-min: 1799px;
 
 // Customization Bootstrap grid vars from "app/libs/bootstrap/scss/_variables.scss"
-$grid-gutter-width: 1.5rem;
-$grid-columns: 12;
+// $grid-gutter-width: 1.5rem;
+// $grid-columns: 12;
 // value and higher
-$grid-breakpoints: (
-  xs: $screen-xs-min,
-  sm: $screen-sm-min,
-  md: $screen-md-min,
-  lg: $screen-lg-min,
-  xl: $screen-xl-min,
-  xxl: $screen-xxl-min,
-);
+// $grid-breakpoints: (
+//   xs: $screen-xs-min,
+//   sm: $screen-sm-min,
+//   md: $screen-md-min,
+//   lg: $screen-lg-min,
+//   xl: $screen-xl-min,
+//   xxl: $screen-xxl-min,
+// );
 // 95% from breakpoints values
-$reduce-multiplier: 0.95;
-$container-max-widths: (
-  sm: $screen-sm-min * $reduce-multiplier,
-  md: $screen-md-min * $reduce-multiplier,
-  lg: $screen-lg-min * $reduce-multiplier,
-  xl: $screen-xl-min * $reduce-multiplier,
-  xxl: $screen-xxl-min * $reduce-multiplier,
-);
+// $reduce-multiplier: 0.95;
+// $container-max-widths: (
+//   sm: $screen-sm-min * $reduce-multiplier,
+//   md: $screen-md-min * $reduce-multiplier,
+//   lg: $screen-lg-min * $reduce-multiplier,
+//   xl: $screen-xl-min * $reduce-multiplier,
+//   xxl: $screen-xxl-min * $reduce-multiplier,
+// );
 
-$gutter: $grid-gutter-width;
+// $gutter: $grid-gutter-width;

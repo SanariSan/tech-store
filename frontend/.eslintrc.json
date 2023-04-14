@@ -73,6 +73,9 @@
 
     // + plugin:unicorn/recommended
 
+    // Disabled bcs some libs require nulls in props
+    "unicorn/no-null": "off",
+
     // Disabled for react-app-env.d.ts file
     "unicorn/no-empty-file": "off",
 
