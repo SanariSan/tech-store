@@ -4,16 +4,15 @@ import { Route, Switch } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 import style from './app.module.scss';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
-import { DashboardContainer } from './containers/dashboard';
 import { DebugContainer } from './containers/debug';
 import { ErrorBoundaryGenericContainer } from './containers/error-boundary-generic';
 // import { ErrorBoundaryNativeContainer } from './containers/error-boundary-native';
-import { LandingContainer, LandingNavbarContainer } from './containers/landing';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { useAppSelector } from './hooks/redux';
 import { themeSelector } from './store';
+import { LayoutComponent } from './components/layout';
 
 const App: FC = () => {
   const theme = useAppSelector(themeSelector);
@@ -33,10 +32,11 @@ const App: FC = () => {
         <Switch>
           <Route exact path="/">
             {/* <LandingNavbarContainer /> */}
-            <LandingContainer />
+            {/* <LandingComponent /> */}
+            <LayoutComponent />
           </Route>
           <Route exact path="/login">
-            <LandingNavbarContainer />
+            {/* <LandingNavbarContainer /> */}
             <AuthenticatedAccessContainer
               mustBeAuthenticated={false}
               redirectLocation={'/dashboard'}
@@ -45,7 +45,7 @@ const App: FC = () => {
             </AuthenticatedAccessContainer>
           </Route>
           <Route exact path="/register">
-            <LandingNavbarContainer />
+            {/* <LandingNavbarContainer /> */}
             <AuthenticatedAccessContainer
               mustBeAuthenticated={false}
               redirectLocation={'/dashboard'}
@@ -55,7 +55,7 @@ const App: FC = () => {
           </Route>
           <Route exact path="/dashboard">
             <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
-              <DashboardContainer />
+              {/* <DashboardContainer /> */}
             </AuthenticatedAccessContainer>
           </Route>
           <Route path="/">

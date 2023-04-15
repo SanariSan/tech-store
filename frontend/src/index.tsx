@@ -22,9 +22,13 @@ const root = createRoot(rootElement);
 
 const colors = {
   yellow: {
+    // hover
+    300: '#ffd666',
     // light button, accent, notif, selected sub-category, price
     // dark button, accent, notif, selected sub-category, price
     400: '#ffc831',
+    // unused for now
+    500: '#ffbb00',
   },
   blue: {
     // light menu bg default

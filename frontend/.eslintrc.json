@@ -360,8 +360,13 @@
       // for funtion parameters allow leading underscore (so it can be just _)
       {
         "selector": "parameter",
-        "format": ["camelCase"],
+        "format": ["camelCase", "PascalCase"],
         "leadingUnderscore": "allow"
+      },
+
+      {
+        "selector": "parameter",
+        "format": ["camelCase", "PascalCase"]
       },
 
       // for const variables that contains lambda/arrow style is default - camelCase + PascalCase for Components/Containers
