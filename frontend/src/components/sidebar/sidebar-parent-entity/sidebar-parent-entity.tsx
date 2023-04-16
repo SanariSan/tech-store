@@ -50,7 +50,9 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       direction={'row'}
       alignItems={'center'}
       justifyContent={'flex-start'}
-      onClick={onSelect}
+      onClick={() => {
+        if (!isSelected) onSelect();
+      }}
     >
       <Icon
         boxSize={10}
@@ -66,7 +68,15 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       </Text>
 
       {hasSub && (
-        <Box ml={'auto'} mr={5} opacity={isSidebarOpened ? 1 : 0} onClick={onSubUnfold}>
+        <Box
+          ml={'auto'}
+          mr={5}
+          opacity={isSidebarOpened ? 1 : 0}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSubUnfold();
+          }}
+        >
           <Circle size={'18px'} border={'2px'} borderColor={'blue.300'}>
             {isSubUnfolded ? (
               <ChevronUpIcon color={'blue.400'} />

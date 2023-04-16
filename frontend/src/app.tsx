@@ -13,6 +13,7 @@ import { RegisterContainer } from './containers/register';
 import { useAppSelector } from './hooks/redux';
 import { themeSelector } from './store';
 import { LayoutContainer } from './containers/layout';
+import { CatalogueComponent } from './components/catalogue';
 
 const App: FC = () => {
   const theme = useAppSelector(themeSelector);
@@ -28,51 +29,54 @@ const App: FC = () => {
         flexDirection={'column'}
       >
         <LoadingTrackerProgressContainer />
-        <Switch>
-          <Route exact path="/">
-            <LayoutContainer>
-              <SimpleGrid
-                h={'max-content'}
-                w={'100%'}
-                spacing={10}
-                py={10}
-                px={10}
-                minChildWidth={'350px'}
-              >
-                {Array.from({ length: 30 }, (el, idx) => (
-                  <Flex
-                    key={`cat-${idx}`}
-                    direction={'column'}
-                    minH={'350px'}
-                    bg={'blue.300'}
-                    borderRadius={'20px'}
-                  />
-                ))}
-              </SimpleGrid>
-            </LayoutContainer>
-          </Route>
-          <Route exact path="/login">
-            {/* <LandingNavbarContainer /> */}
-            <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
-              <LoginContainer />
-            </AuthenticatedAccessContainer>
-          </Route>
-          <Route exact path="/register">
-            {/* <LandingNavbarContainer /> */}
-            <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
-              <RegisterContainer />
-            </AuthenticatedAccessContainer>
-          </Route>
-          {/* <Route exact path="/dashboard">
+        <LayoutContainer>
+          <Switch>
+            <Route exact path={'/'}>
+              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+                home
+              </Flex>
+            </Route>
+            <Route exact path={'/catalogue'}>
+              <CatalogueComponent />
+            </Route>
+            <Route exact path={'/liked'}>
+              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+                liked
+              </Flex>
+            </Route>
+            <Route exact path={'/settings'}>
+              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+                settings
+              </Flex>
+            </Route>
+            <Route exact path={'/help'}>
+              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+                help
+              </Flex>
+            </Route>
+            <Route exact path="/login">
+              {/* <LandingNavbarContainer /> */}
+              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
+                <LoginContainer />
+              </AuthenticatedAccessContainer>
+            </Route>
+            <Route exact path="/register">
+              {/* <LandingNavbarContainer /> */}
+              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
+                <RegisterContainer />
+              </AuthenticatedAccessContainer>
+            </Route>
+            {/* <Route exact path="/dashboard">
             <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
               <DashboardContainer />
-            </AuthenticatedAccessContainer>
-          </Route> 
-          */}
-          <Route path="/">
-            <div>Not found</div>
-          </Route>
-        </Switch>
+              </AuthenticatedAccessContainer>
+              </Route> 
+            */}
+            <Route path="/">
+              <div>Not found</div>
+            </Route>
+          </Switch>
+        </LayoutContainer>
         <DebugContainer />
       </Box>
       <div id="bg" className={classNames(style.app, style[theme])} />

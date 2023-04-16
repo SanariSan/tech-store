@@ -30,6 +30,7 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
         position={'absolute'}
         w={'3px'}
         h={'50%'}
+        borderRadius={'30px'}
         bg={isSelected ? 'yellow.400' : 'transparent'}
       />
       <Text

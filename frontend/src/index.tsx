@@ -33,7 +33,7 @@ const colors = {
   blue: {
     // light menu bg default
     25: '#f9fafb',
-    // light catalogue bg default
+    // ...
     300: '#dfe3e8',
     // light bg hower
     // dark font secondary / unselected
@@ -52,13 +52,14 @@ const colors = {
     800: '#212b36',
   },
   white: {
+    // light catalogue item bg
+    200: '#fafafd',
     // light menu selected
     300: '#eff2f5',
     // light search bar untouched
     // light category item untouched
     400: '#f3f5f7',
-    // dark menu item selected
-    // dark font selected / default
+    // light catalogue bg default
     900: '#ffffff',
   },
   black: {
