@@ -25,14 +25,14 @@ const DebugContainer: FC = () => {
 
   return (
     <>
-      <pre style={{ position: 'fixed', bottom: 0, width: '100%' }} className={style[theme]}>
+      {/* <pre style={{ position: 'fixed', bottom: 0, width: '100%' }} className={style[theme]}>
         Current page size - {`${w} x ${h}`}
-      </pre>
-      <textarea
+      </pre> */}
+      {/* <textarea
         readOnly
         value={`isAuthenticated: ${isAuthenticated}\nusername: ${username}`}
         style={{ position: 'fixed', bottom: 0, right: 0, height: '100px' }}
-      />
+      /> */}
     </>
   );
 };

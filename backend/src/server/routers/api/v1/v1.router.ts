@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { accessR } from './access';
-import { infoR } from './info';
+import { goodsR } from './goods';
 
 const v1 = Router();
 
 v1.use('/access', accessR);
-v1.use('/info', infoR);
+v1.use('/goods', goodsR);
 
 export { v1 };

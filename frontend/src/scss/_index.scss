@@ -9,10 +9,10 @@
 
 //iclude libs such ass bootstrap and semantic-ui
 //after vars, bcs to overwrite lib values you define vars -> include libs
-@import 'libs';
+// @import 'libs';
 
 //reset all paddings/margins/etc we don't like from libs
-@import 'resets';
+// @import 'resets';
 
 //add mixins, such as breakpoints for responsive ui and custom ones
 @import 'mixins/index';
@@ -21,4 +21,4 @@
 @import 'general-custom';
 
 //include overwrites for lib-internal styles
-@import 'bootstrap-custom';
+// @import 'bootstrap-custom';

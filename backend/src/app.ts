@@ -15,6 +15,7 @@ import {
 function test() {}
 
 /* eslint-disable @typescript-eslint/require-await */
+
 async function init() {
   console.dir(process.env);
 

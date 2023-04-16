@@ -19,6 +19,11 @@
     "extends": "react-app"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.18",
+    "@chakra-ui/react": "^2.5.5",
+    "@chakra-ui/theme": "^3.0.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@reduxjs/toolkit": "^1.8.5",
     "assert": "^2.0.0",
     "bootstrap": "^5.2.0",
@@ -29,6 +34,7 @@
     "customize-cra": "^1.0.0",
     "events": "^3.3.0",
     "formik": "^2.2.9",
+    "framer-motion": "^10.11.6",
     "history": "^4.0.0",
     "isomorphic-fetch": "^3.0.0",
     "js-base64": "^3.7.2",
