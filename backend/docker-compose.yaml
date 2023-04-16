@@ -12,7 +12,7 @@ networks:
     name: inbound
     external: true
 services:
-  nginx:
+  online_shop_nginx:
     container_name: online_shop_nginx
     image: sanarisan/online_shop_nginx:1
     restart: unless-stopped
@@ -36,7 +36,7 @@ services:
       - '80'
     # ports:
     #   - '80:80'
-  postgres:
+  online_shop_postgres:
     container_name: online_shop_postgres
     image: sanarisan/online_shop_postgres:1
     restart: unless-stopped
@@ -61,7 +61,7 @@ services:
     # ports:
     #   - '${DB_PORT}:5432'
     command: ['postgres', '-c', 'log_statement=all']
-  redis:
+  online_shop_redis:
     container_name: online_shop_redis
     image: redis:7.0.5-alpine
     restart: unless-stopped
