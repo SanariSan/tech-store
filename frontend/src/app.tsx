@@ -55,7 +55,7 @@ const App: FC = () => {
           </Route>
           <Route exact path="/dashboard">
             <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
-              {/* <DashboardContainer /> */}
+              {/* <DashboardContainer />  */}
             </AuthenticatedAccessContainer>
           </Route>
           <Route path="/">
