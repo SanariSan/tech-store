@@ -149,9 +149,9 @@ services:
     networks:
       - default
     depends_on:
-      - nginx
-      - postgres
-      - redis
+      - online_shop_nginx
+      - online_shop_postgres
+      - online_shop_redis
     expose:
       - '${PORT}'
     # ports:
