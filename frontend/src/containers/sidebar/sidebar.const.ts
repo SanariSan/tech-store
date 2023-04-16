@@ -1,4 +1,5 @@
-import { BoxIcon, HeartIcon, HomeIcon } from '../icons';
+import { QuestionIcon, SettingsIcon } from '@chakra-ui/icons';
+import { BoxIcon, HeartIcon, HomeIcon } from '../../components/icons';
 
 export const SIDEBAR_TEMPLATE = [
   {
@@ -27,6 +28,18 @@ export const SIDEBAR_TEMPLATE = [
     title: 'Liked',
     icon: HeartIcon,
     location: '/liked',
+    sub: null,
+  },
+  {
+    title: 'Settings',
+    icon: SettingsIcon,
+    location: '/settings',
+    sub: null,
+  },
+  {
+    title: 'Help',
+    icon: QuestionIcon,
+    location: '/help',
     sub: null,
   },
 ];

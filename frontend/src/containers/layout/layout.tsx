@@ -1,17 +1,15 @@
-import { Flex, Grid, GridItem, SimpleGrid } from '@chakra-ui/react';
+import { Grid, GridItem } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
+import { NavbarComponent } from '../../components/navbar';
 import { useScreenDetails } from '../../hooks/use-screen-details';
-import { NavbarComponent } from '../navbar';
-import { SidebarComponent } from '../sidebar';
+import { SidebarContainerMemo } from '../sidebar';
 import type { TLayout } from './layout.type';
 
-const LayoutComponent: FC<TLayout> = ({ theme }) => {
-  const a = 1;
-
+const LayoutContainer: FC<TLayout> = ({ children }) => {
   const {
     screenResolutionDetails: {
-      default: { w, h },
+      default: { w },
     },
   } = useScreenDetails();
   const [isSidebarOpened, setIsSidebarOpened] = useState(() => w > 768);
@@ -19,14 +17,6 @@ const LayoutComponent: FC<TLayout> = ({ theme }) => {
   const switchSidebarState = useCallback((payload?: { state: boolean }) => {
     setIsSidebarOpened((s) => payload?.state ?? !s);
   }, []);
-
-  // useEffect(() => {
-  //   if (w > 768) {
-  //     setIsSidebarOpened(true);
-  //   } else {
-  //     setIsSidebarOpened(false);
-  //   }
-  // }, [w]);
 
   return (
     <Grid
@@ -47,30 +37,13 @@ const LayoutComponent: FC<TLayout> = ({ theme }) => {
         <NavbarComponent switchSidebarState={switchSidebarState} />
       </GridItem>
       <GridItem area={'side'} bg={'blue.25'}>
-        <SidebarComponent isSidebarOpened={isSidebarOpened} />
+        <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
       </GridItem>
       <GridItem area={'main'} bg={'white.300'} overflowX={'hidden'}>
-        <SimpleGrid
-          h={'max-content'}
-          w={'100%'}
-          spacing={10}
-          py={10}
-          px={10}
-          minChildWidth={'350px'}
-        >
-          {Array.from({ length: 30 }, (el, idx) => (
-            <Flex
-              key={`cat-${idx}`}
-              direction={'column'}
-              minH={'350px'}
-              bg={'blue.300'}
-              borderRadius={'20px'}
-            />
-          ))}
-        </SimpleGrid>
+        {children}
       </GridItem>
     </Grid>
   );
 };
 
-export { LayoutComponent };
+export { LayoutContainer };

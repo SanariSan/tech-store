@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import type { FC } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, SimpleGrid } from '@chakra-ui/react';
 import style from './app.module.scss';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
 import { DebugContainer } from './containers/debug';
@@ -12,7 +12,7 @@ import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { useAppSelector } from './hooks/redux';
 import { themeSelector } from './store';
-import { LayoutComponent } from './components/layout';
+import { LayoutContainer } from './containers/layout';
 
 const App: FC = () => {
   const theme = useAppSelector(themeSelector);
@@ -26,38 +26,49 @@ const App: FC = () => {
         alignItems={'center'}
         justifyContent={'center'}
         flexDirection={'column'}
-        // overflow={'hidden'}
       >
         <LoadingTrackerProgressContainer />
         <Switch>
           <Route exact path="/">
-            {/* <LandingNavbarContainer /> */}
-            {/* <LandingComponent /> */}
-            <LayoutComponent />
+            <LayoutContainer>
+              <SimpleGrid
+                h={'max-content'}
+                w={'100%'}
+                spacing={10}
+                py={10}
+                px={10}
+                minChildWidth={'350px'}
+              >
+                {Array.from({ length: 30 }, (el, idx) => (
+                  <Flex
+                    key={`cat-${idx}`}
+                    direction={'column'}
+                    minH={'350px'}
+                    bg={'blue.300'}
+                    borderRadius={'20px'}
+                  />
+                ))}
+              </SimpleGrid>
+            </LayoutContainer>
           </Route>
           <Route exact path="/login">
             {/* <LandingNavbarContainer /> */}
-            <AuthenticatedAccessContainer
-              mustBeAuthenticated={false}
-              redirectLocation={'/dashboard'}
-            >
+            <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
               <LoginContainer />
             </AuthenticatedAccessContainer>
           </Route>
           <Route exact path="/register">
             {/* <LandingNavbarContainer /> */}
-            <AuthenticatedAccessContainer
-              mustBeAuthenticated={false}
-              redirectLocation={'/dashboard'}
-            >
+            <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
               <RegisterContainer />
             </AuthenticatedAccessContainer>
           </Route>
-          <Route exact path="/dashboard">
+          {/* <Route exact path="/dashboard">
             <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
-              {/* <DashboardContainer />  */}
+              <DashboardContainer />
             </AuthenticatedAccessContainer>
-          </Route>
+          </Route> 
+          */}
           <Route path="/">
             <div>Not found</div>
           </Route>

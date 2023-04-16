@@ -1,4 +1,5 @@
 type TLayout = {
+  children: React.ReactNode;
   [key: string]: unknown;
 };
 
