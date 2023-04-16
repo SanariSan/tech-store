@@ -36,7 +36,7 @@ jobs:
 
         steps:
             - name: Executing remote command
-              uses: appleboy/ssh-action@v0.1.4
+              uses: appleboy/ssh-action@master
               with:
                   HOST: ${{ secrets.HOST }}
                   USERNAME: ${{ secrets.USERNAME }}

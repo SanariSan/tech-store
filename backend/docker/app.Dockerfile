@@ -28,6 +28,7 @@ CMD [ \
     "dumb-init", \
     "node", \
     "./node_modules/cross-env/src/bin/cross-env.js", \
+    # vars coming from gh.secrets on deploy (or passed directly if launching locally)
     "NODE_ENV=production", \
     "CORS_URL=${CORS_URL}", \
     "API_VERSION=${API_VERSION}", \
@@ -37,6 +38,7 @@ CMD [ \
     "CACHE_PASSWORD=${CACHE_PASSWORD}", \
     "node", \
     "-r", \
+    # additional persistent vars coming from .env file
     "dotenv/config", \
     "./dist/app.js" \
     ]

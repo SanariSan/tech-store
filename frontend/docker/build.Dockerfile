@@ -11,6 +11,7 @@ ENV REACT_APP_API_VERSION=${REACT_APP_API_VERSION}
 WORKDIR /home/node/proj
 COPY --chown=root:root src/ ./src
 COPY --chown=root:root public/ ./public
+COPY --chown=root:root assets/ ./assets
 COPY --chown=root:root .env ./.env
 COPY --chown=root:root tsconfig.json tsconfig-base.json .prettierrc .prettierignore .eslintrc.json .eslintignore config-overrides.js ./
 COPY --chown=root:root --from=modules /home/node/proj/package.json /home/node/proj/yarn.lock ./
