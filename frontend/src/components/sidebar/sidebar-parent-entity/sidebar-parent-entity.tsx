@@ -29,6 +29,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
     w={'100%'}
     h={'50px'}
     direction={'row'}
+    color={isSelected ? 'blue.800' : 'blue.600'}
     bg={isSelected ? 'white.300' : 'transparent'}
     _hover={{
       bg: isSelected ? 'white.300' : 'white.400',

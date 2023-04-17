@@ -23,6 +23,7 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
     alignItems={'center'}
     cursor={'pointer'}
     onClick={onSelect}
+    color={'blue.600'}
   >
     <Box position={'absolute'} left={0} w={'2px'} h={'100%'} bg={'blue.500'} />
     <Flex h={'100%'} direction={'row'} alignItems={'center'}>
