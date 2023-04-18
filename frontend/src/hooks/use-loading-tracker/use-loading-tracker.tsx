@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAppSelector } from '../redux';
-import { userAuthLoadingStatusSelector } from '../../store';
+import { goodsLoadingStatusSelector, userAuthLoadingStatusSelector } from '../../store';
 
 const useLoadingTracker = () => {
   const authLoadingStatus = useAppSelector(userAuthLoadingStatusSelector);
+  const goodsLoadingStatus = useAppSelector(goodsLoadingStatusSelector);
   const [isLoading, setIsLoading] = useState(false);
 
   // path change fake loading just for UI consistency
@@ -20,12 +21,12 @@ const useLoadingTracker = () => {
 
   useEffect(() => {
     // || dashboardLoadingStatus === 'loading' || smthElse === true ...
-    if (authLoadingStatus === 'loading' || pageChangedLoading) {
+    if (authLoadingStatus === 'loading' || goodsLoadingStatus === 'loading' || pageChangedLoading) {
       setIsLoading(true);
     } else {
       setIsLoading(false);
     }
-  }, [authLoadingStatus, pageChangedLoading]);
+  }, [authLoadingStatus, goodsLoadingStatus, pageChangedLoading]);
 
   return { isLoading };
 };

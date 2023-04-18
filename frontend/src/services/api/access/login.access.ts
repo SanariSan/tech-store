@@ -1,30 +1,30 @@
 import { request } from '../../request-base.services';
+import type { IAccessLoginOutgoingDTO } from '../dto';
+import { AccessLoginIncomingFailureDTO, AccessLoginIncomingSuccessDTO } from '../dto';
 import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
-import type { IAccessLoginOutgoingDM } from '../data-models';
-import { AccessLoginIncomingFailureDM, AccessLoginIncomingSuccessDM } from '../data-models';
-import { ROUTES } from '../routes.api';
+import { ROUTES } from '../routes.api.const';
 
 export async function loginUser({
-  dm,
+  dto,
   abortSignal,
 }: {
-  dm: IAccessLoginOutgoingDM;
+  dto: IAccessLoginOutgoingDTO;
   abortSignal: AbortSignal;
 }) {
   try {
     const response: Response = await request({
       url: ROUTES.ACCESS.LOGIN,
       method: 'POST',
-      body: JSON.stringify(dm.getFields()),
+      body: JSON.stringify(dto.getFields()),
       abortSignal,
     });
     const parsedJsonResponse: unknown = await response.clone().json();
 
     if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new AccessLoginIncomingSuccessDM(parsedJsonResponse);
+      return new AccessLoginIncomingSuccessDTO(parsedJsonResponse);
     }
     if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new AccessLoginIncomingFailureDM(parsedJsonResponse);
+      return new AccessLoginIncomingFailureDTO(parsedJsonResponse);
     }
 
     const text = (await response.clone().text()).slice(200);

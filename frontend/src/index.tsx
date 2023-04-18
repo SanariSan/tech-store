@@ -15,7 +15,7 @@ const history = createBrowserHistory();
 const rootElement = document.querySelector('#root') as Element;
 const root = createRoot(rootElement);
 
-// console.log(`REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
+console.log(`REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
 
 root.render(
   <React.StrictMode>

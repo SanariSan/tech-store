@@ -2,13 +2,13 @@ import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
 import type {
-  IAccessRegisterIncomingFailureDM,
-  IAccessRegisterIncomingSuccessDM,
-  IAccessRegisterOutgoingDM,
+  IAccessRegisterIncomingFailureDTO,
+  IAccessRegisterIncomingSuccessDTO,
+  IAccessRegisterOutgoingDTO,
 } from '../../../../services/api';
 import {
-  AccessRegisterIncomingFailureDM,
-  AccessRegisterIncomingSuccessDM,
+  AccessRegisterIncomingFailureDTO,
+  AccessRegisterIncomingSuccessDTO,
   registerUser,
 } from '../../../../services/api';
 import {
@@ -18,14 +18,14 @@ import {
   setUserIsAuthenticated,
 } from '../../../slices';
 
-function* registerUserWorker(action: { type: string; payload: IAccessRegisterOutgoingDM }) {
+function* registerUserWorker(action: { type: string; payload: IAccessRegisterOutgoingDTO }) {
   const abortController = new AbortController();
   try {
     yield put(setUserAuthLoadStatus({ status: 'loading' }));
 
     const fetchStatus = (yield safe(
-      call(registerUser, { dm: action.payload, abortSignal: abortController.signal }),
-    )) as TSafeReturn<IAccessRegisterIncomingSuccessDM | IAccessRegisterIncomingFailureDM>;
+      call(registerUser, { dto: action.payload, abortSignal: abortController.signal }),
+    )) as TSafeReturn<IAccessRegisterIncomingSuccessDTO | IAccessRegisterIncomingFailureDTO>;
 
     console.dir(fetchStatus);
 
@@ -36,7 +36,7 @@ function* registerUserWorker(action: { type: string; payload: IAccessRegisterOut
 
     console.dir(fetchStatus.response.getFields());
 
-    if (fetchStatus.response instanceof AccessRegisterIncomingSuccessDM) {
+    if (fetchStatus.response instanceof AccessRegisterIncomingSuccessDTO) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.getFields().data.isAuthenticated }),
@@ -45,7 +45,7 @@ function* registerUserWorker(action: { type: string; payload: IAccessRegisterOut
       return;
     }
 
-    if (fetchStatus.response instanceof AccessRegisterIncomingFailureDM) {
+    if (fetchStatus.response instanceof AccessRegisterIncomingFailureDTO) {
       yield put(setUserAuthLoadStatus({ status: 'failure' }));
       yield put(
         setUserIsAuthenticated({

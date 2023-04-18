@@ -1,6 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import classNames from 'classnames';
 import type { FC } from 'react';
+import { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import style from './app.module.scss';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
@@ -12,11 +13,16 @@ import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
-import { useAppSelector } from './hooks/redux';
-import { themeSelector } from './store';
+import { useAppDispatch, useAppSelector } from './hooks/redux';
+import { getCategoriesAsync, themeSelector } from './store';
 
 const App: FC = () => {
   const theme = useAppSelector(themeSelector);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCategoriesAsync());
+  }, [dispatch]);
 
   return (
     <ErrorBoundaryGenericContainer>

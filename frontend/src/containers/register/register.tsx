@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import { useCallback } from 'react';
 import { RegisterComponent } from '../../components/register';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { RegisterOutgoingDM } from '../../services/api';
+import { RegisterOutgoingDTO } from '../../services/api';
 import { registerUserAsync, themeSelector, userAuthLoadingStatusSelector } from '../../store';
 import { FormSubmitControlContainer } from '../form-submit-control';
 import { INITIAL_VALUES, VALIDATION_SCHEMA } from './register.const';
@@ -20,7 +20,7 @@ const RegisterContainer: FC = () => {
       console.log({ values });
       void dispatch(
         registerUserAsync(
-          new RegisterOutgoingDM({
+          new RegisterOutgoingDTO({
             email: values.email,
             username: values.username,
             password: values.password,

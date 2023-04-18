@@ -1,6 +1,6 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { Fragment, memo, useMemo, useCallback, useState } from 'react';
+import { Fragment, memo, useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarParentEntityMemo, SidebarSubEntityMemo } from '../../components/sidebar';
 import { SIDEBAR_TEMPLATE } from './sidebar.const';
@@ -46,22 +46,6 @@ const SidebarContainer: FC<ISidebarContainer> = ({
     [collapse, unfold, unfoldedIdxs],
   );
 
-  // more of a showcase optimization, almost no impact on perf (still less rerenders)
-  // and could be further optimized to prevent sublist from rerendering, but TOO messy
-  const memoizedCbs = useMemo(
-    () =>
-      SIDEBAR_TEMPLATE.map(({ sideAction: onSelectSideActionParent }, idxParent) => ({
-        onSelect: () => {
-          onSelectSideActionParent();
-          updateSelectedIdxs({ parent: idxParent });
-        },
-        onSubUnfold: () => {
-          onSubUnfold(idxParent);
-        },
-      })),
-    [onSubUnfold, updateSelectedIdxs],
-  );
-
   return (
     <Flex
       direction={'column'}
@@ -85,9 +69,13 @@ const SidebarContainer: FC<ISidebarContainer> = ({
               isSidebarOpened={isSidebarOpened}
               isSelected={selectedParent === idxParent}
               isSubUnfolded={unfoldedIdxs.includes(idxParent)}
-              // memoized
-              onSelect={memoizedCbs[idxParent].onSelect}
-              onSubUnfold={memoizedCbs[idxParent].onSubUnfold}
+              onSelect={() => {
+                onSelectSideActionParent();
+                updateSelectedIdxs({ parent: idxParent });
+              }}
+              onSubUnfold={() => {
+                onSubUnfold(idxParent);
+              }}
             />
 
             {sub !== null && (
@@ -108,7 +96,6 @@ const SidebarContainer: FC<ISidebarContainer> = ({
                     title={titleSub}
                     isSidebarOpened={isSidebarOpened}
                     isSelected={selectedParent === idxParent && selectedSub === idxSub}
-                    // could be memoized but naaah
                     onSelect={() => {
                       if (selectedParent !== idxParent) onSelectSideActionParent();
                       if (selectedParent !== idxParent || selectedSub !== idxSub) {

@@ -1,7 +1,7 @@
-import { AccessLogoutIncomingFailureDM, AccessLogoutIncomingSuccessDM } from '../data-models';
 import { request } from '../../request-base.services';
+import { AccessLogoutIncomingFailureDTO, AccessLogoutIncomingSuccessDTO } from '../dto';
 import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
-import { ROUTES } from '../routes.api';
+import { ROUTES } from '../routes.api.const';
 
 export async function logoutUser({ abortSignal }: { abortSignal: AbortSignal }) {
   try {
@@ -13,10 +13,10 @@ export async function logoutUser({ abortSignal }: { abortSignal: AbortSignal }) 
     const parsedJsonResponse: unknown = await response.clone().json();
 
     if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new AccessLogoutIncomingSuccessDM(parsedJsonResponse);
+      return new AccessLogoutIncomingSuccessDTO(parsedJsonResponse);
     }
     if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new AccessLogoutIncomingFailureDM(parsedJsonResponse);
+      return new AccessLogoutIncomingFailureDTO(parsedJsonResponse);
     }
 
     const text = (await response.clone().text()).slice(200);

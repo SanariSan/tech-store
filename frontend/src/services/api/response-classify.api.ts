@@ -1,13 +1,5 @@
-import type { IIncomingFailureFields, IIncomingSuccessFields } from './data-models';
-
-function isNotEmptyObject(input: unknown): input is { [key: string]: unknown } {
-  return (
-    typeof input === 'object' &&
-    !Array.isArray(input) &&
-    input !== null &&
-    Object.keys(input).length > 0
-  );
-}
+import { isNotEmptyObject } from '../../helpers/util';
+import type { IIncomingFailureFields, IIncomingSuccessFields } from './dto';
 
 function isExpectedSuccessResponse(
   response: Response,
@@ -35,4 +27,4 @@ function isExpectedFailureResponse(
   );
 }
 
-export { isNotEmptyObject, isExpectedFailureResponse, isExpectedSuccessResponse };
+export { isExpectedFailureResponse, isExpectedSuccessResponse };

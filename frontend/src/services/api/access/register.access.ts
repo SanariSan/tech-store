@@ -1,30 +1,30 @@
 import { request } from '../../request-base.services';
-import type { IAccessRegisterOutgoingDM } from '../data-models';
-import { AccessRegisterIncomingFailureDM, AccessRegisterIncomingSuccessDM } from '../data-models';
+import type { IAccessRegisterOutgoingDTO } from '../dto';
+import { AccessRegisterIncomingFailureDTO, AccessRegisterIncomingSuccessDTO } from '../dto';
 import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
-import { ROUTES } from '../routes.api';
+import { ROUTES } from '../routes.api.const';
 
 export async function registerUser({
-  dm,
+  dto,
   abortSignal,
 }: {
-  dm: IAccessRegisterOutgoingDM;
+  dto: IAccessRegisterOutgoingDTO;
   abortSignal: AbortSignal;
 }) {
   try {
     const response: Response = await request({
       url: ROUTES.ACCESS.REGISTER,
       method: 'POST',
-      body: JSON.stringify(dm.getFields()),
+      body: JSON.stringify(dto.getFields()),
       abortSignal,
     });
     const parsedJsonResponse: unknown = await response.clone().json();
 
     if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new AccessRegisterIncomingSuccessDM(parsedJsonResponse);
+      return new AccessRegisterIncomingSuccessDTO(parsedJsonResponse);
     }
     if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new AccessRegisterIncomingFailureDM(parsedJsonResponse);
+      return new AccessRegisterIncomingFailureDTO(parsedJsonResponse);
     }
 
     // here can report to monitoring service or smth, then throw

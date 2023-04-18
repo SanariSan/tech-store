@@ -54,6 +54,10 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       onClick={() => {
         if (!isSelected) onSelect();
       }}
+      transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
+      _hover={{
+        transform: 'translateX(3px)',
+      }}
     >
       <Icon
         boxSize={10}

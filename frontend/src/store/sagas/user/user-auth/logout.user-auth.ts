@@ -2,12 +2,12 @@ import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
 import type {
-  IAccessLogoutIncomingFailureDM,
-  IAccessLogoutIncomingSuccessDM,
+  IAccessLogoutIncomingFailureDTO,
+  IAccessLogoutIncomingSuccessDTO,
 } from '../../../../services/api';
 import {
-  AccessLogoutIncomingFailureDM,
-  AccessLogoutIncomingSuccessDM,
+  AccessLogoutIncomingFailureDTO,
+  AccessLogoutIncomingSuccessDTO,
   logoutUser,
 } from '../../../../services/api';
 import { logoutUserAsync, setUserAuthLoadStatus, setUserIsAuthenticated } from '../../../slices';
@@ -19,7 +19,7 @@ function* logoutUserWorker(action: { type: string }) {
 
     const fetchStatus = (yield safe(
       call(logoutUser, { abortSignal: abortController.signal }),
-    )) as TSafeReturn<IAccessLogoutIncomingSuccessDM | IAccessLogoutIncomingFailureDM>;
+    )) as TSafeReturn<IAccessLogoutIncomingSuccessDTO | IAccessLogoutIncomingFailureDTO>;
 
     console.dir(fetchStatus);
 
@@ -30,7 +30,7 @@ function* logoutUserWorker(action: { type: string }) {
 
     console.dir(fetchStatus.response.getFields());
 
-    if (fetchStatus.response instanceof AccessLogoutIncomingSuccessDM) {
+    if (fetchStatus.response instanceof AccessLogoutIncomingSuccessDTO) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.getFields().data.isAuthenticated }),
@@ -38,7 +38,7 @@ function* logoutUserWorker(action: { type: string }) {
       return;
     }
 
-    if (fetchStatus.response instanceof AccessLogoutIncomingFailureDM) {
+    if (fetchStatus.response instanceof AccessLogoutIncomingFailureDTO) {
       yield put(setUserAuthLoadStatus({ status: 'failure' }));
       yield put(
         setUserIsAuthenticated({

@@ -1,10 +1,7 @@
 import { request } from '../../request-base.services';
-import {
-  AccessCheckSessionIncomingFailureDM,
-  AccessCheckSessionIncomingSuccessDM,
-} from '../data-models';
+import { AccessCheckSessionIncomingFailureDTO, AccessCheckSessionIncomingSuccessDTO } from '../dto';
 import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
-import { ROUTES } from '../routes.api';
+import { ROUTES } from '../routes.api.const';
 
 export async function checkUserAuthStatus({ abortSignal }: { abortSignal: AbortSignal }) {
   try {
@@ -17,10 +14,10 @@ export async function checkUserAuthStatus({ abortSignal }: { abortSignal: AbortS
     console.dir(parsedJsonResponse);
 
     if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new AccessCheckSessionIncomingSuccessDM(parsedJsonResponse);
+      return new AccessCheckSessionIncomingSuccessDTO(parsedJsonResponse);
     }
     if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new AccessCheckSessionIncomingFailureDM(parsedJsonResponse);
+      return new AccessCheckSessionIncomingFailureDTO(parsedJsonResponse);
     }
 
     const text = (await response.clone().text()).slice(200);

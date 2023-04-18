@@ -6,7 +6,7 @@ import type { FC } from 'react';
 import { useCallback } from 'react';
 import { LoginComponent } from '../../components/login';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { LoginOutgoingDM } from '../../services/api';
+import { LoginOutgoingDTO } from '../../services/api';
 import { loginUserAsync, themeSelector, userAuthLoadingStatusSelector } from '../../store';
 import { FormSubmitControlContainer } from '../form-submit-control';
 import { INITIAL_VALUES, VALIDATION_SCHEMA } from './login.const';
@@ -23,7 +23,7 @@ const LoginContainer: FC = () => {
       console.log({ values });
       void dispatch(
         loginUserAsync(
-          new LoginOutgoingDM({ username: values.username, password: values.password }),
+          new LoginOutgoingDTO({ username: values.username, password: values.password }),
         ),
       );
     },

@@ -2,13 +2,13 @@ import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
 import type {
-  IAccessLoginIncomingFailureDM,
-  IAccessLoginIncomingSuccessDM,
-  IAccessLoginOutgoingDM,
+  IAccessLoginIncomingFailureDTO,
+  IAccessLoginIncomingSuccessDTO,
+  IAccessLoginOutgoingDTO,
 } from '../../../../services/api';
 import {
-  AccessLoginIncomingFailureDM,
-  AccessLoginIncomingSuccessDM,
+  AccessLoginIncomingFailureDTO,
+  AccessLoginIncomingSuccessDTO,
   loginUser,
 } from '../../../../services/api';
 import {
@@ -18,14 +18,14 @@ import {
   setUserIsAuthenticated,
 } from '../../../slices';
 
-function* loginUserWorker(action: { type: string; payload: IAccessLoginOutgoingDM }) {
+function* loginUserWorker(action: { type: string; payload: IAccessLoginOutgoingDTO }) {
   const abortController = new AbortController();
   try {
     yield put(setUserAuthLoadStatus({ status: 'loading' }));
 
     const fetchStatus = (yield safe(
-      call(loginUser, { dm: action.payload, abortSignal: abortController.signal }),
-    )) as TSafeReturn<IAccessLoginIncomingSuccessDM | IAccessLoginIncomingFailureDM>;
+      call(loginUser, { dto: action.payload, abortSignal: abortController.signal }),
+    )) as TSafeReturn<IAccessLoginIncomingSuccessDTO | IAccessLoginIncomingFailureDTO>;
 
     console.dir(fetchStatus);
 
@@ -36,7 +36,7 @@ function* loginUserWorker(action: { type: string; payload: IAccessLoginOutgoingD
 
     console.dir(fetchStatus.response.getFields());
 
-    if (fetchStatus.response instanceof AccessLoginIncomingSuccessDM) {
+    if (fetchStatus.response instanceof AccessLoginIncomingSuccessDTO) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.getFields().data.isAuthenticated }),
@@ -45,7 +45,7 @@ function* loginUserWorker(action: { type: string; payload: IAccessLoginOutgoingD
       return;
     }
 
-    if (fetchStatus.response instanceof AccessLoginIncomingFailureDM) {
+    if (fetchStatus.response instanceof AccessLoginIncomingFailureDTO) {
       yield put(setUserAuthLoadStatus({ status: 'failure' }));
       yield put(
         setUserIsAuthenticated({

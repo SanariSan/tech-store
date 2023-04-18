@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import { rootWatcher } from './sagas';
-import { loginUserAsync, registerUserAsync, theme, user } from './slices';
+import { loginUserAsync, registerUserAsync, theme, user, goods } from './slices';
 
 const sagaMiddleware = createSagaMiddleware({
   effectMiddlewares: [
@@ -21,7 +21,7 @@ const Store = configureStore({
   reducer: {
     theme,
     user,
-    // fetchTodo,
+    goods,
   },
   // because concat preserves types, spread not
   // https://redux-toolkit.js.org/api/getDefaultMiddleware
