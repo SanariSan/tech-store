@@ -1,4 +1,4 @@
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex } from '@chakra-ui/react';
 import classNames from 'classnames';
 import type { FC } from 'react';
 import { useEffect } from 'react';
@@ -14,7 +14,7 @@ import { LoadingTrackerProgressContainer } from './containers/loading-tracker-pr
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { getCategoriesAsync, themeSelector } from './store';
+import { getCategoriesAsync, logoutUserAsync, themeSelector } from './store';
 
 const App: FC = () => {
   const theme = useAppSelector(themeSelector);
@@ -79,11 +79,11 @@ const App: FC = () => {
               </Route> 
             */}
             <Route path="/">
-              {/* <Button
-              onClick={() => {
-                dispatch(logoutUserAsync());
-              }}
-            /> */}
+              <Button
+                onClick={() => {
+                  dispatch(logoutUserAsync());
+                }}
+              />
               <div>Not found</div>
             </Route>
           </Switch>
