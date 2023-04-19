@@ -2,30 +2,34 @@ import type { FormikHelpers } from 'formik';
 import { Formik } from 'formik';
 import type { FC } from 'react';
 import { useCallback } from 'react';
+import { Text } from '@chakra-ui/react';
 import { RegisterComponent } from '../../components/register';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { RegisterOutgoingDTO } from '../../services/api';
-import { registerUserAsync, themeSelector, userAuthLoadingStatusSelector } from '../../store';
+import {
+  registerUserAsync,
+  themeSelector,
+  userAuthErrorSelector,
+  userAuthLoadingStatusSelector,
+} from '../../store';
 import { FormSubmitControlContainer } from '../form-submit-control';
 import { INITIAL_VALUES, VALIDATION_SCHEMA } from './register.const';
-import type { TRegisterFormValues } from './register.type';
+import type { TRegisterFormValues } from './register.const';
 
 const RegisterContainer: FC = () => {
   const theme = useAppSelector(themeSelector);
   const userAuthLoadingState = useAppSelector(userAuthLoadingStatusSelector);
+  const userAuthError = useAppSelector(userAuthErrorSelector);
   const dispatch = useAppDispatch();
 
   const onSubmit = useCallback(
     (values: TRegisterFormValues, actions: FormikHelpers<TRegisterFormValues>) => {
       console.log({ values });
       void dispatch(
-        registerUserAsync(
-          new RegisterOutgoingDTO({
-            email: values.email,
-            username: values.username,
-            password: values.password,
-          }),
-        ),
+        registerUserAsync({
+          email: values.email,
+          username: values.username,
+          password: values.password,
+        }),
       );
     },
     [dispatch],
@@ -40,6 +44,7 @@ const RegisterContainer: FC = () => {
             isLoading={userAuthLoadingState === 'loading'}
             {...formikConfig}
           />
+          <Text color={'white.300'}>{userAuthError ?? undefined}</Text>
           <FormSubmitControlContainer isLoading={userAuthLoadingState === 'loading'} />
         </>
       )}

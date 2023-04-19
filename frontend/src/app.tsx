@@ -79,6 +79,11 @@ const App: FC = () => {
               </Route> 
             */}
             <Route path="/">
+              {/* <Button
+              onClick={() => {
+                dispatch(logoutUserAsync());
+              }}
+            /> */}
               <div>Not found</div>
             </Route>
           </Switch>

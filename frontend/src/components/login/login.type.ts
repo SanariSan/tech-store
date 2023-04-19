@@ -1,5 +1,5 @@
 import type { FormikProps } from 'formik';
-import type { TLoginFormValues } from '../../containers/login/login.type';
+import type { TLoginFormValues } from '../../containers/login/login.const';
 
 type TProps = FormikProps<TLoginFormValues>;
 

@@ -1,8 +1,7 @@
-import type { AnySchema } from 'yup';
+import type { InferType } from 'yup';
 import { object, ref, string } from 'yup';
-import type { TRegisterFormValues } from './register.type';
 
-const VALIDATION_SCHEMA = object<Record<keyof TRegisterFormValues, AnySchema>>({
+const VALIDATION_SCHEMA = object({
   email: string().email().required('Email required'),
   username: string()
     .required('Username required')
@@ -17,6 +16,8 @@ const VALIDATION_SCHEMA = object<Record<keyof TRegisterFormValues, AnySchema>>({
     .oneOf([ref('password')], 'Your passwords do not match'),
 });
 
+type TRegisterFormValues = InferType<typeof VALIDATION_SCHEMA>;
+
 const INITIAL_VALUES: TRegisterFormValues = {
   email: '0a8046d4d@gmail.com',
   username: '0a8046d4d',
@@ -24,4 +25,5 @@ const INITIAL_VALUES: TRegisterFormValues = {
   passwordRe: 'pwd123456',
 };
 
+export type { TRegisterFormValues };
 export { VALIDATION_SCHEMA, INITIAL_VALUES };

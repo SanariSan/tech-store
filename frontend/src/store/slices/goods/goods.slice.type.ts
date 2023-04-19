@@ -1,11 +1,13 @@
-import type { TCategories, TEntity, TSubCategories } from '../../../services/api';
+import type {
+  TGoodsCategoriesIncomingSuccessFields,
+  TGoodsEntitiesIncomingSuccessFields,
+} from '../../../services/api';
 
 type TLoadingStatus = 'idle' | 'loading' | 'success' | 'failure';
-
 type TGoodsInitState = {
-  entities: TEntity[];
-  categories: TCategories;
-  subCategories: TSubCategories;
+  entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'];
+  categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+  subCategories: TGoodsCategoriesIncomingSuccessFields['data']['subCategories'];
   perPage: number;
   loadingStatus: TLoadingStatus;
   error: string | undefined;

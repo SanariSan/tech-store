@@ -1,12 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type {
-  IGoodsEntitiesOutgoingDTO,
-  TCategories,
-  TEntity,
-  TSubCategories,
-} from '../../../services/api';
 import { GOODS_INIT_STATE } from './goods.slice.const';
 import type { TLoadingStatus } from './goods.slice.type';
+import type {
+  TGoodsCategoriesIncomingSuccessFields,
+  TGoodsEntitiesIncomingSuccessFields,
+  TGoodsEntitiesOutgoingFields,
+} from '../../../services/api';
 
 /* eslint-disable no-param-reassign */
 
@@ -16,12 +15,24 @@ const goodsSlice = createSlice({
   reducers: {
     setCategories(
       state,
-      action: { payload: { categories: TCategories; subCategories: TSubCategories }; type: string },
+      action: {
+        payload: {
+          categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+          subCategories: TGoodsCategoriesIncomingSuccessFields['data']['subCategories'];
+        };
+        type: string;
+      },
     ) {
       state.categories = action.payload.categories;
       state.subCategories = action.payload.subCategories;
     },
-    pushEntities(state, action: { payload: { entities: TEntity[] }; type: string }) {
+    pushEntities(
+      state,
+      action: {
+        payload: { entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'] };
+        type: string;
+      },
+    ) {
       state.entities.push(...action.payload.entities);
     },
     setGoodsLoadStatus(
@@ -36,7 +47,10 @@ const goodsSlice = createSlice({
     },
     // sagas
     getCategoriesAsync() {},
-    getEntitiesAsync(state, action: { payload: IGoodsEntitiesOutgoingDTO; type: string }) {},
+    getEntitiesAsync(
+      state,
+      action: { payload: Partial<TGoodsEntitiesOutgoingFields>; type: string },
+    ) {},
   },
 });
 

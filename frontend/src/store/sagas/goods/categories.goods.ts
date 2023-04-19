@@ -1,15 +1,11 @@
 import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../helpers/sagas';
 import { safe } from '../../../helpers/sagas';
-import {
-  GoodsCategoriesIncomingFailureDTO,
-  GoodsCategoriesIncomingSuccessDTO,
-  getCategories,
-} from '../../../services/api';
 import type {
-  IGoodsCategoriesIncomingSuccessDTO,
-  IGoodsCategoriesIncomingFailureDTO,
+  TGoodsCategoriesIncomingFailureFields,
+  TGoodsCategoriesIncomingSuccessFields,
 } from '../../../services/api';
+import { getCategories } from '../../../services/api';
 import { getCategoriesAsync, setCategories, setGoodsLoadStatus } from '../../slices';
 
 function* categoriesWorker(action: { type: string }) {
@@ -19,7 +15,10 @@ function* categoriesWorker(action: { type: string }) {
 
     const fetchStatus = (yield safe(
       call(getCategories, { abortSignal: abortController.signal }),
-    )) as TSafeReturn<IGoodsCategoriesIncomingSuccessDTO | IGoodsCategoriesIncomingFailureDTO>;
+    )) as TSafeReturn<{
+      success?: TGoodsCategoriesIncomingSuccessFields;
+      failure?: TGoodsCategoriesIncomingFailureFields;
+    }>;
 
     console.dir(fetchStatus);
 
@@ -28,17 +27,22 @@ function* categoriesWorker(action: { type: string }) {
       return;
     }
 
-    console.dir(fetchStatus.response.getFields());
+    console.dir(fetchStatus.response);
 
-    if (fetchStatus.response instanceof GoodsCategoriesIncomingSuccessDTO) {
-      const { categories, subCategories } = fetchStatus.response.getFields().data;
+    if (fetchStatus.response.success !== undefined) {
+      const { categories, subCategories } = fetchStatus.response.success.data;
       yield put(setGoodsLoadStatus({ status: 'success' }));
       yield put(setCategories({ categories, subCategories }));
       return;
     }
 
-    if (fetchStatus.response instanceof GoodsCategoriesIncomingFailureDTO) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+    if (fetchStatus.response.failure !== undefined) {
+      yield put(
+        setGoodsLoadStatus({
+          status: 'failure',
+          error: String(fetchStatus.response.failure.detail),
+        }),
+      );
       return;
     }
   } finally {

@@ -1,6 +1,9 @@
 import { request } from '../../request-base.services';
-import { GoodsCategoriesIncomingFailureDTO, GoodsCategoriesIncomingSuccessDTO } from '../dto';
-import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
+import {
+  GoodsCategoriesIncomingFailureDTO,
+  GoodsCategoriesIncomingSuccessDTO,
+  validateDTO,
+} from '../dto';
 import { ROUTES } from '../routes.api.const';
 
 export async function getCategories({ abortSignal }: { abortSignal: AbortSignal }) {
@@ -13,17 +16,25 @@ export async function getCategories({ abortSignal }: { abortSignal: AbortSignal 
 
     console.dir(parsedJsonResponse);
 
-    if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new GoodsCategoriesIncomingSuccessDTO(parsedJsonResponse);
-    }
-    if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new GoodsCategoriesIncomingFailureDTO(parsedJsonResponse);
+    if (response.status > 100 && response.status < 400) {
+      return {
+        success: await validateDTO({
+          schema: GoodsCategoriesIncomingSuccessDTO,
+          value: parsedJsonResponse,
+        }),
+      };
     }
 
-    const text = (await response.clone().text()).slice(200);
-    console.error(text);
-    throw new Error('Internal error');
+    return {
+      failure: await validateDTO({
+        schema: GoodsCategoriesIncomingFailureDTO,
+        value: parsedJsonResponse,
+      }),
+    };
   } catch (error) {
-    throw new Error((error as Error).message);
+    // const text = (await response.clone().text()).slice(200);
+    // throw new Error((error as Error).message);
+    console.error(error);
+    throw new Error('Internal error');
   }
 }

@@ -2,14 +2,10 @@ import { call, cancelled, delay, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../helpers/sagas';
 import { safe } from '../../../helpers/sagas';
 import type {
-  IGoodsEntitiesIncomingFailureDTO,
-  IGoodsEntitiesIncomingSuccessDTO,
+  TGoodsEntitiesIncomingFailureFields,
+  TGoodsEntitiesIncomingSuccessFields,
 } from '../../../services/api';
-import {
-  GoodsEntitiesIncomingFailureDTO,
-  GoodsEntitiesIncomingSuccessDTO,
-  getEntities,
-} from '../../../services/api';
+import { getEntities } from '../../../services/api';
 import { getEntitiesAsync, pushEntities, setGoodsLoadStatus } from '../../slices';
 
 function* entitiesWorker(action: { type: string }) {
@@ -20,7 +16,10 @@ function* entitiesWorker(action: { type: string }) {
 
     const fetchStatus = (yield safe(
       call(getEntities, { abortSignal: abortController.signal }),
-    )) as TSafeReturn<IGoodsEntitiesIncomingSuccessDTO | IGoodsEntitiesIncomingFailureDTO>;
+    )) as TSafeReturn<{
+      success?: TGoodsEntitiesIncomingSuccessFields;
+      failure?: TGoodsEntitiesIncomingFailureFields;
+    }>;
 
     console.dir(fetchStatus);
 
@@ -29,16 +28,21 @@ function* entitiesWorker(action: { type: string }) {
       return;
     }
 
-    console.dir(fetchStatus.response.getFields());
+    console.dir(fetchStatus.response);
 
-    if (fetchStatus.response instanceof GoodsEntitiesIncomingSuccessDTO) {
+    if (fetchStatus.response.success !== undefined) {
       yield put(setGoodsLoadStatus({ status: 'success' }));
-      yield put(pushEntities({ entities: fetchStatus.response.getFields().data.entities }));
+      yield put(pushEntities({ entities: fetchStatus.response.success.data.entities }));
       return;
     }
 
-    if (fetchStatus.response instanceof GoodsEntitiesIncomingFailureDTO) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+    if (fetchStatus.response.failure !== undefined) {
+      yield put(
+        setGoodsLoadStatus({
+          status: 'failure',
+          error: String(fetchStatus.response.failure.detail),
+        }),
+      );
       return;
     }
   } finally {

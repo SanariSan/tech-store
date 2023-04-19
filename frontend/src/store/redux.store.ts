@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import { rootWatcher } from './sagas';
-import { loginUserAsync, registerUserAsync, theme, user, goods } from './slices';
+import { goods, theme, user } from './slices';
 
 const sagaMiddleware = createSagaMiddleware({
   effectMiddlewares: [
@@ -16,7 +16,14 @@ const sagaMiddleware = createSagaMiddleware({
   ],
 });
 
-const ignoreSerializableCheckActions = [registerUserAsync, loginUserAsync].map((_) => _.toString());
+// I'm using /rtk's createSlice()/ to create async actions for sagas along with default slice actions
+// It's convenient and removes a need for writing separate action creators
+// Some of those actions-sagas receive DTO classes from UI, process them, then put() RAW VALS to store with other actions
+// However redux-persist effectively think of those async actions as they are directly meant for the slice state mutation
+// So ACTUALLY I don't pass unserializable vals to store, but need to point that to rtk like this:
+
+// const ignoreSerializableCheckActions = [registerUserAsync, loginUserAsync].map((_) => _.toString());
+
 const Store = configureStore({
   reducer: {
     theme,
@@ -30,7 +37,7 @@ const Store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // redux-persist
-        ignoredActions: ignoreSerializableCheckActions,
+        // ignoredActions: ignoreSerializableCheckActions,
         // ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(sagaMiddleware),

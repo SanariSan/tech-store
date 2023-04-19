@@ -1,29 +1,38 @@
 import { request } from '../../request-base.services';
-import { GoodsEntitiesIncomingFailureDTO, GoodsEntitiesIncomingSuccessDTO } from '../dto';
-import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
+import {
+  GoodsEntitiesIncomingFailureDTO,
+  GoodsEntitiesIncomingSuccessDTO,
+  validateDTO,
+} from '../dto';
 import { ROUTES } from '../routes.api.const';
 
 export async function getEntities({ abortSignal }: { abortSignal: AbortSignal }) {
   try {
     const response: Response = await request({
-      url: ROUTES.GOODS.CATEGORIES,
+      url: ROUTES.GOODS.ENTITIES,
       abortSignal,
     });
     const parsedJsonResponse: unknown = await response.clone().json();
 
     console.dir(parsedJsonResponse);
 
-    if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new GoodsEntitiesIncomingSuccessDTO(parsedJsonResponse);
-    }
-    if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new GoodsEntitiesIncomingFailureDTO(parsedJsonResponse);
+    if (response.status > 100 && response.status < 400) {
+      return {
+        success: await validateDTO({
+          schema: GoodsEntitiesIncomingSuccessDTO,
+          value: parsedJsonResponse,
+        }),
+      };
     }
 
-    const text = (await response.clone().text()).slice(200);
-    console.error(text);
-    throw new Error('Internal error');
+    return {
+      failure: await validateDTO({
+        schema: GoodsEntitiesIncomingFailureDTO,
+        value: parsedJsonResponse,
+      }),
+    };
   } catch (error) {
-    throw new Error((error as Error).message);
+    console.error(error);
+    throw new Error('Internal error');
   }
 }
