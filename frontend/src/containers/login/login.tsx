@@ -4,28 +4,29 @@ import type { FC } from 'react';
 // import { useCallback, useState, useEffect, useMemo } from 'react';
 // import { debounceLeadingWrap, debounceWrap } from '../../helpers/util';
 import { useCallback } from 'react';
+import { Text } from '@chakra-ui/react';
 import { LoginComponent } from '../../components/login';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { LoginOutgoingDM } from '../../services/api';
-import { loginUserAsync, themeSelector, userAuthLoadingStatusSelector } from '../../store';
+import {
+  loginUserAsync,
+  themeSelector,
+  userAuthErrorSelector,
+  userAuthLoadingStatusSelector,
+} from '../../store';
 import { FormSubmitControlContainer } from '../form-submit-control';
 import { INITIAL_VALUES, VALIDATION_SCHEMA } from './login.const';
-import type { TLoginFormValues } from './login.type';
+import type { TLoginFormValues } from './login.const';
 
 const LoginContainer: FC = () => {
   const theme = useAppSelector(themeSelector);
   const userAuthLoadingState = useAppSelector(userAuthLoadingStatusSelector);
-  // const userAuthError = useAppSelector(userAuthErrorSelector);
+  const userAuthError = useAppSelector(userAuthErrorSelector);
   const dispatch = useAppDispatch();
 
   const onSubmit = useCallback(
     (values: TLoginFormValues, actions: FormikHelpers<TLoginFormValues>) => {
       console.log({ values });
-      void dispatch(
-        loginUserAsync(
-          new LoginOutgoingDM({ username: values.username, password: values.password }),
-        ),
-      );
+      void dispatch(loginUserAsync({ username: values.username, password: values.password }));
     },
     [dispatch],
   );
@@ -39,7 +40,7 @@ const LoginContainer: FC = () => {
             isLoading={userAuthLoadingState === 'loading'}
             {...formikConfig}
           />
-          {/* <>{showErrors ? userAuthError : undefined}</> */}
+          <Text color={'white.300'}>{userAuthError ?? undefined}</Text>
           <FormSubmitControlContainer isLoading={userAuthLoadingState === 'loading'} />
         </>
       )}

@@ -2,15 +2,11 @@ import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
 import type {
-  IAccessRegisterIncomingFailureDM,
-  IAccessRegisterIncomingSuccessDM,
-  IAccessRegisterOutgoingDM,
+  TAccessRegisterIncomingFailureFields,
+  TAccessRegisterIncomingSuccessFields,
+  TAccessRegisterOutgoingFields,
 } from '../../../../services/api';
-import {
-  AccessRegisterIncomingFailureDM,
-  AccessRegisterIncomingSuccessDM,
-  registerUser,
-} from '../../../../services/api';
+import { AccessRegisterOutgoingDTO, registerUser, validateDTO } from '../../../../services/api';
 import {
   registerUserAsync,
   setUserAuthLoadStatus,
@@ -18,14 +14,32 @@ import {
   setUserIsAuthenticated,
 } from '../../../slices';
 
-function* registerUserWorker(action: { type: string; payload: IAccessRegisterOutgoingDM }) {
+function* registerUserWorker(action: {
+  type: string;
+  payload: Partial<TAccessRegisterOutgoingFields>;
+}) {
   const abortController = new AbortController();
   try {
     yield put(setUserAuthLoadStatus({ status: 'loading' }));
 
+    const validateStatus = (yield safe(
+      call(validateDTO, {
+        schema: AccessRegisterOutgoingDTO,
+        value: action.payload,
+      }),
+    )) as TSafeReturn<TAccessRegisterOutgoingFields>;
+
+    if (validateStatus.error !== undefined) {
+      yield put(setUserAuthLoadStatus({ status: 'failure', error: String(validateStatus.error) }));
+      return;
+    }
+
     const fetchStatus = (yield safe(
-      call(registerUser, { dm: action.payload, abortSignal: abortController.signal }),
-    )) as TSafeReturn<IAccessRegisterIncomingSuccessDM | IAccessRegisterIncomingFailureDM>;
+      call(registerUser, { dto: validateStatus.response, abortSignal: abortController.signal }),
+    )) as TSafeReturn<{
+      success?: TAccessRegisterIncomingSuccessFields;
+      failure?: TAccessRegisterIncomingFailureFields;
+    }>;
 
     console.dir(fetchStatus);
 
@@ -34,22 +48,27 @@ function* registerUserWorker(action: { type: string; payload: IAccessRegisterOut
       return;
     }
 
-    console.dir(fetchStatus.response.getFields());
+    console.dir(fetchStatus.response);
 
-    if (fetchStatus.response instanceof AccessRegisterIncomingSuccessDM) {
+    if (fetchStatus.response.success !== undefined) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(
-        setUserIsAuthenticated({ status: fetchStatus.response.getFields().data.isAuthenticated }),
+        setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),
       );
-      yield put(setUserInfo(fetchStatus.response.getFields().data));
+      yield put(setUserInfo(fetchStatus.response.success.data));
       return;
     }
 
-    if (fetchStatus.response instanceof AccessRegisterIncomingFailureDM) {
-      yield put(setUserAuthLoadStatus({ status: 'failure' }));
+    if (fetchStatus.response.failure !== undefined) {
+      yield put(
+        setUserAuthLoadStatus({
+          status: 'failure',
+          error: String(fetchStatus.response.failure.detail),
+        }),
+      );
       yield put(
         setUserIsAuthenticated({
-          status: fetchStatus.response.getFields().miscellaneous.isAuthenticated,
+          status: fetchStatus.response.failure.miscellaneous.isAuthenticated,
         }),
       );
       return;

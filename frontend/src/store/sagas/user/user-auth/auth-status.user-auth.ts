@@ -1,16 +1,12 @@
 import { call, cancelled, delay, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
-import type {
-  IAccessCheckSessionIncomingFailureDM,
-  IAccessCheckSessionIncomingSuccessDM,
-} from '../../../../services/api';
-import {
-  AccessCheckSessionIncomingFailureDM,
-  AccessCheckSessionIncomingSuccessDM,
-  checkUserAuthStatus,
-} from '../../../../services/api';
+import { checkUserAuthStatus } from '../../../../services/api';
 import { checkUserAuthStatusAsync, setUserIsAuthenticated } from '../../../slices';
+import type {
+  TAccessCheckSessionIncomingFailureFields,
+  TAccessCheckSessionIncomingSuccessFields,
+} from '../../../../services/api';
 
 function* checkUserAuthStatusWorker(action: { type: string }) {
   const abortController = new AbortController();
@@ -19,7 +15,11 @@ function* checkUserAuthStatusWorker(action: { type: string }) {
 
     const fetchStatus = (yield safe(
       call(checkUserAuthStatus, { abortSignal: abortController.signal }),
-    )) as TSafeReturn<IAccessCheckSessionIncomingSuccessDM | IAccessCheckSessionIncomingFailureDM>;
+    )) as TSafeReturn<{
+      success?: TAccessCheckSessionIncomingSuccessFields;
+      failure?: TAccessCheckSessionIncomingFailureFields;
+    }>;
+    // as TSafeReturn<Awaited<ReturnType<typeof checkUserAuthStatus>>>;
 
     console.dir(fetchStatus);
 
@@ -28,19 +28,19 @@ function* checkUserAuthStatusWorker(action: { type: string }) {
       return;
     }
 
-    console.dir(fetchStatus.response.getFields());
+    console.dir(fetchStatus.response);
 
-    if (fetchStatus.response instanceof AccessCheckSessionIncomingSuccessDM) {
+    if (fetchStatus.response.success !== undefined) {
       yield put(
-        setUserIsAuthenticated({ status: fetchStatus.response.getFields().data.isAuthenticated }),
+        setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),
       );
       return;
     }
 
-    if (fetchStatus.response instanceof AccessCheckSessionIncomingFailureDM) {
+    if (fetchStatus.response.failure !== undefined) {
       yield put(
         setUserIsAuthenticated({
-          status: fetchStatus.response.getFields().miscellaneous.isAuthenticated,
+          status: fetchStatus.response.failure.miscellaneous.isAuthenticated,
         }),
       );
       return;

@@ -1,22 +1,34 @@
-# Fullstack web-panel
+# Online fullstack tech store
+
+Showcase project
 
 ---
 
-### Work in progress
+### Frontend:
 
-Currently done
+- React
+- Redux
+- Redux-Saga
+- Bootstrap
+- Sass styling + custom theme switch
+- Api with data-models (dto)
+- Build inside docker container using two volumes (staging > prod) for live static content replacement (volume mounted to backend) 
 
-- basic session auth
-- front theme swap
 
----
+### Backend:
 
-## Table of Contents
+- Express
+- Postgres
+- Redis
+- Nginx
+- Session authentication
+- Docker/Compose
+- Pub-Sub logging
 
-- [About](#about)
-- [Main structure](#structure)
-- [Usage](#usage)
+### General:
 
-## About <a name = "about"></a>
-
-Fullstack web panel
+- Node.js
+- Typescript
+- GH actions pipeline for CI/CD
+- Auto SSL Nginx container routing using adopted [nginx-proxy-ssl](https://github.com/SanariSan/nginx-proxy-ssl) 
+- Exhaustive eslint config

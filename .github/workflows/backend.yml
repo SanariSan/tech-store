@@ -7,7 +7,7 @@ on:
             # - master
         paths:
             - "backend/**"
-            - "**.yml"
+            - "**/backend.yml"
     workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v3.5.2
 
             - name: Copy repository contents via scp
               uses: appleboy/scp-action@v0.1.4
@@ -26,8 +26,11 @@ jobs:
                   PORT: ${{ secrets.PORT }}
                   KEY: ${{ secrets.SSHKEY }}
               with:
-                  source: "./backend"
-                  target: "/root/code/online-shop"
+                  rm: true
+                  overwrite: true
+                  strip_components: 1
+                  source: "./backend/*"
+                  target: "/root/code/online-shop/backend"
 
     launch-backend:
         name: Launch backend
@@ -36,7 +39,7 @@ jobs:
 
         steps:
             - name: Executing remote command
-              uses: appleboy/ssh-action@master
+              uses: appleboy/ssh-action@v0.1.4
               with:
                   HOST: ${{ secrets.HOST }}
                   USERNAME: ${{ secrets.USERNAME }}

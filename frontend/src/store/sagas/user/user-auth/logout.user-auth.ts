@@ -2,14 +2,10 @@ import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
 import type {
-  IAccessLogoutIncomingFailureDM,
-  IAccessLogoutIncomingSuccessDM,
+  TAccessLogoutIncomingFailureFields,
+  TAccessLogoutIncomingSuccessFields,
 } from '../../../../services/api';
-import {
-  AccessLogoutIncomingFailureDM,
-  AccessLogoutIncomingSuccessDM,
-  logoutUser,
-} from '../../../../services/api';
+import { logoutUser } from '../../../../services/api';
 import { logoutUserAsync, setUserAuthLoadStatus, setUserIsAuthenticated } from '../../../slices';
 
 function* logoutUserWorker(action: { type: string }) {
@@ -19,7 +15,10 @@ function* logoutUserWorker(action: { type: string }) {
 
     const fetchStatus = (yield safe(
       call(logoutUser, { abortSignal: abortController.signal }),
-    )) as TSafeReturn<IAccessLogoutIncomingSuccessDM | IAccessLogoutIncomingFailureDM>;
+    )) as TSafeReturn<{
+      success?: TAccessLogoutIncomingSuccessFields;
+      failure?: TAccessLogoutIncomingFailureFields;
+    }>;
 
     console.dir(fetchStatus);
 
@@ -28,21 +27,26 @@ function* logoutUserWorker(action: { type: string }) {
       return;
     }
 
-    console.dir(fetchStatus.response.getFields());
+    console.dir(fetchStatus.response);
 
-    if (fetchStatus.response instanceof AccessLogoutIncomingSuccessDM) {
+    if (fetchStatus.response.success !== undefined) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(
-        setUserIsAuthenticated({ status: fetchStatus.response.getFields().data.isAuthenticated }),
+        setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),
       );
       return;
     }
 
-    if (fetchStatus.response instanceof AccessLogoutIncomingFailureDM) {
-      yield put(setUserAuthLoadStatus({ status: 'failure' }));
+    if (fetchStatus.response.failure !== undefined) {
+      yield put(
+        setUserAuthLoadStatus({
+          status: 'failure',
+          error: String(fetchStatus.response.failure.detail),
+        }),
+      );
       yield put(
         setUserIsAuthenticated({
-          status: fetchStatus.response.getFields().miscellaneous.isAuthenticated,
+          status: fetchStatus.response.failure.miscellaneous.isAuthenticated,
         }),
       );
       return;

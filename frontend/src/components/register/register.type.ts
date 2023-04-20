@@ -1,5 +1,5 @@
 import type { FormikProps } from 'formik';
-import type { TRegisterFormValues } from '../../containers/register/register.type';
+import type { TRegisterFormValues } from '../../containers/register/register.const';
 
 type TProps = FormikProps<TRegisterFormValues>;
 

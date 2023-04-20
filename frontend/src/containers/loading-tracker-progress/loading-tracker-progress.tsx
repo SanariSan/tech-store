@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import { useEffect, useState } from 'react';
-import { ProgressBar } from 'react-bootstrap';
+import { Box } from '@chakra-ui/react';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import { useLoadingTracker } from '../../hooks/use-loading-tracker';
 
@@ -45,24 +45,22 @@ const LoadingTrackerProgressContainer: FC = () => {
 
   return (
     <>
-      {isMounted ? (
-        <ProgressBar
-          variant="info"
-          now={percent}
-          style={{
-            position: 'fixed',
-            top: 0,
-            width: '100%',
-            height: '2px',
-            backgroundColor: 'transparent',
-            opacity: isLoading ? 0.6 : 0,
-            transitionProperty: 'opacity',
-            transitionDuration: '0.6s',
-            zIndex: 1000,
-          }}
+      {isMounted && (
+        <Box
+          // bg={'cyan.600'}
+          // opacity={isLoading ? 0.6 : 0}
+          bg={'yellow.400'}
+          opacity={isLoading ? 1 : 0}
+          boxShadow={'0px -2px 5px 0px rgba(0,0,0,0.75)'}
+          position={'fixed'}
+          top={0}
+          left={0}
+          h={'4px'}
+          transition={'opacity 0.6s linear, max-width 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)'}
+          zIndex={1000}
+          w={`100%`}
+          maxW={`${percent}%`}
         />
-      ) : (
-        ''
       )}
     </>
   );

@@ -39,7 +39,7 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
       <GridItem area={'side'} bg={'blue.25'}>
         <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
       </GridItem>
-      <GridItem area={'main'} bg={'white.300'} overflowX={'hidden'}>
+      <GridItem area={'main'} bg={'white.900'} overflowX={'hidden'}>
         {children}
       </GridItem>
     </Grid>

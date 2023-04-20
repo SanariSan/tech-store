@@ -1,10 +1,10 @@
 import { request } from '../../request-base.services';
 import {
-  AccessCheckSessionIncomingFailureDM,
-  AccessCheckSessionIncomingSuccessDM,
-} from '../data-models';
-import { isExpectedFailureResponse, isExpectedSuccessResponse } from '../response-classify.api';
-import { ROUTES } from '../routes.api';
+  AccessCheckSessionIncomingFailureDTO,
+  AccessCheckSessionIncomingSuccessDTO,
+  validateDTO,
+} from '../dto';
+import { ROUTES } from '../routes.api.const';
 
 export async function checkUserAuthStatus({ abortSignal }: { abortSignal: AbortSignal }) {
   try {
@@ -16,17 +16,23 @@ export async function checkUserAuthStatus({ abortSignal }: { abortSignal: AbortS
 
     console.dir(parsedJsonResponse);
 
-    if (isExpectedSuccessResponse(response, parsedJsonResponse)) {
-      return new AccessCheckSessionIncomingSuccessDM(parsedJsonResponse);
-    }
-    if (isExpectedFailureResponse(response, parsedJsonResponse)) {
-      return new AccessCheckSessionIncomingFailureDM(parsedJsonResponse);
+    if (response.status > 100 && response.status < 400) {
+      return {
+        success: await validateDTO({
+          schema: AccessCheckSessionIncomingSuccessDTO,
+          value: parsedJsonResponse,
+        }),
+      };
     }
 
-    const text = (await response.clone().text()).slice(200);
-    console.error(text);
-    throw new Error('Internal error');
+    return {
+      failure: await validateDTO({
+        schema: AccessCheckSessionIncomingFailureDTO,
+        value: parsedJsonResponse,
+      }),
+    };
   } catch (error) {
-    throw new Error((error as Error).message);
+    console.error(error);
+    throw new Error('Internal error');
   }
 }

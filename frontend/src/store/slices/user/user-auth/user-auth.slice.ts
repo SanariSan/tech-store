@@ -1,5 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { IAccessLoginOutgoingDM, IAccessRegisterOutgoingDM } from '../../../../services/api';
+import type {
+  TAccessLoginOutgoingFields,
+  TAccessRegisterOutgoingFields,
+} from '../../../../services/api';
 import { USER_AUTH_INIT_STATE } from './user-auth.slice.const';
 import type { TIsAuthenticated, TLoadingStatus } from './user-auth.slice.type';
 
@@ -30,8 +33,14 @@ const userAuthSlice = createSlice({
     },
     // sagas
     checkUserAuthStatusAsync() {},
-    registerUserAsync(state, action: { payload: IAccessRegisterOutgoingDM; type: string }) {},
-    loginUserAsync(state, action: { payload: IAccessLoginOutgoingDM; type: string }) {},
+    registerUserAsync(
+      state,
+      action: { payload: Partial<TAccessRegisterOutgoingFields>; type: string },
+    ) {},
+    loginUserAsync(
+      state,
+      action: { payload: Partial<TAccessLoginOutgoingFields>; type: string },
+    ) {},
     logoutUserAsync() {},
   },
 });

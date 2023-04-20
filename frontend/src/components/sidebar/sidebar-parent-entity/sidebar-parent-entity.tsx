@@ -29,6 +29,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
     w={'100%'}
     h={'50px'}
     direction={'row'}
+    color={isSelected ? 'blue.800' : 'blue.600'}
     bg={isSelected ? 'white.300' : 'transparent'}
     _hover={{
       bg: isSelected ? 'white.300' : 'white.400',
@@ -50,7 +51,13 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       direction={'row'}
       alignItems={'center'}
       justifyContent={'flex-start'}
-      onClick={onSelect}
+      onClick={() => {
+        if (!isSelected) onSelect();
+      }}
+      transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
+      _hover={{
+        transform: 'translateX(3px)',
+      }}
     >
       <Icon
         boxSize={10}
@@ -66,7 +73,15 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       </Text>
 
       {hasSub && (
-        <Box ml={'auto'} mr={5} opacity={isSidebarOpened ? 1 : 0} onClick={onSubUnfold}>
+        <Box
+          ml={'auto'}
+          mr={5}
+          opacity={isSidebarOpened ? 1 : 0}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSubUnfold();
+          }}
+        >
           <Circle size={'18px'} border={'2px'} borderColor={'blue.300'}>
             {isSubUnfolded ? (
               <ChevronUpIcon color={'blue.400'} />
