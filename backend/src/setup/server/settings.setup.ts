@@ -21,23 +21,28 @@ function setupSettingsExpress(app: Express) {
   // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
   app.set('env', NODE_ENV);
   app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-  app.use(helmet());
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-        connectSrc: ['*'],
-        styleSrc: ["'self'", "'unsafe-inline'", 'fonts.googleapis.com'],
-        imgSrc: ["'self'", "'unsafe-inline'", 'data:', 'blob:'],
-      },
-    }),
-  );
   app.use(
     cors({
       origin: true,
       credentials: true,
       optionsSuccessStatus: 204,
+    }),
+  );
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+          connectSrc: ['*'],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", "'unsafe-inline'", 'data:', 'blob:'],
+        },
+      },
+      // allow requests from any origin (e.g. dev front on localhost -> back on host)
+      crossOriginResourcePolicy: {
+        policy: 'cross-origin',
+      },
     }),
   );
   app.use(express.json({ limit: '100mb' }));
