@@ -1,13 +1,14 @@
 import type { NextFunction, Response } from 'express';
 import type { TRequestNarrowed } from '../../../express.type';
 import { CATALOGUE } from '../../../../logic/catalogue';
-import { InternalErrorResponse, SuccessResponse } from '../../../responses';
+import { SuccessResponse } from '../../../responses';
 import { publishLog } from '../../../../modules/access-layer/events/pubsub';
 import { ELOG_LEVEL } from '../../../../general.type';
 
 // ?category=laptops|phones|accessories
 // ?subCategory='gaming', 'work', 'chill' | 'hi-tech', 'goofy', 'boomer' | 'charger', 'headphones'
-// ?page=1|2|3...
+// ?offset=20
+// ?qty=20
 
 type TLaptops = {
   category: 'laptops';
@@ -25,21 +26,14 @@ type TAccessories = {
 };
 
 type TQueryParams = (Partial<TLaptops> | Partial<TPhones> | Partial<TAccessories>) & {
-  page?: number;
+  qty?: number;
+  offset?: number;
 };
 
 export const entitiesCTR = (req: TRequestNarrowed, res: Response, next: NextFunction) => {
-  const { category, subCategory, page = 1 }: TQueryParams = req.query;
-  const perPage = 20;
+  const { category, subCategory, qty = 20, offset = 0 }: TQueryParams = req.query;
 
   publishLog(ELOG_LEVEL.INFO, req.query);
-
-  if (Number.isNaN(Number(page))) {
-    return new InternalErrorResponse({
-      res,
-      miscellaneous: {},
-    });
-  }
 
   const filtered = CATALOGUE.filter((el, idx) => {
     if (category === undefined) {
@@ -59,9 +53,9 @@ export const entitiesCTR = (req: TRequestNarrowed, res: Response, next: NextFunc
     return true;
   });
 
-  const maxPages = Math.ceil(filtered.length / perPage);
-  const start = Number(page) - 1 < maxPages ? Number(page) - 1 : maxPages - 1;
-  const sliced = filtered.slice(start * perPage, Number(page) * perPage);
+  const from = offset < filtered.length ? offset : filtered.length;
+  const to = offset + qty < filtered.length ? offset + qty : filtered.length;
+  const sliced = filtered.slice(from, to);
 
   return new SuccessResponse({
     res,
