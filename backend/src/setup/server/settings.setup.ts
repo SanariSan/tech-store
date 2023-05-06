@@ -1,10 +1,13 @@
 import connectRedis from 'connect-redis';
 import cors from 'cors';
-import type { Express } from 'express';
+import type { Express, NextFunction, Request, Response } from 'express';
 import express from 'express';
 import session from 'express-session';
 import helmet from 'helmet';
+import { rateLimit } from 'express-rate-limit';
 import { CacheDBConnectionManager } from '../../db';
+import { publishLog } from '../../modules/access-layer/events/pubsub';
+import { ELOG_LEVEL } from '../../general.type';
 
 function setupSettingsExpress(app: Express) {
   const {
@@ -68,6 +71,37 @@ function setupSettingsExpress(app: Express) {
       },
     }),
   );
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const xRealIp = req.headers['x-real-ip'];
+    const xForwardedFor = req.headers['x-forwarded-for'];
+    let ip: string;
+
+    if (xRealIp !== undefined) {
+      ip = `${xRealIp.toString()}`;
+    } else if (xForwardedFor !== undefined) {
+      [ip] = `${xForwardedFor.toString()}`.split(',');
+    } else {
+      ip = `${req.socket.remoteAddress ?? ''}`;
+    }
+
+    publishLog(ELOG_LEVEL.INFO, {
+      ip,
+      url: req.url,
+    });
+    next();
+  });
+
+  const apiLimiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 min
+    max: 100, // Limit each IP to 30 requests per 1 min
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // disabled for now
+  // images also trigger rate limit, should move them to nginx
+  // app.use(apiLimiter);
 }
 
 export { setupSettingsExpress };
