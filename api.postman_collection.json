@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "356e034b-0241-433d-baf3-dcb011e3500f",
+		"_postman_id": "45afab77-b568-40f8-8871-d92797581ce4",
 		"name": "api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2309,7 +2309,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://127.0.0.1:80/api/v1/access/auth-status",
+									"raw": "http://127.0.0.1:80/api/v1/goods/categories",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -2321,8 +2321,8 @@
 									"path": [
 										"api",
 										"v1",
-										"access",
-										"auth-status"
+										"goods",
+										"categories"
 									]
 								}
 							},
@@ -2482,7 +2482,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://127.0.0.1:80/api/v1/access/auth-status",
+									"raw": "http://127.0.0.1:80/api/v1/goods/entitities?category=phones&subCategory=goofy&offset=20&qty=20",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -2494,8 +2494,26 @@
 									"path": [
 										"api",
 										"v1",
-										"access",
-										"auth-status"
+										"goods",
+										"entitities"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "phones"
+										},
+										{
+											"key": "subCategory",
+											"value": "goofy"
+										},
+										{
+											"key": "offset",
+											"value": "20"
+										},
+										{
+											"key": "qty",
+											"value": "20"
+										}
 									]
 								}
 							},
@@ -2506,7 +2524,7 @@
 										"method": "GET",
 										"header": [],
 										"url": {
-											"raw": "http://127.0.0.1:80/api/v1/goods/entitities?category=phones&subCategory=goofy&page=1",
+											"raw": "http://127.0.0.1:80/api/v1/goods/entitities?category=phones&subCategory=goofy&offset=20&qty=20",
 											"protocol": "http",
 											"host": [
 												"127",
@@ -2531,8 +2549,12 @@
 													"value": "goofy"
 												},
 												{
-													"key": "page",
-													"value": "1"
+													"key": "offset",
+													"value": "20"
+												},
+												{
+													"key": "qty",
+													"value": "20"
 												}
 											]
 										}
@@ -2669,7 +2691,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://127.0.0.1:80/api/v1/goods/assets/h/qp3.jpg",
+									"raw": "http://127.0.0.1:80/api/v1/goods/assets/h/p3.jpg",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -2684,7 +2706,7 @@
 										"goods",
 										"assets",
 										"h",
-										"qp3.jpg"
+										"p3.jpg"
 									]
 								}
 							},
