@@ -27,8 +27,6 @@ function* logoutUserWorker(action: { type: string }) {
       return;
     }
 
-    console.dir(fetchStatus.response);
-
     if (fetchStatus.response.success !== undefined) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(

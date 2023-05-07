@@ -1,6 +1,8 @@
 import { QuestionIcon, SettingsIcon } from '@chakra-ui/icons';
 import { BoxIcon, HeartIcon, HomeIcon } from '../../components/icons';
 import { changeRoute } from '../history-catcher';
+import { CATALOGUE_TEMPLATE } from '../catalogue';
+import { Store, setSelectedCategory, setSelectedSubCategory } from '../../store';
 
 export const SIDEBAR_TEMPLATE = [
   {
@@ -18,27 +20,10 @@ export const SIDEBAR_TEMPLATE = [
     pathname: '/catalogue',
     sideAction: () => {
       changeRoute('/catalogue');
+      Store.dispatch(setSelectedCategory({ category: undefined }));
+      Store.dispatch(setSelectedSubCategory({ subCategory: undefined }));
     },
-    sub: [
-      {
-        title: 'Laptops',
-        sideAction: () => {
-          console.log('Laptops side action');
-        },
-      },
-      {
-        title: 'Phones',
-        sideAction: () => {
-          console.log('Phones side action');
-        },
-      },
-      {
-        title: 'Accessories',
-        sideAction: () => {
-          console.log('Accessories side action');
-        },
-      },
-    ],
+    sub: CATALOGUE_TEMPLATE,
   },
   {
     title: 'Liked',

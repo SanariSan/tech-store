@@ -6,9 +6,14 @@ import type {
 type TLoadingStatus = 'idle' | 'loading' | 'success' | 'failure';
 type TGoodsInitState = {
   entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'];
+  //
   categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
   subCategories: TGoodsCategoriesIncomingSuccessFields['data']['subCategories'];
-  perPage: number;
+  //
+  selectedCategory: string | undefined;
+  selectedSubCategory: string | undefined;
+  offset: number;
+  offsetPerPage: number;
   loadingStatus: TLoadingStatus;
   error: string | undefined;
 };

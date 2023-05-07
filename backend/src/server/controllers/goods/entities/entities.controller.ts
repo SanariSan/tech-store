@@ -1,67 +1,69 @@
 import type { NextFunction, Response } from 'express';
 import type { TRequestNarrowed } from '../../../express.type';
 import { CATALOGUE } from '../../../../logic/catalogue';
-import { InternalErrorResponse, SuccessResponse } from '../../../responses';
+import { SuccessResponse } from '../../../responses';
 import { publishLog } from '../../../../modules/access-layer/events/pubsub';
 import { ELOG_LEVEL } from '../../../../general.type';
 
 // ?category=laptops|phones|accessories
 // ?subCategory='gaming', 'work', 'chill' | 'hi-tech', 'goofy', 'boomer' | 'charger', 'headphones'
-// ?page=1|2|3...
+// ?offset=20
+// ?qty=20
 
 type TLaptops = {
-  category: 'laptops';
-  subCategory: 'gaming' | 'work' | 'chill';
+  category?: 'laptops';
+  subCategory?: 'gaming' | 'work' | 'chill';
 };
 
 type TPhones = {
-  category: 'phones';
-  subCategory: 'hi-tech' | 'goofy' | 'boomer';
+  category?: 'phones';
+  subCategory?: 'hi-tech' | 'goofy' | 'boomer';
 };
 
 type TAccessories = {
-  category: 'accessories';
-  subCategory: 'charger' | 'headphones';
+  category?: 'accessories';
+  subCategory?: 'charger' | 'headphones';
 };
 
 type TQueryParams = (Partial<TLaptops> | Partial<TPhones> | Partial<TAccessories>) & {
-  page?: number;
+  qty?: string;
+  offset?: string;
 };
 
 export const entitiesCTR = (req: TRequestNarrowed, res: Response, next: NextFunction) => {
-  const { category, subCategory, page = 1 }: TQueryParams = req.query;
-  const perPage = 20;
+  const { category, subCategory, qty = '20', offset = '0' }: TQueryParams = req.query;
 
   publishLog(ELOG_LEVEL.INFO, req.query);
 
-  if (Number.isNaN(Number(page))) {
-    return new InternalErrorResponse({
-      res,
-      miscellaneous: {},
-    });
-  }
-
   const filtered = CATALOGUE.filter((el, idx) => {
     if (category === undefined) {
+      // if no category passed = any category is good
       return true;
     }
     if (category !== el.category) {
+      // if category is passed, but not matched = skip
       return false;
     }
 
     if (subCategory === undefined) {
+      // if no sub category passed = any sub category within matched category is good
       return true;
     }
     if (subCategory !== el.subCategory) {
+      // if sub category is passed, but not matched = skip
       return false;
     }
 
+    // if all matched = good
     return true;
   });
 
-  const maxPages = Math.ceil(filtered.length / perPage);
-  const start = Number(page) - 1 < maxPages ? Number(page) - 1 : maxPages - 1;
-  const sliced = filtered.slice(start * perPage, Number(page) * perPage);
+  const qtyNum = Number(qty);
+  const offsetNum = Number(offset);
+
+  const from = offsetNum < filtered.length ? offsetNum : filtered.length;
+  const to = offsetNum + qtyNum < filtered.length ? offsetNum + qtyNum : filtered.length;
+  const sliced = filtered.slice(from, to);
 
   return new SuccessResponse({
     res,

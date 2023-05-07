@@ -48,8 +48,6 @@ function* registerUserWorker(action: {
       return;
     }
 
-    console.dir(fetchStatus.response);
-
     if (fetchStatus.response.success !== undefined) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(

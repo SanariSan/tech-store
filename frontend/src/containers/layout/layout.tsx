@@ -21,6 +21,7 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
   return (
     <Grid
       h={'100%'}
+      maxH={'100%'}
       w={'100%'}
       templateRows={'auto 1fr'}
       templateColumns={isSidebarOpened ? '250px minmax(0, 1fr)' : '90px minmax(0, 1fr)'}
@@ -39,7 +40,7 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
       <GridItem area={'side'} bg={'blue.25'}>
         <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
       </GridItem>
-      <GridItem area={'main'} bg={'white.900'} overflowX={'hidden'}>
+      <GridItem area={'main'} bg={'white.900'} overflow={'hidden'}>
         {children}
       </GridItem>
     </Grid>

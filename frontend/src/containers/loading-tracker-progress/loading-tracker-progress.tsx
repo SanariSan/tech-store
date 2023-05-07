@@ -1,12 +1,15 @@
 import type { FC } from 'react';
-import { useEffect, useState } from 'react';
+import { useMemo, useRef, useEffect, useState } from 'react';
 import { Box } from '@chakra-ui/react';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import { useLoadingTracker } from '../../hooks/use-loading-tracker';
 
-const calculateExpPercentage = (x: number, coeff: number) => (x / (x + coeff)) * 100;
-
 const LoadingTrackerProgressContainer: FC = () => {
+  const calculateExpPercentage = useMemo(
+    () => (_x: number, _coeff: number) => (_x / (_x + _coeff)) * 100,
+    [],
+  );
+
   const { isLoading } = useLoadingTracker();
   const { isMounted } = useDelayedUnmount({ isVisible: isLoading, delay: 500 });
 
@@ -14,34 +17,36 @@ const LoadingTrackerProgressContainer: FC = () => {
   const coeff = 20;
   const [percent, setPercent] = useState(() => calculateExpPercentage(x, coeff));
 
+  const timerRef = useRef<NodeJS.Timer>();
+
   useEffect(() => {
-    let timerId: NodeJS.Timer | undefined;
-
     if (isLoading && isMounted) {
-      setX(0);
-      setPercent(0);
-
-      const ms = Math.random() * (250 - 100) + 100;
-      timerId = setInterval(() => {
-        setX((prev) => prev + 1);
-      }, ms);
+      if (timerRef.current === undefined) {
+        const ms = Math.random() * (250 - 100) + 100;
+        timerRef.current = setInterval(() => {
+          if (percent >= 100) return;
+          setX((prev) => prev + 1);
+        }, ms);
+      }
     } else if (!isLoading && isMounted) {
-      clearInterval(timerId);
+      clearInterval(timerRef.current);
+      timerRef.current = undefined;
       setPercent(100);
     } else if (!isLoading && !isMounted) {
       setX(0);
     }
-
-    return () => {
-      clearInterval(timerId);
-    };
-  }, [isLoading, isMounted]);
+  }, [isLoading, isMounted, percent]);
 
   useEffect(() => {
     setPercent(calculateExpPercentage(x, coeff));
-  }, [x]);
+  }, [x, calculateExpPercentage]);
 
-  // console.log(isLoading, isMounted, x, percent);
+  useEffect(
+    () => () => {
+      clearInterval(timerRef.current);
+    },
+    [],
+  );
 
   return (
     <>
@@ -55,7 +60,7 @@ const LoadingTrackerProgressContainer: FC = () => {
           position={'fixed'}
           top={0}
           left={0}
-          h={'4px'}
+          h={'5px'}
           transition={'opacity 0.6s linear, max-width 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           zIndex={1000}
           w={`100%`}

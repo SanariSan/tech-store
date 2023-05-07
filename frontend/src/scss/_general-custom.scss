@@ -43,8 +43,9 @@ svg {
 
 p,
 div {
-  transition: background-color 0.15s linear, color 0.15s $trans, opacity 0.1s $trans,
-    max-height 0.3s $trans, max-width 0.3s $trans, grid-template-columns 0.3s $trans;
+  transition: background-color 0.15s linear, color 0.15s $trans, opacity 0.5s $trans,
+    max-height 0.3s $trans, max-width 0.3s $trans, border-color 0.3s $trans,
+    grid-template-columns 0.3s $trans, transform 0.3s $trans;
 }
 
 * {
