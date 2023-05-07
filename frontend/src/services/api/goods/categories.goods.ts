@@ -14,8 +14,6 @@ export async function getCategories({ abortSignal }: { abortSignal: AbortSignal 
     });
     const parsedJsonResponse: unknown = await response.clone().json();
 
-    console.dir(parsedJsonResponse);
-
     if (response.status > 100 && response.status < 400) {
       return {
         success: await validateDTO({

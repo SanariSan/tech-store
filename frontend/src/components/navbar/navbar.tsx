@@ -9,7 +9,8 @@ import {
   InputLeftElement,
   Spacer,
 } from '@chakra-ui/react';
-import React from 'react';
+import type { FC } from 'react';
+import React, { useCallback, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import { CartIcon, HamburgerIcon } from '../icons';
 
@@ -17,10 +18,69 @@ interface INavbarComponent {
   switchSidebarState: (payload?: { state: boolean }) => void;
 }
 
+const NavbarIconsComponent: FC<{ isOpened: boolean }> = ({ isOpened }) => (
+  <Flex
+    direction={{ base: 'column', md: 'row' }}
+    position={{ base: 'absolute', md: 'unset' }}
+    width={{ base: '70px', md: 'max-content' }}
+    maxHeight={{ base: isOpened ? '120px' : '0px', md: 'max-content' }}
+    overflow={'hidden'}
+    right={2}
+    top={70}
+    alignItems={'center'}
+    gap={4}
+    borderStyle={'dashed'}
+    borderColor={{ base: isOpened ? 'white.400' : 'transparent', md: 'transparent' }}
+    borderWidth={{ base: '2px', md: '0px' }}
+    borderRadius={'20px'}
+    borderTop={'none'}
+    background={'blue.25'}
+  >
+    <MoonIcon
+      boxSize={5}
+      color={'blue.500'}
+      _hover={{
+        color: 'blue.600',
+      }}
+      cursor={'pointer'}
+      mt={{ base: 4, md: 0 }}
+    />
+    <BellIcon
+      boxSize={5}
+      color={'blue.500'}
+      _hover={{
+        color: 'blue.600',
+      }}
+      cursor={'pointer'}
+    />
+    <CartIcon
+      boxSize={5}
+      color={'blue.500'}
+      _hover={{
+        color: 'blue.600',
+      }}
+      mb={{ base: 4, md: 0 }}
+    />
+  </Flex>
+);
+
 export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
-  const a = 1;
+  const [isToolbarOpened, setIsToolbarOpened] = useState(false);
+
+  const toggleToolbar = useCallback(() => {
+    setIsToolbarOpened((_) => !_);
+  }, []);
+
   return (
-    <Flex direction={'row'} alignItems={'center'} h={'100%'} py={4} gap={6} px={6}>
+    <Flex
+      direction={'row'}
+      alignItems={'center'}
+      h={'100%'}
+      py={4}
+      gap={6}
+      px={6}
+      overflowX={'hidden'}
+    >
       <Image src={logo} />
 
       <Box h={'100%'} w={'2px'} minW={'2px'} bg="blue.300" />
@@ -37,7 +97,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
         }}
       />
 
-      <InputGroup w={'max-content'}>
+      <InputGroup w={'max-content'} display={{ base: 'none', sm: 'flex' }}>
         <InputLeftElement
           pl={'20px'}
           pointerEvents="none"
@@ -49,30 +109,8 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       <Spacer />
 
       <Flex direction={'row'} alignItems={'center'} gap={4}>
-        <MoonIcon
-          boxSize={5}
-          color={'blue.500'}
-          _hover={{
-            color: 'blue.600',
-          }}
-          cursor={'pointer'}
-        />
-        <BellIcon
-          boxSize={5}
-          color={'blue.500'}
-          _hover={{
-            color: 'blue.600',
-          }}
-          cursor={'pointer'}
-        />
-        <CartIcon
-          boxSize={5}
-          color={'blue.500'}
-          _hover={{
-            color: 'blue.600',
-          }}
-        />
-        <Circle size={10} bg={'yellow.400'} cursor={'pointer'} />
+        <NavbarIconsComponent isOpened={isToolbarOpened} />
+        <Circle size={10} bg={'yellow.400'} cursor={'pointer'} onClick={toggleToolbar} />
       </Flex>
     </Flex>
   );

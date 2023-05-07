@@ -4,10 +4,12 @@ import type { TLoadingStatus } from './goods.slice.type';
 import type {
   TGoodsCategoriesIncomingSuccessFields,
   TGoodsEntitiesIncomingSuccessFields,
-  TGoodsEntitiesOutgoingFields,
 } from '../../../services/api';
 
 /* eslint-disable no-param-reassign */
+
+// TODO: possibly modify entities state to not flush all entities on category change,
+// but cache them per category instead (side effect: if entites on backend changed, then user gets wrong info)
 
 const goodsSlice = createSlice({
   name: 'goods',
@@ -23,8 +25,44 @@ const goodsSlice = createSlice({
         type: string;
       },
     ) {
+      state.offset = 0;
       state.categories = action.payload.categories;
       state.subCategories = action.payload.subCategories;
+    },
+    setSelectedCategory(
+      state,
+      action: {
+        payload: {
+          category: string | undefined;
+        };
+        type: string;
+      },
+    ) {
+      state.entities.length = 0;
+      state.offset = 0;
+      state.selectedCategory = action.payload.category;
+    },
+    setSelectedSubCategory(
+      state,
+      action: {
+        payload: {
+          subCategory: string | undefined;
+        };
+        type: string;
+      },
+    ) {
+      state.entities.length = 0;
+      state.offset = 0;
+      state.selectedSubCategory = action.payload.subCategory;
+    },
+    increaseOffset(
+      state,
+      action: {
+        payload: undefined;
+        type: string;
+      },
+    ) {
+      state.offset += state.offsetPerPage;
     },
     pushEntities(
       state,
@@ -47,22 +85,30 @@ const goodsSlice = createSlice({
     },
     // sagas
     getCategoriesAsync() {},
-    getEntitiesAsync(
-      state,
-      action: { payload: Partial<TGoodsEntitiesOutgoingFields>; type: string },
-    ) {},
+    fetchMoreEntitiesAsync(state, action: { payload: undefined; type: string }) {},
   },
 });
 
 const goods = goodsSlice.reducer;
-const { setCategories, pushEntities, setGoodsLoadStatus, getCategoriesAsync, getEntitiesAsync } =
-  goodsSlice.actions;
+const {
+  setCategories,
+  setSelectedCategory,
+  setSelectedSubCategory,
+  increaseOffset,
+  pushEntities,
+  setGoodsLoadStatus,
+  getCategoriesAsync,
+  fetchMoreEntitiesAsync,
+} = goodsSlice.actions;
 
 export {
   goods,
   setCategories,
+  setSelectedCategory,
+  setSelectedSubCategory,
+  increaseOffset,
   pushEntities,
   setGoodsLoadStatus,
   getCategoriesAsync,
-  getEntitiesAsync,
+  fetchMoreEntitiesAsync,
 };

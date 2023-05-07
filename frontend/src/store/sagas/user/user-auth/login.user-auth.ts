@@ -45,8 +45,6 @@ function* loginUserWorker(action: { type: string; payload: Partial<TAccessLoginO
       return;
     }
 
-    console.dir(fetchStatus.response);
-
     if (fetchStatus.response.success !== undefined) {
       yield put(setUserAuthLoadStatus({ status: 'success' }));
       yield put(

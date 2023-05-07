@@ -3,9 +3,10 @@ import { array, number, object, string } from 'yup';
 import { DEFAULT_FAILURE_DTO } from '../dto.const';
 
 const GoodsEntitiesOutgoingDTO = object({
-  category: string().required(),
-  subCategory: string().required(),
-  page: number().required(),
+  category: string().optional(),
+  subCategory: string().optional(),
+  offset: number().required(),
+  qty: number().required(),
 });
 
 const GoodsEntitiesIncomingSuccessDTO = object({

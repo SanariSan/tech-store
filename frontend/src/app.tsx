@@ -1,28 +1,25 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
-import classNames from 'classnames';
-import type { FC } from 'react';
 import { useEffect } from 'react';
+import type { FC } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import style from './app.module.scss';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
 import { DebugContainer } from './containers/debug';
 import { ErrorBoundaryGenericContainer } from './containers/error-boundary-generic';
 // import { ErrorBoundaryNativeContainer } from './containers/error-boundary-native';
-import { CatalogueComponent } from './components/catalogue';
+import { CatalogueComponentMemo } from './components/catalogue';
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
-import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { getCategoriesAsync, logoutUserAsync, themeSelector } from './store';
+import { useAppDispatch } from './hooks/redux';
+import { getCategoriesAsync } from './store';
 
 const App: FC = () => {
-  const theme = useAppSelector(themeSelector);
-  const dispatch = useAppDispatch();
+  const d = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getCategoriesAsync());
-  }, [dispatch]);
+    void d(getCategoriesAsync());
+  }, [d]);
 
   return (
     <ErrorBoundaryGenericContainer>
@@ -43,7 +40,7 @@ const App: FC = () => {
               </Flex>
             </Route>
             <Route exact path={'/catalogue'}>
-              <CatalogueComponent />
+              <CatalogueComponentMemo />
             </Route>
             <Route exact path={'/liked'}>
               <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
@@ -80,9 +77,9 @@ const App: FC = () => {
             */}
             <Route path="/">
               <Button
-                onClick={() => {
-                  dispatch(logoutUserAsync());
-                }}
+              // onClick={() => {
+              //   dispatch(logoutUserAsync());
+              // }}
               />
               <div>Not found</div>
             </Route>
@@ -90,9 +87,8 @@ const App: FC = () => {
         </LayoutContainer>
         <DebugContainer />
       </Box>
-      <div id="bg" className={classNames(style.app, style[theme])} />
+      {/* <div id="bg" className={classNames(style.app, style[theme])} /> */}
     </ErrorBoundaryGenericContainer>
   );
 };
-
 export { App };

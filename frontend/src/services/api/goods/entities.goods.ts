@@ -1,4 +1,6 @@
+import qs from 'query-string';
 import { request } from '../../request-base.services';
+import type { TGoodsEntitiesOutgoingFields } from '../dto';
 import {
   GoodsEntitiesIncomingFailureDTO,
   GoodsEntitiesIncomingSuccessDTO,
@@ -6,15 +8,20 @@ import {
 } from '../dto';
 import { ROUTES } from '../routes.api.const';
 
-export async function getEntities({ abortSignal }: { abortSignal: AbortSignal }) {
+export async function getEntities({
+  params,
+  abortSignal,
+}: {
+  params: TGoodsEntitiesOutgoingFields;
+  abortSignal: AbortSignal;
+}) {
   try {
+    console.log(params);
     const response: Response = await request({
-      url: ROUTES.GOODS.ENTITIES,
+      url: qs.stringifyUrl({ url: ROUTES.GOODS.ENTITIES, query: params }),
       abortSignal,
     });
     const parsedJsonResponse: unknown = await response.clone().json();
-
-    console.dir(parsedJsonResponse);
 
     if (response.status > 100 && response.status < 400) {
       return {

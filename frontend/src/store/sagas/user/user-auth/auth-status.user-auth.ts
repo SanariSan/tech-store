@@ -28,8 +28,6 @@ function* checkUserAuthStatusWorker(action: { type: string }) {
       return;
     }
 
-    console.dir(fetchStatus.response);
-
     if (fetchStatus.response.success !== undefined) {
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),

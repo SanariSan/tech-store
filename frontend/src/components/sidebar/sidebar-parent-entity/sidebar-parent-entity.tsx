@@ -68,7 +68,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
         }}
       />
 
-      <Text pl={5} opacity={isSidebarOpened ? 1 : 0}>
+      <Text pl={5} opacity={isSidebarOpened ? 1 : 0} transition={'opacity 0.1s linear'}>
         {title}
       </Text>
 
@@ -77,6 +77,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
           ml={'auto'}
           mr={5}
           opacity={isSidebarOpened ? 1 : 0}
+          transition={'opacity 0.1s linear'}
           onClick={(e) => {
             e.stopPropagation();
             onSubUnfold();
