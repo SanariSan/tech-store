@@ -6,7 +6,7 @@ export const categoriesCTR = (req: TRequestNarrowed, res: Response, next: NextFu
   const categories = [
     {
       title: 'laptops',
-      sub: [
+      modifiers: [
         {
           title: 'gaming',
         },
@@ -20,7 +20,7 @@ export const categoriesCTR = (req: TRequestNarrowed, res: Response, next: NextFu
     },
     {
       title: 'phones',
-      sub: [
+      modifiers: [
         {
           title: 'hi-tech',
         },
@@ -34,7 +34,7 @@ export const categoriesCTR = (req: TRequestNarrowed, res: Response, next: NextFu
     },
     {
       title: 'accessories',
-      sub: [
+      modifiers: [
         {
           title: 'charger',
         },
