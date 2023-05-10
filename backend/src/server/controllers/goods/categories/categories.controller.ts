@@ -50,13 +50,5 @@ export const categoriesCTR = (req: TRequestNarrowed, res: Response, next: NextFu
     data: {
       categories,
     },
-    // {
-    //   categories: ['laptops', 'phones', 'accessories'],
-    //   subCategories: {
-    //     laptops: ['gaming', 'work', 'chill'],
-    //     phones: ['hi-tech', 'goofy', 'boomer'],
-    //     accessories: ['charger', 'headphones'],
-    //   },
-    // },
   }).send();
 };
