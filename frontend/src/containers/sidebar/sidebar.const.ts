@@ -2,7 +2,7 @@ import { QuestionIcon, SettingsIcon } from '@chakra-ui/icons';
 import { BoxIcon, HeartIcon, HomeIcon } from '../../components/icons';
 import { changeRoute } from '../history-catcher';
 import { CATALOGUE_TEMPLATE } from '../catalogue';
-import { Store, setSelectedCategory, setSelectedSubCategory } from '../../store';
+import { Store, setSelectedCategory, setSelectedModifier, setSelectedSection } from '../../store';
 
 export const SIDEBAR_TEMPLATE = [
   {
@@ -11,6 +11,8 @@ export const SIDEBAR_TEMPLATE = [
     pathname: '/',
     sideAction: () => {
       changeRoute('/');
+
+      Store.dispatch(setSelectedSection({ section: 'Home' }));
     },
     sub: null,
   },
@@ -20,8 +22,10 @@ export const SIDEBAR_TEMPLATE = [
     pathname: '/catalogue',
     sideAction: () => {
       changeRoute('/catalogue');
+
+      Store.dispatch(setSelectedSection({ section: 'Discover' }));
       Store.dispatch(setSelectedCategory({ category: undefined }));
-      Store.dispatch(setSelectedSubCategory({ subCategory: undefined }));
+      Store.dispatch(setSelectedModifier({ modifier: undefined }));
     },
     sub: CATALOGUE_TEMPLATE,
   },
@@ -31,6 +35,8 @@ export const SIDEBAR_TEMPLATE = [
     pathname: '/liked',
     sideAction: () => {
       changeRoute('/liked');
+
+      Store.dispatch(setSelectedSection({ section: 'Liked' }));
     },
     sub: null,
   },
@@ -40,6 +46,8 @@ export const SIDEBAR_TEMPLATE = [
     pathname: '/settings',
     sideAction: () => {
       changeRoute('/settings');
+
+      Store.dispatch(setSelectedSection({ section: 'Settings' }));
     },
     sub: null,
   },
@@ -49,6 +57,8 @@ export const SIDEBAR_TEMPLATE = [
     pathname: '/help',
     sideAction: () => {
       changeRoute('/help');
+
+      Store.dispatch(setSelectedSection({ section: 'Help' }));
     },
     sub: null,
   },

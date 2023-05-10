@@ -7,11 +7,12 @@ import { LazyImageContainer } from '../../../containers/lazy-image';
 
 type TCardComponent = Omit<
   ReturnType<typeof goodsEntitiesSelector>[number],
-  'id' | 'category' | 'subCategory'
-> &
-  React.Attributes;
+  'id' | 'category' | 'modifier'
+> & {
+  orderIdx: number;
+} & React.Attributes;
 
-const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc }) => {
+const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc, orderIdx }) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [sales] = useState(() => Math.floor(Math.random() * (100 - 10)) + 10);
   const [reviews] = useState(() => Math.floor(Math.random() * (40 - 1)) + 1);
@@ -36,6 +37,11 @@ const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc }) => {
       w={'100%'}
       cursor={'pointer'}
       opacity={hasBeenShown ? 1 : 0}
+      transition={`
+      transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.5s linear ${
+        (orderIdx + 1) * 100
+      }ms
+      `}
       transform={'perspective(100px) translateZ(0px)'}
       _hover={{
         transform: 'perspective(100px) translateZ(2px)',
@@ -50,10 +56,8 @@ const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc }) => {
           objectFit={'cover'}
           backgroundColor={'transparent'}
           h={'100%'}
-          hSrc={`https://test.nodejs.monster${hsrc}`}
-          lSrc={`https://test.nodejs.monster${lsrc}`}
-          // src={'https://test.nodejs.monster/api/v1/goods/assets/h/l3.jpg'}
-          // fallbackSrc={'https://test.nodejs.monster/api/v1/goods/assets/l/l3.jpg'}
+          hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
+          lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
           // src={'http://localhost:80/api/v1/goods/assets/h/l3.jpg'}
           // fallbackSrc={'http://localhost:80/api/v1/goods/assets/l/l3.jpg'}
         />

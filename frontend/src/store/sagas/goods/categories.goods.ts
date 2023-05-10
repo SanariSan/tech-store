@@ -28,9 +28,9 @@ function* categoriesWorker(action: { type: string }) {
     }
 
     if (fetchStatus.response.success !== undefined) {
-      const { categories, subCategories } = fetchStatus.response.success.data;
+      const { categories } = fetchStatus.response.success.data;
       yield put(setGoodsLoadStatus({ status: 'success' }));
-      yield put(setCategories({ categories, subCategories }));
+      yield put(setCategories({ categories }));
       return;
     }
 

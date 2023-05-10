@@ -22,7 +22,7 @@ function* entitiesWorker(action: { type: string }) {
     yield put(setGoodsLoadStatus({ status: 'loading' }));
     yield delay(500);
 
-    const { selectedCategory, selectedSubCategory, offset, offsetPerPage } = (yield select(
+    const { selectedCategory, selectedModifier, offset, offsetPerPage } = (yield select(
       goodsSelector,
     )) as TRootState['goods'];
 
@@ -30,8 +30,8 @@ function* entitiesWorker(action: { type: string }) {
       call(validateDTO, {
         schema: GoodsEntitiesOutgoingDTO,
         value: {
-          category: selectedCategory,
-          subCategory: selectedSubCategory,
+          category: selectedCategory?.title,
+          modifier: selectedModifier?.title,
           offset,
           qty: offsetPerPage,
         },

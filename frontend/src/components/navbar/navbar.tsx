@@ -85,26 +85,33 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
 
       <Box h={'100%'} w={'2px'} minW={'2px'} bg="blue.300" />
 
-      <HamburgerIcon
-        w={10}
-        pl={5}
-        color={'blue.500'}
-        _hover={{
-          color: 'blue.600',
-        }}
-        onClick={() => {
-          switchSidebarState();
-        }}
-      />
-
-      <InputGroup w={'max-content'} display={{ base: 'none', sm: 'flex' }}>
-        <InputLeftElement
-          pl={'20px'}
-          pointerEvents="none"
-          children={<Search2Icon color="gray.300" />}
+      <Flex
+        justifyContent={'space-between'}
+        alignItems={'center'}
+        w={'450px'}
+        minW={{ base: '25px', md: '250px' }}
+        gap={6}
+      >
+        <HamburgerIcon
+          boxSize={5}
+          color={'blue.500'}
+          _hover={{
+            color: 'blue.600',
+          }}
+          onClick={() => {
+            switchSidebarState();
+          }}
         />
-        <Input type="text" placeholder="Search" bg={'white.400'} borderRadius={'20px'} pl={12} />
-      </InputGroup>
+
+        <InputGroup w={'max-content'} maxW={'300px'} display={{ base: 'none', sm: 'flex' }}>
+          <InputLeftElement
+            pl={'20px'}
+            pointerEvents="none"
+            children={<Search2Icon color="gray.300" />}
+          />
+          <Input type="text" placeholder="Search" bg={'white.400'} borderRadius={'20px'} pl={12} />
+        </InputGroup>
+      </Flex>
 
       <Spacer />
 
