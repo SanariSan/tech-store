@@ -8,7 +8,7 @@ type TSkeleton = {
 
 const SkeletonPlaceholderComponent: FC<TSkeleton> = ({ isLoading }) => (
   <Skeleton
-    height="435px"
+    height={{ base: '350px', sm: '435px' }}
     opacity={isLoading ? 1 : 0}
     borderRadius={'20px'}
     startColor="gray.100"

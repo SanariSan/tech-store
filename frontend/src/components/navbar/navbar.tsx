@@ -13,56 +13,11 @@ import type { FC } from 'react';
 import React, { useCallback, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import { CartIcon, HamburgerIcon } from '../icons';
+import { NavbarIconsComponentMemo } from './icons';
 
 interface INavbarComponent {
   switchSidebarState: (payload?: { state: boolean }) => void;
 }
-
-const NavbarIconsComponent: FC<{ isOpened: boolean }> = ({ isOpened }) => (
-  <Flex
-    direction={{ base: 'column', md: 'row' }}
-    position={{ base: 'absolute', md: 'unset' }}
-    width={{ base: '70px', md: 'max-content' }}
-    maxHeight={{ base: isOpened ? '120px' : '0px', md: 'max-content' }}
-    overflow={'hidden'}
-    right={2}
-    top={70}
-    alignItems={'center'}
-    gap={4}
-    borderStyle={'dashed'}
-    borderColor={{ base: isOpened ? 'white.400' : 'transparent', md: 'transparent' }}
-    borderWidth={{ base: '2px', md: '0px' }}
-    borderRadius={'20px'}
-    borderTop={'none'}
-    background={'blue.25'}
-  >
-    <MoonIcon
-      boxSize={5}
-      color={'blue.500'}
-      _hover={{
-        color: 'blue.600',
-      }}
-      cursor={'pointer'}
-      mt={{ base: 4, md: 0 }}
-    />
-    <BellIcon
-      boxSize={5}
-      color={'blue.500'}
-      _hover={{
-        color: 'blue.600',
-      }}
-      cursor={'pointer'}
-    />
-    <CartIcon
-      boxSize={5}
-      color={'blue.500'}
-      _hover={{
-        color: 'blue.600',
-      }}
-      mb={{ base: 4, md: 0 }}
-    />
-  </Flex>
-);
 
 export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
@@ -77,11 +32,11 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       alignItems={'center'}
       h={'100%'}
       py={4}
-      gap={6}
+      gap={{ base: 3, sm: 6 }}
       px={6}
       overflowX={'hidden'}
     >
-      <Image src={logo} />
+      <Image src={logo} objectFit={'contain'} maxH={{ base: '30px', sm: 'max-content' }} />
 
       <Box h={'100%'} w={'2px'} minW={'2px'} bg="blue.300" />
 
@@ -93,7 +48,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
         gap={6}
       >
         <HamburgerIcon
-          boxSize={5}
+          boxSize={{ base: 4, sm: 5 }}
           color={'blue.500'}
           _hover={{
             color: 'blue.600',
@@ -103,20 +58,34 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
           }}
         />
 
-        <InputGroup w={'max-content'} maxW={'300px'} display={{ base: 'none', sm: 'flex' }}>
+        <InputGroup
+          variant={{ base: 'base', sm: 'sm' }}
+          w={'max-content'}
+          maxW={'300px'}
+          display={{ base: 'flex', sm: 'flex' }}
+        >
           <InputLeftElement
             pl={'20px'}
             pointerEvents="none"
-            children={<Search2Icon color="gray.300" />}
+            children={<Search2Icon boxSize={4} color="gray.300" />}
           />
-          <Input type="text" placeholder="Search" bg={'white.400'} borderRadius={'20px'} pl={12} />
+          <Input
+            type="text"
+            // variant={{ base: 'base', sm: 'sm' }}
+            // TODO: figure out why Input preset not working
+            fontSize={{ base: '14px', sm: '16px' }}
+            placeholder="Search"
+            bg={'white.400'}
+            borderRadius={'20px'}
+            pl={12}
+          />
         </InputGroup>
       </Flex>
 
       <Spacer />
 
       <Flex direction={'row'} alignItems={'center'} gap={4}>
-        <NavbarIconsComponent isOpened={isToolbarOpened} />
+        <NavbarIconsComponentMemo isOpened={isToolbarOpened} />
         <Circle size={10} bg={'yellow.400'} cursor={'pointer'} onClick={toggleToolbar} />
       </Flex>
     </Flex>

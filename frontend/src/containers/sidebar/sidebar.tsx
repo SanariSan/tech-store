@@ -51,8 +51,17 @@ const SidebarContainer: FC<ISidebarContainer> = ({
   // TODO: move this to...? probably separate component with logic for tracking location?
   const d = useAppDispatch();
   useEffect(() => {
-    const currSection = SIDEBAR_TEMPLATE[selectedSection].title;
-    void d(setSelectedSectionStore({ section: currSection }));
+    if (selectedSection === -1) {
+      return;
+    }
+
+    const currSection = SIDEBAR_TEMPLATE[selectedSection];
+
+    void d(
+      setSelectedSectionStore({
+        section: { title: currSection.title, pathname: currSection.pathname },
+      }),
+    );
   }, [pathname, d, selectedSection]);
 
   return (
@@ -91,7 +100,7 @@ const SidebarContainer: FC<ISidebarContainer> = ({
               <Flex
                 direction={'column'}
                 width={'100%'}
-                pl={10}
+                pl={{ base: 8, sm: 10 }}
                 overflow={'hidden'}
                 maxH={
                   isSidebarOpened && unfoldedIdxs.includes(idxSection)

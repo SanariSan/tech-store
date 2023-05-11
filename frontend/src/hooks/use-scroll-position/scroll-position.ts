@@ -36,7 +36,7 @@ export const useElementScrollPosition = ({
       // );
 
       if (
-        elementRef.current.scrollTop > 0 &&
+        elementRef.current.scrollTop >= 0 &&
         elementRef.current.scrollHeight - (elementRef.current.scrollTop + height) <= endOffset
       ) {
         setIsElementEnd(true);
@@ -44,7 +44,7 @@ export const useElementScrollPosition = ({
         setIsElementEnd(false);
       }
     }, [elementRef, endOffset]),
-    300,
+    500,
   );
 
   // const update = useDebounceLeading(update1);

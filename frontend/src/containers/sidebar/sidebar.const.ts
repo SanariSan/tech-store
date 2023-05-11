@@ -12,7 +12,7 @@ export const SIDEBAR_TEMPLATE = [
     sideAction: () => {
       changeRoute('/');
 
-      Store.dispatch(setSelectedSection({ section: 'Home' }));
+      Store.dispatch(setSelectedSection({ section: { title: 'Home', pathname: '/' } }));
     },
     sub: null,
   },
@@ -23,7 +23,9 @@ export const SIDEBAR_TEMPLATE = [
     sideAction: () => {
       changeRoute('/catalogue');
 
-      Store.dispatch(setSelectedSection({ section: 'Discover' }));
+      Store.dispatch(
+        setSelectedSection({ section: { title: 'Discover', pathname: '/catalogue' } }),
+      );
       Store.dispatch(setSelectedCategory({ category: undefined }));
       Store.dispatch(setSelectedModifier({ modifier: undefined }));
     },
@@ -36,7 +38,7 @@ export const SIDEBAR_TEMPLATE = [
     sideAction: () => {
       changeRoute('/liked');
 
-      Store.dispatch(setSelectedSection({ section: 'Liked' }));
+      Store.dispatch(setSelectedSection({ section: { title: 'Liked', pathname: '/liked' } }));
     },
     sub: null,
   },
@@ -47,7 +49,7 @@ export const SIDEBAR_TEMPLATE = [
     sideAction: () => {
       changeRoute('/settings');
 
-      Store.dispatch(setSelectedSection({ section: 'Settings' }));
+      Store.dispatch(setSelectedSection({ section: { title: 'Settings', pathname: '/settings' } }));
     },
     sub: null,
   },
@@ -58,7 +60,7 @@ export const SIDEBAR_TEMPLATE = [
     sideAction: () => {
       changeRoute('/help');
 
-      Store.dispatch(setSelectedSection({ section: 'Help' }));
+      Store.dispatch(setSelectedSection({ section: { title: 'Help', pathname: '/help' } }));
     },
     sub: null,
   },

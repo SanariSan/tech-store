@@ -45,6 +45,7 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
         />
         <Text
           pl={8}
+          variant={{ base: 'base', sm: 'sm' }}
           opacity={isSidebarOpened ? 1 : 0}
           color={isSelected ? 'yellow.400' : isHovered ? 'yellow.300' : 'blue.600'}
           transform={isHovered ? 'translateX(3px)' : 'none'}

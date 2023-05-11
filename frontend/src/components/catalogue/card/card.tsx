@@ -23,6 +23,10 @@ const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc, orderIdx }
     if (isIntersecting) setHasBeenShown(true);
   }, [isIntersecting]);
 
+  const hover = {
+    transform: 'perspective(100px) translateZ(2px)',
+  };
+
   return (
     <Flex
       borderStyle={'dashed'}
@@ -32,28 +36,33 @@ const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc, orderIdx }
       direction={'column'}
       alignItems={'center'}
       justifyContent={'space-between'}
-      minH={'375px'}
+      minH={{ base: '250px', sm: '375px' }}
       h={'max-content'}
       w={'100%'}
       cursor={'pointer'}
       opacity={hasBeenShown ? 1 : 0}
       transition={`
-      transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.5s linear ${
+      transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.35s linear ${
         (orderIdx + 1) * 100
       }ms
       `}
       transform={'perspective(100px) translateZ(0px)'}
-      _hover={{
-        transform: 'perspective(100px) translateZ(2px)',
-      }}
+      _hover={hover}
+      _active={hover}
+      _focus={hover}
       ref={cardRef}
     >
-      <Box w={'100%'} minH={'300px'} h={'300px'} pb={4}>
+      <Box
+        w={'100%'}
+        minH={{ base: '200px', sm: '300px' }}
+        h={{ base: '200px', sm: '300px' }}
+        pb={4}
+      >
         <LazyImageContainer
           marginX={'auto'}
           bg={'blue.300'}
           borderRadius={'20px'}
-          objectFit={'cover'}
+          objectFit={{ base: 'cover', sm: 'cover' }}
           backgroundColor={'transparent'}
           h={'100%'}
           hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
@@ -74,20 +83,26 @@ const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc, orderIdx }
         py={3}
       >
         <Flex direction={'column'}>
-          <Text fontWeight={'bold'} color={'blue.800'}>
+          <Text variant={{ base: 'sm', sm: 'md' }} fontWeight={'bold'} color={'blue.800'}>
             {name}
           </Text>
-          <Text fontSize={'14px'} color={'blue.600'}>
+          <Text variant={{ base: 'base' }} color={'blue.600'}>
             T.S. Official
           </Text>
         </Flex>
 
         <Flex direction={'column'}>
           <Flex direction={'row'} alignItems={'flex-start'} gap={3}>
-            <Text fontWeight={'bold'} color={'yellow.400'} letterSpacing={'0.05rem'}>
+            <Text
+              variant={{ base: 'base', sm: 'sm' }}
+              fontWeight={'bold'}
+              color={'yellow.400'}
+              letterSpacing={'0.05rem'}
+            >
               {price} $
             </Text>
             <Text
+              variant={{ base: 'base', sm: 'sm' }}
               color={'blue.500'}
               letterSpacing={'0.05rem'}
               textDecoration={'line-through'}
@@ -96,7 +111,7 @@ const CardComponent: FC<TCardComponent> = ({ name, price, hsrc, lsrc, orderIdx }
               {price + 100} $
             </Text>
           </Flex>
-          <Text fontSize={'14px'} color={'blue.600'}>
+          <Text variant={{ base: 'base' }} color={'blue.600'}>
             {sales} sales ✨ 5.0 ({reviews})
           </Text>
         </Flex>

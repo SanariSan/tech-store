@@ -1,6 +1,6 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import { GOODS_INIT_STATE } from './goods.slice.const';
-import type { TLoadingStatus, TSelectedCategory } from './goods.slice.type';
+import type { TLoadingStatus, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
 import type {
   TGoodsCategoriesIncomingSuccessFields,
   TGoodsEntitiesIncomingSuccessFields,
@@ -16,7 +16,7 @@ function findCategory({
 }: {
   categoriesArr: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
   target?: string;
-  currRoute?: string[];
+  currRoute?: TSelectedRoute[];
 }) {
   if (categoriesArr === undefined) return;
   if (target === undefined) return;
@@ -24,13 +24,16 @@ function findCategory({
   /* eslint-disable no-restricted-syntax */
   for (const entity of categoriesArr) {
     if (entity.title === target) {
-      return { category: entity, categoryRoute: [...currRoute, entity.title] };
+      return {
+        category: entity,
+        categoryRoute: [...currRoute, { title: entity.title, pathname: entity.title }],
+      };
     }
     if (entity.sub !== undefined) {
       findCategory({
         categoriesArr: entity.sub,
         target,
-        currRoute: [...currRoute, entity.title],
+        currRoute: [...currRoute, { title: entity.title, pathname: entity.title }],
       });
     }
   }
@@ -60,12 +63,14 @@ const goodsSlice = createSlice({
       state,
       action: {
         payload: {
-          section: string;
+          section: TSelectedRoute;
         };
         type: string;
       },
     ) {
-      state.selectedSection = action.payload.section;
+      if (state.selectedSection.title !== action.payload.section.title) {
+        state.selectedSection = action.payload.section;
+      }
     },
     setCategories(
       state,
@@ -87,11 +92,16 @@ const goodsSlice = createSlice({
         type: string;
       },
     ) {
+      if (state.selectedCategory === action.payload.category) {
+        return;
+      }
+
       state.entities.length = 0;
       state.offset = 0;
 
       if (action.payload.category === undefined) {
         state.selectedCategory = undefined;
+        state.selectedCategoryRoute.length = 0;
         return;
       }
 
@@ -116,6 +126,10 @@ const goodsSlice = createSlice({
         type: string;
       },
     ) {
+      if (state.selectedModifier === action.payload.modifier) {
+        return;
+      }
+
       state.entities.length = 0;
       state.offset = 0;
 

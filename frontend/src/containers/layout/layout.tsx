@@ -24,7 +24,10 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
       maxH={'100%'}
       w={'100%'}
       templateRows={'auto 1fr'}
-      templateColumns={isSidebarOpened ? '250px minmax(0, 1fr)' : '90px minmax(0, 1fr)'}
+      templateColumns={{
+        base: isSidebarOpened ? '200px minmax(0, 1fr)' : '72px minmax(0, 1fr)',
+        sm: isSidebarOpened ? '250px minmax(0, 1fr)' : '90px minmax(0, 1fr)',
+      }}
       templateAreas={`"nav nav"
                       "side main"`}
     >

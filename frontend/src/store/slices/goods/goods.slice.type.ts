@@ -9,13 +9,14 @@ type TSelectedCategory = Exclude<
   undefined
 >[number];
 type TSelectedModifier = Exclude<TSelectedCategory['modifiers'], undefined>[number];
+type TSelectedRoute = { title: string; pathname: string };
 
 type TGoodsInitState = {
   entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'];
   categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
-  selectedSection: string;
+  selectedSection: TSelectedRoute;
   selectedCategory: TSelectedCategory | undefined;
-  selectedCategoryRoute: string[];
+  selectedCategoryRoute: TSelectedRoute[];
   selectedModifier: TSelectedModifier | undefined;
   offset: number;
   offsetPerPage: number;
@@ -23,4 +24,10 @@ type TGoodsInitState = {
   error: string | undefined;
 };
 
-export type { TSelectedCategory, TSelectedModifier, TGoodsInitState, TLoadingStatus };
+export type {
+  TSelectedCategory,
+  TSelectedModifier,
+  TGoodsInitState,
+  TLoadingStatus,
+  TSelectedRoute,
+};

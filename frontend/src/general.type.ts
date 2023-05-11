@@ -23,10 +23,14 @@ type TModifyDeep<TA extends TObjectAny, TB extends TDeepPartialAny<TA>> = {
     : TA[K];
 } & Omit<TB, keyof TA>;
 
+type TPrettify<TX> = {
+  [key in keyof TX]: TX[key];
+};
+
 // type TA = { b: { c: { d: number } } };
 // type TB = { x: boolean; b: { c: { d: string } } };
 // type TC = TModifyDeep<TA, TB>;
 // const x: TC = { x: true, b: { c: { d: 'deep modified type' } } };
 
-export type { TModifyDeep };
+export type { TModifyDeep, TPrettify };
 export { ELOG_LEVEL };

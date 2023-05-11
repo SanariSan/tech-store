@@ -52,7 +52,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       alignItems={'center'}
       justifyContent={'flex-start'}
       onClick={() => {
-        if (!isSelected) onSelect();
+        onSelect();
       }}
       transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
       _hover={{
@@ -60,15 +60,20 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       }}
     >
       <Icon
-        boxSize={10}
-        pl={5}
+        boxSize={{ base: 4, sm: 5 }}
+        ml={{ base: 3, sm: 5 }}
         color={isSelected ? 'yellow.400' : 'blue.500'}
         _hover={{
           color: isSelected ? 'yellow.400' : 'blue.600',
         }}
       />
 
-      <Text pl={5} opacity={isSidebarOpened ? 1 : 0} transition={'opacity 0.1s linear'}>
+      <Text
+        pl={{ base: 3, sm: 5 }}
+        variant={{ base: 'base', sm: 'sm' }}
+        opacity={isSidebarOpened ? 1 : 0}
+        transition={'opacity 0.1s linear'}
+      >
         {title}
       </Text>
 
