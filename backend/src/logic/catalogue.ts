@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 type TCategories = 'laptops' | 'phones' | 'accessories';
-type TSubCategories =
+type TModifiers =
   | 'gaming'
   | 'work'
   | 'chill'
@@ -17,7 +17,7 @@ type TCatalogue = Array<{
   name: string;
   price: number;
   category: TCategories[keyof TCategories];
-  subCategory: TSubCategories[keyof TSubCategories][keyof TSubCategories[keyof TSubCategories]];
+  modifier: TModifiers[keyof TModifiers][keyof TModifiers[keyof TModifiers]];
   lsrc: string;
   hsrc: string;
 }>;
@@ -27,4 +27,4 @@ const CATALOGUE = JSON.parse(
 ) as TCatalogue;
 
 export { CATALOGUE };
-export type { TCategories, TSubCategories, TCatalogue };
+export type { TCategories, TModifiers, TCatalogue };

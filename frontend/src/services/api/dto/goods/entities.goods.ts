@@ -4,7 +4,7 @@ import { DEFAULT_FAILURE_DTO } from '../dto.const';
 
 const GoodsEntitiesOutgoingDTO = object({
   category: string().optional(),
-  subCategory: string().optional(),
+  modifier: string().optional(),
   offset: number().required(),
   qty: number().required(),
 });
@@ -18,7 +18,7 @@ const GoodsEntitiesIncomingSuccessDTO = object({
           name: string().required(),
           price: number().required(),
           category: string().required(),
-          subCategory: string().required(),
+          modifier: string().required(),
           lsrc: string().required(),
           hsrc: string().required(),
         }).required(),

@@ -30,4 +30,16 @@ function debounceLeadingWrap<TArgs extends unknown[]>(
   };
 }
 
-export { debounceWrap, debounceLeadingWrap };
+function throttleWrap<TArgs extends unknown[]>(func: (...args: TArgs) => void, timeout = 250) {
+  let timer: NodeJS.Timeout | undefined;
+  return (...args: TArgs) => {
+    if (timer === undefined) {
+      func(...args);
+      timer = setTimeout(() => {
+        timer = undefined;
+      }, timeout);
+    }
+  };
+}
+
+export { debounceWrap, debounceLeadingWrap, throttleWrap };

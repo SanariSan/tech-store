@@ -1,6 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, current } from '@reduxjs/toolkit';
 import { GOODS_INIT_STATE } from './goods.slice.const';
-import type { TLoadingStatus } from './goods.slice.type';
+import type { TLoadingStatus, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
 import type {
   TGoodsCategoriesIncomingSuccessFields,
   TGoodsEntitiesIncomingSuccessFields,
@@ -8,26 +8,80 @@ import type {
 
 /* eslint-disable no-param-reassign */
 
-// TODO: possibly modify entities state to not flush all entities on category change,
-// but cache them per category instead (side effect: if entites on backend changed, then user gets wrong info)
+// recursive find of target nested object
+function findCategory({
+  categoriesArr,
+  target,
+  currRoute = [],
+}: {
+  categoriesArr: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+  target?: string;
+  currRoute?: TSelectedRoute[];
+}) {
+  if (categoriesArr === undefined) return;
+  if (target === undefined) return;
+
+  /* eslint-disable no-restricted-syntax */
+  for (const entity of categoriesArr) {
+    if (entity.title === target) {
+      return {
+        category: entity,
+        categoryRoute: [...currRoute, { title: entity.title, pathname: entity.title }],
+      };
+    }
+    if (entity.sub !== undefined) {
+      findCategory({
+        categoriesArr: entity.sub,
+        target,
+        currRoute: [...currRoute, { title: entity.title, pathname: entity.title }],
+      });
+    }
+  }
+
+  return;
+}
+
+function findModifier({ category, target }: { category?: TSelectedCategory; target?: string }) {
+  if (category === undefined) return;
+  if (category.modifiers === undefined) return;
+  if (target === undefined) return;
+
+  for (const modifier of category.modifiers) {
+    if (modifier.title === target) {
+      return { modifier };
+    }
+  }
+
+  return;
+}
 
 const goodsSlice = createSlice({
   name: 'goods',
   initialState: GOODS_INIT_STATE,
   reducers: {
+    setSelectedSection(
+      state,
+      action: {
+        payload: {
+          section: TSelectedRoute;
+        };
+        type: string;
+      },
+    ) {
+      if (state.selectedSection.title !== action.payload.section.title) {
+        state.selectedSection = action.payload.section;
+      }
+    },
     setCategories(
       state,
       action: {
         payload: {
           categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
-          subCategories: TGoodsCategoriesIncomingSuccessFields['data']['subCategories'];
         };
         type: string;
       },
     ) {
-      state.offset = 0;
       state.categories = action.payload.categories;
-      state.subCategories = action.payload.subCategories;
     },
     setSelectedCategory(
       state,
@@ -38,22 +92,60 @@ const goodsSlice = createSlice({
         type: string;
       },
     ) {
+      if (state.selectedCategory === action.payload.category) {
+        return;
+      }
+
       state.entities.length = 0;
       state.offset = 0;
-      state.selectedCategory = action.payload.category;
+
+      if (action.payload.category === undefined) {
+        state.selectedCategory = undefined;
+        state.selectedCategoryRoute.length = 0;
+        return;
+      }
+
+      const result = findCategory({
+        categoriesArr: current(state.categories),
+        target: action.payload.category,
+      });
+
+      console.log('Found', result);
+
+      if (result !== undefined) {
+        state.selectedCategory = result.category;
+        state.selectedCategoryRoute = result.categoryRoute;
+      }
     },
-    setSelectedSubCategory(
+    setSelectedModifier(
       state,
       action: {
         payload: {
-          subCategory: string | undefined;
+          modifier: string | undefined;
         };
         type: string;
       },
     ) {
+      if (state.selectedModifier === action.payload.modifier) {
+        return;
+      }
+
       state.entities.length = 0;
       state.offset = 0;
-      state.selectedSubCategory = action.payload.subCategory;
+
+      if (action.payload.modifier === undefined) {
+        state.selectedModifier = undefined;
+        return;
+      }
+
+      const result = findModifier({
+        category: current(state.selectedCategory),
+        target: action.payload.modifier,
+      });
+
+      if (result !== undefined) {
+        state.selectedModifier = result.modifier;
+      }
     },
     increaseOffset(
       state,
@@ -92,8 +184,9 @@ const goodsSlice = createSlice({
 const goods = goodsSlice.reducer;
 const {
   setCategories,
+  setSelectedSection,
   setSelectedCategory,
-  setSelectedSubCategory,
+  setSelectedModifier,
   increaseOffset,
   pushEntities,
   setGoodsLoadStatus,
@@ -104,8 +197,9 @@ const {
 export {
   goods,
   setCategories,
+  setSelectedSection,
   setSelectedCategory,
-  setSelectedSubCategory,
+  setSelectedModifier,
   increaseOffset,
   pushEntities,
   setGoodsLoadStatus,

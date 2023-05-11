@@ -1,42 +1,55 @@
-import type { InferType } from 'yup';
-import { array, lazy, object, string } from 'yup';
-import { isNotEmptyObject } from '../../../../helpers/util';
+import type { InferType, Schema } from 'yup';
+import { array, object, string } from 'yup';
 import { DEFAULT_FAILURE_DTO } from '../dto.const';
 
-// const CATEGORIES = ['laptops', 'phones', 'accessories'];
+type TBase = {
+  title: string;
+};
+
+type TCategories = TBase & {
+  modifiers?: TBase[];
+  sub?: TCategories[];
+};
+
+const maxDepth = 30;
+const createNestedSchema = (depth = 0): Schema<TCategories> => {
+  if (depth >= maxDepth) {
+    return object({
+      title: string().required(),
+      modifiers: array()
+        .of(
+          object({
+            title: string().required(),
+          }),
+        )
+        .optional(),
+    });
+  }
+
+  const schema = object({
+    title: string().required(),
+    modifiers: array()
+      .of(
+        object({
+          title: string().required(),
+        }),
+      )
+      .optional(),
+    sub: array()
+      .of(createNestedSchema(depth + 1))
+      .optional(),
+  });
+
+  return schema;
+};
 
 const GoodsCategoriesIncomingSuccessDTO = object({
   data: object({
-    categories: array().of(string().required()).required(),
-    // .test('categories names match test', 'categories mismatch', (testArr) =>
-    // testArr.every((el, idx) => el === CATEGORIES[idx]),
-    // ),
-    // .length(3)
-    // ---
-    // subCategories is an object with dynamic keys, but persistent values format
-    // so need to either have those keys from the start (1st appr.) or build validation in runtime (2 appr.)
-    // ---
-    // (1st appr.) declarative validation
-    // subCategories: object(
-    //   Object.fromEntries(CATEGORIES.map((el) => [el, array().of(string().required()).required()])),
-    // ).required(),
-    // ---
-    // (2nd appr.) runtime build - validation
-    subCategories: lazy((value) => {
-      if (isNotEmptyObject(value)) {
-        const newEntries = Object.fromEntries(
-          Object.keys(value).map((val) => [val, array().of(string().required()).required()]),
-        );
-
-        return object().shape(newEntries);
-      }
-      return object().required();
-    }),
+    categories: array().of(createNestedSchema()),
   }),
 });
 
 const GoodsCategoriesIncomingFailureDTO = DEFAULT_FAILURE_DTO;
-
 type TGoodsCategoriesIncomingSuccessFields = InferType<typeof GoodsCategoriesIncomingSuccessDTO>;
 type TGoodsCategoriesIncomingFailureFields = InferType<typeof GoodsCategoriesIncomingFailureDTO>;
 

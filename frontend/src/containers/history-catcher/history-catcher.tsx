@@ -34,7 +34,9 @@ function changeRoute(route: string) {
     );
   }
 
-  globalHistory.push(route);
+  if (route !== globalHistory.location.pathname) {
+    globalHistory.push(route);
+  }
 }
 
 export { GlobalHistoryCatcherContainer, changeRoute };

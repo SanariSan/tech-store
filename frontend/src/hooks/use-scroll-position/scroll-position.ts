@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
 import type { MutableRefObject } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { throttleWrap } from '../../helpers/util';
 
 type TElementRef = MutableRefObject<HTMLElement | null>;
 
@@ -16,32 +17,37 @@ export const useElementScrollPosition = ({
   const [scrollTop, setScrollTop] = useState(0);
   const [isElementEnd, setIsElementEnd] = useState(false);
 
-  const update = useCallback(() => {
-    if (elementRef.current === null) return;
+  const update = throttleWrap(
+    useCallback(() => {
+      if (elementRef.current === null) return;
 
-    const { width, height } = elementRef.current.getBoundingClientRect();
-    setW(width);
-    setH(height);
-    setScrollHeight(elementRef.current.scrollHeight);
-    setScrollTop(elementRef.current.scrollTop);
+      const { width, height } = elementRef.current.getBoundingClientRect();
+      setW(width);
+      setH(height);
+      setScrollHeight(elementRef.current.scrollHeight);
+      setScrollTop(elementRef.current.scrollTop);
 
-    console.log(
-      elementRef.current.scrollHeight,
-      elementRef.current.scrollTop,
-      height,
-      elementRef.current.scrollHeight - (elementRef.current.scrollTop + height),
-      endOffset,
-    );
+      // console.log(
+      //   elementRef.current.scrollHeight,
+      //   elementRef.current.scrollTop,
+      //   height,
+      //   elementRef.current.scrollHeight - (elementRef.current.scrollTop + height),
+      //   endOffset,
+      // );
 
-    if (
-      elementRef.current.scrollTop > 0 &&
-      elementRef.current.scrollHeight - (elementRef.current.scrollTop + height) <= endOffset
-    ) {
-      setIsElementEnd(true);
-    } else {
-      setIsElementEnd(false);
-    }
-  }, [elementRef, endOffset]);
+      if (
+        elementRef.current.scrollTop >= 0 &&
+        elementRef.current.scrollHeight - (elementRef.current.scrollTop + height) <= endOffset
+      ) {
+        setIsElementEnd(true);
+      } else {
+        setIsElementEnd(false);
+      }
+    }, [elementRef, endOffset]),
+    500,
+  );
+
+  // const update = useDebounceLeading(update1);
 
   useEffect(() => {
     let el: Exclude<TElementRef['current'], null>;

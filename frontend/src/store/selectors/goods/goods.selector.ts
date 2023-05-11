@@ -6,9 +6,10 @@ const goodsOffsetPerPageSelector = (state: TRootState) => state.goods.offsetPerP
 const goodsLoadingStatusSelector = (state: TRootState) => state.goods.loadingStatus;
 const goodsErrorSelector = (state: TRootState) => state.goods.error;
 const goodsCategoriesSelector = (state: TRootState) => state.goods.categories;
-const goodsSubCategoriesSelector = (state: TRootState) => state.goods.subCategories;
+const goodsSelectedSectionSelector = (state: TRootState) => state.goods.selectedSection;
 const goodsSelectedCategorySelector = (state: TRootState) => state.goods.selectedCategory;
-const goodsSelectedSubCategorySelector = (state: TRootState) => state.goods.selectedSubCategory;
+const goodsSelectedModifierSelector = (state: TRootState) => state.goods.selectedModifier;
+const goodsSelectedCategoryRouteSelector = (state: TRootState) => state.goods.selectedCategoryRoute;
 const goodsEntitiesSelector = (state: TRootState) => state.goods.entities;
 
 export {
@@ -18,8 +19,9 @@ export {
   goodsLoadingStatusSelector,
   goodsErrorSelector,
   goodsCategoriesSelector,
-  goodsSubCategoriesSelector,
+  goodsSelectedSectionSelector,
   goodsSelectedCategorySelector,
-  goodsSelectedSubCategorySelector,
+  goodsSelectedModifierSelector,
+  goodsSelectedCategoryRouteSelector,
   goodsEntitiesSelector,
 };
