@@ -3,17 +3,17 @@ import type {
   TGoodsEntitiesIncomingSuccessFields,
 } from '../../../services/api';
 
+type TEntities = TGoodsEntitiesIncomingSuccessFields['data']['entities'];
+type TCategories = TGoodsCategoriesIncomingSuccessFields['data']['categories'];
 type TLoadingStatus = 'idle' | 'loading' | 'success' | 'failure';
-type TSelectedCategory = Exclude<
-  TGoodsCategoriesIncomingSuccessFields['data']['categories'],
-  undefined
->[number];
+type TSelectedCategory = Exclude<TCategories, undefined>[number];
 type TSelectedModifier = Exclude<TSelectedCategory['modifiers'], undefined>[number];
 type TSelectedRoute = { title: string; pathname: string };
 
 type TGoodsInitState = {
-  entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'];
-  categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+  entities: TEntities;
+  likedEntities: TEntities;
+  categories: TCategories;
   selectedSection: TSelectedRoute;
   selectedCategory: TSelectedCategory | undefined;
   selectedCategoryRoute: TSelectedRoute[];
@@ -25,6 +25,8 @@ type TGoodsInitState = {
 };
 
 export type {
+  TEntities,
+  TCategories,
   TSelectedCategory,
   TSelectedModifier,
   TGoodsInitState,

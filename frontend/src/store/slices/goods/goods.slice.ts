@@ -165,6 +165,41 @@ const goodsSlice = createSlice({
     ) {
       state.entities.push(...action.payload.entities);
     },
+    pushLikedEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TGoodsEntitiesIncomingSuccessFields['data']['entities'][number]['id'];
+        };
+        type: string;
+      },
+    ) {
+      const targetEntity = current(state.entities).find(
+        (entity) => entity.id === action.payload.entityId,
+      );
+      const isInLiked = current(state.likedEntities).some(
+        (entity) => entity.id === action.payload.entityId,
+      );
+
+      if (targetEntity !== undefined && !isInLiked) {
+        state.likedEntities.push(targetEntity);
+      }
+    },
+    removeLikedEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TGoodsEntitiesIncomingSuccessFields['data']['entities'][number]['id'];
+        };
+        type: string;
+      },
+    ) {
+      const targetIdx = state.likedEntities.findIndex((el) => el.id === action.payload.entityId);
+
+      if (targetIdx !== -1) {
+        state.likedEntities.splice(targetIdx, 1);
+      }
+    },
     setGoodsLoadStatus(
       state,
       action: { payload: { status: TLoadingStatus; error?: unknown }; type: string },
@@ -189,6 +224,8 @@ const {
   setSelectedModifier,
   increaseOffset,
   pushEntities,
+  pushLikedEntity,
+  removeLikedEntity,
   setGoodsLoadStatus,
   getCategoriesAsync,
   fetchMoreEntitiesAsync,
@@ -202,6 +239,8 @@ export {
   setSelectedModifier,
   increaseOffset,
   pushEntities,
+  pushLikedEntity,
+  removeLikedEntity,
   setGoodsLoadStatus,
   getCategoriesAsync,
   fetchMoreEntitiesAsync,

@@ -1,3 +1,4 @@
+import { createSelector } from '@reduxjs/toolkit';
 import type { TRootState } from '../../redux.store.type';
 
 const goodsSelector = (state: TRootState) => state.goods;
@@ -11,6 +12,10 @@ const goodsSelectedCategorySelector = (state: TRootState) => state.goods.selecte
 const goodsSelectedModifierSelector = (state: TRootState) => state.goods.selectedModifier;
 const goodsSelectedCategoryRouteSelector = (state: TRootState) => state.goods.selectedCategoryRoute;
 const goodsEntitiesSelector = (state: TRootState) => state.goods.entities;
+const goodsLikedEntitiesSelector = (state: TRootState) => state.goods.likedEntities;
+const goodsLikedEntitiesIdsSelector = createSelector(goodsLikedEntitiesSelector, (likedEntities) =>
+  likedEntities.map(({ id }) => id),
+);
 
 export {
   goodsSelector,
@@ -24,4 +29,6 @@ export {
   goodsSelectedModifierSelector,
   goodsSelectedCategoryRouteSelector,
   goodsEntitiesSelector,
+  goodsLikedEntitiesSelector,
+  goodsLikedEntitiesIdsSelector,
 };

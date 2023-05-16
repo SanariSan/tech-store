@@ -6,15 +6,15 @@ import type {
   TGoodsEntitiesIncomingSuccessFields,
   TGoodsEntitiesOutgoingFields,
 } from '../../../services/api';
-import { GoodsEntitiesOutgoingDTO, validateDTO, getEntities } from '../../../services/api';
+import { GoodsEntitiesOutgoingDTO, getEntities, validateDTO } from '../../../services/api';
+import type { TRootState } from '../../redux.store.type';
+import { goodsSelector } from '../../selectors';
 import {
   fetchMoreEntitiesAsync,
   increaseOffset,
   pushEntities,
   setGoodsLoadStatus,
 } from '../../slices';
-import { goodsSelector } from '../../selectors';
-import type { TRootState } from '../../redux.store.type';
 
 function* entitiesWorker(action: { type: string }) {
   const abortController = new AbortController();
@@ -59,6 +59,9 @@ function* entitiesWorker(action: { type: string }) {
 
     if (fetchStatus.response.success !== undefined) {
       yield put(pushEntities({ entities: fetchStatus.response.success.data.entities }));
+      // for (const el of fetchStatus.response.success.data.entities) {
+      //   yield put(pushLikedEntity({ entityId: el.id }));
+      // }
       yield put(increaseOffset());
       yield put(setGoodsLoadStatus({ status: 'success' }));
       return;

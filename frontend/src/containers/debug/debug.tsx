@@ -6,6 +6,7 @@ import {
   themeSelector,
   userInfoUsernameSelector,
   userAuthIsAuthenticatedSelector,
+  goodsLikedEntitiesSelector,
 } from '../../store';
 import style from './debug.module.scss';
 
@@ -18,6 +19,7 @@ const DebugContainer: FC = () => {
   const theme = useAppSelector(themeSelector);
   const username = useAppSelector(userInfoUsernameSelector);
   const isAuthenticated = useAppSelector(userAuthIsAuthenticatedSelector);
+  const liked = useAppSelector(goodsLikedEntitiesSelector);
 
   useEffect(() => {
     console.log(`isAuthenticated ${isAuthenticated} = ${Date.now()}`);
@@ -28,11 +30,18 @@ const DebugContainer: FC = () => {
       {/* <pre style={{ position: 'fixed', bottom: 0, width: '100%' }} className={style[theme]}>
         Current page size - {`${w} x ${h}`}
       </pre> */}
-      {/* <textarea
+      <textarea
         readOnly
-        value={`isAuthenticated: ${isAuthenticated}\nusername: ${username}`}
-        style={{ position: 'fixed', bottom: 0, right: 0, height: '100px' }}
-      /> */}
+        // value={`isAuthenticated: ${isAuthenticated}\nusername: ${username}`}
+        value={JSON.stringify(liked, null, 2)}
+        style={{
+          display: 'none',
+          position: 'fixed',
+          bottom: 20,
+          right: 20,
+          height: '150px',
+        }}
+      />
     </>
   );
 };

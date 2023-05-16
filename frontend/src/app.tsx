@@ -6,20 +6,24 @@ import { AuthenticatedAccessContainer } from './containers/authenticated-access'
 import { DebugContainer } from './containers/debug';
 import { ErrorBoundaryGenericContainer } from './containers/error-boundary-generic';
 // import { ErrorBoundaryNativeContainer } from './containers/error-boundary-native';
-import { CatalogueComponentMemo } from './components/catalogue';
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
-import { useAppDispatch } from './hooks/redux';
-import { getCategoriesAsync } from './store';
+import { useAppDispatch, useAppSelector } from './hooks/redux';
+import { getCategoriesAsync, goodsCategoriesSelector } from './store';
+import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-grid';
 
 const App: FC = () => {
   const d = useAppDispatch();
+  const categories = useAppSelector(goodsCategoriesSelector);
 
   useEffect(() => {
-    void d(getCategoriesAsync());
-  }, [d]);
+    console.log(categories);
+    if (categories === undefined || categories.length <= 0) {
+      void d(getCategoriesAsync());
+    }
+  }, [categories, d]);
 
   return (
     <ErrorBoundaryGenericContainer>
@@ -40,11 +44,11 @@ const App: FC = () => {
               </Flex>
             </Route>
             <Route exact path={'/catalogue'}>
-              <CatalogueComponentMemo />
+              <CatalogueContainerMemo />
             </Route>
             <Route exact path={'/liked'}>
               <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
-                liked
+                <LikedContainerMemo />
               </Flex>
             </Route>
             <Route exact path={'/settings'}>

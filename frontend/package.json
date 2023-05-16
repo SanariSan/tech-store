@@ -57,7 +57,9 @@
     "react-window": "^1.8.9",
     "react-window-infinite-loader": "^1.0.9",
     "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.1",
+    "reselect": "^4.1.8",
     "stream-browserify": "^3.0.0",
     "util": "^0.12.4",
     "yup": "^1.1.1"

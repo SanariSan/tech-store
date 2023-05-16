@@ -2,6 +2,7 @@ import type { TGoodsInitState } from './goods.slice.type';
 
 const GOODS_INIT_STATE: TGoodsInitState = {
   entities: [],
+  likedEntities: [],
   categories: [],
   selectedSection: { title: 'Home', pathname: '/' },
   selectedCategory: undefined,
