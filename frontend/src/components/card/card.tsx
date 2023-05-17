@@ -129,11 +129,11 @@ const CardComponent: FC<TCardComponent> = ({
             pos={'absolute'}
             w={'100%'}
             h={'100%'}
-            background={'blue.600'}
+            backgroundColor={'blue.600'}
             borderRadius={'20px'}
             left={0}
             top={0}
-            opacity={isImageFocused ? 0.5 : 0}
+            opacity={isImageFocused ? 0.4 : 0}
           />
         </Flex>
       </Box>

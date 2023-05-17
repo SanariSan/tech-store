@@ -1,6 +1,6 @@
+import { Button } from '@chakra-ui/react';
 import type { FC } from 'react';
 import React, { useEffect, useRef } from 'react';
-import { Button } from 'react-bootstrap';
 import { ErrorBoundary } from 'react-error-boundary';
 
 const ErrorFallbackComponent: FC<{
@@ -9,9 +9,14 @@ const ErrorFallbackComponent: FC<{
 }> = ({ error, resetErrorBoundary }) => (
   <div>
     <p>Something went wrong:</p>
-    <Button type="button" variant={'warning'}>
+    <Button
+      type={'button'}
+      onClick={() => {
+        window.location.reload();
+      }}
+    >
       {/* onClick={resetErrorBoundary} */}
-      Try again
+      Reload page
     </Button>
   </div>
 );

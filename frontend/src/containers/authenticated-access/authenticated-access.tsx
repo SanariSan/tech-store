@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
+import { Spinner } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { checkUserAuthStatusAsync, userAuthIsAuthenticatedSelector } from '../../store';
 import type { TAuthRoute } from './authenticated-access.type';
@@ -44,7 +44,7 @@ const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
           zIndex: 2,
         }}
       >
-        <Spinner animation="grow" variant="primary" />
+        <Spinner size={'xl'} color={'blue.500'} />
       </div>
     );
 
