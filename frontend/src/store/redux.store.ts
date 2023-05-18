@@ -12,7 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import createSagaMiddleware from 'redux-saga';
 import { rootWatcher } from './sagas';
-import { goods, theme, user } from './slices';
+import { goods, theme, user, ui } from './slices';
 
 const sagaMiddleware = createSagaMiddleware({
   effectMiddlewares: [
@@ -42,12 +42,14 @@ const sagaMiddleware = createSagaMiddleware({
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['ui'],
 };
 
 const rootReducer = combineReducers({
   theme,
   user,
   goods,
+  ui,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

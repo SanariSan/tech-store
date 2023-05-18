@@ -11,6 +11,12 @@ declare global {
       REACT_APP_API_URL: string;
     }
   }
+  interface Array<T> {
+    findLastIndex: (
+      predicate: (value: T, index: number, obj: T[]) => unknown,
+      thisArg?: any,
+    ) => number;
+  }
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 

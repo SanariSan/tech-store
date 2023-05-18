@@ -6,14 +6,17 @@ const Text = {
     base: {
       fontSize: '14px',
     },
+    xs: {
+      fontSize: '12px',
+    },
     sm: {
-      fontSize: '16px',
+      fontSize: '14px',
     },
     md: {
-      fontSize: '18px',
+      fontSize: '16px',
     },
     lg: {
-      fontSize: '20px',
+      fontSize: '18px',
     },
   },
   defaultProps: {

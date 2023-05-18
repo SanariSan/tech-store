@@ -13,6 +13,30 @@ const goodsSelectedModifierSelector = (state: TRootState) => state.goods.selecte
 const goodsSelectedCategoryRouteSelector = (state: TRootState) => state.goods.selectedCategoryRoute;
 const goodsEntitiesSelector = (state: TRootState) => state.goods.entities;
 const goodsLikedEntitiesSelector = (state: TRootState) => state.goods.likedEntities;
+const goodsCartEntitiesSelector = (state: TRootState) => state.goods.cart;
+const goodsCartEntitiesStackedSelector = createSelector(
+  goodsCartEntitiesSelector,
+  (cartEntities) => {
+    type TModifiedCartEntity = TRootState['goods']['cart'][number] & { qty: number };
+    const hash = new Map<string, TModifiedCartEntity | undefined>();
+
+    cartEntities.forEach((entity) => {
+      if (hash.has(entity.id)) {
+        // @ts-expect-error ts is trippin, acc[entity.id] can't be undefined...
+        hash.get(entity.id).qty += 1;
+        return;
+      }
+      hash.set(entity.id, { ...entity, qty: 1 });
+    });
+
+    const out = [...hash.values()];
+
+    return out as TModifiedCartEntity[];
+  },
+);
+const goodsCartEntitiesPriceSelector = createSelector(goodsCartEntitiesSelector, (cartEntities) =>
+  cartEntities.reduce((acc, entity) => acc + entity.price, 0),
+);
 const goodsLikedEntitiesIdsSelector = createSelector(goodsLikedEntitiesSelector, (likedEntities) =>
   likedEntities.map(({ id }) => id),
 );
@@ -30,5 +54,8 @@ export {
   goodsSelectedCategoryRouteSelector,
   goodsEntitiesSelector,
   goodsLikedEntitiesSelector,
+  goodsCartEntitiesSelector,
   goodsLikedEntitiesIdsSelector,
+  goodsCartEntitiesStackedSelector,
+  goodsCartEntitiesPriceSelector,
 };

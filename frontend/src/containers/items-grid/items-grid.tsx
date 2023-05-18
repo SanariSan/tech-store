@@ -2,12 +2,13 @@ import { Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import type { MutableRefObject } from 'react';
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
-import { CardComponentMemo } from '../../components/card';
+import { GridCardComponentMemo } from '../../components/grid-card';
 import { SkeletonPlaceholderComponentMemo } from '../../components/skeleton';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import type { TEntities } from '../../store';
 import {
+  pushCartEntity,
   goodsLikedEntitiesIdsSelector,
   goodsOffsetPerPageSelector,
   pushLikedEntity,
@@ -68,9 +69,9 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
   const onBuyCb = useCallback(
     ({ id }: { id: string }) =>
       () => {
-        // void d(pushToCart({ entityId: id }));
+        void d(pushCartEntity({ entityId: id }));
       },
-    [],
+    [d],
   );
 
   const skeletonPlaceholders = useMemo(
@@ -85,7 +86,7 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
     () =>
       entitiesList.map(({ id, ...entity }, idx) => (
         <React.Fragment key={`${id}`}>
-          <CardComponentMemo
+          <GridCardComponentMemo
             isLiked={isInLiked({ id })}
             // isInCart={isInCart}
             onLike={isInLiked({ id }) ? onDislikeCb({ id }) : onLikeCb({ id })}

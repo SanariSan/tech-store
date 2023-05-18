@@ -59,9 +59,6 @@ function* entitiesWorker(action: { type: string }) {
 
     if (fetchStatus.response.success !== undefined) {
       yield put(pushEntities({ entities: fetchStatus.response.success.data.entities }));
-      // for (const el of fetchStatus.response.success.data.entities) {
-      //   yield put(pushLikedEntity({ entityId: el.id }));
-      // }
       yield put(increaseOffset());
       yield put(setGoodsLoadStatus({ status: 'success' }));
       return;
@@ -78,7 +75,6 @@ function* entitiesWorker(action: { type: string }) {
     }
   } finally {
     if ((yield cancelled()) as boolean) {
-      console.log('cancelled');
       abortController.abort();
     }
   }

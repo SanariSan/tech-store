@@ -39,6 +39,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
   >
     <Box
       opacity={isSelected ? 1 : 0}
+      transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
       h={'100%'}
       w={'12px'}
       minW={'12px'}
@@ -70,7 +71,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
 
       <Text
         pl={{ base: 3, sm: 5 }}
-        variant={{ base: 'base', sm: 'sm' }}
+        variant={{ base: 'sm' }}
         opacity={isSidebarOpened ? 1 : 0}
         transition={'opacity 0.1s linear'}
       >

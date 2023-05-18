@@ -1,10 +1,12 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import { GOODS_INIT_STATE } from './goods.slice.const';
-import type { TLoadingStatus, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
 import type {
-  TGoodsCategoriesIncomingSuccessFields,
-  TGoodsEntitiesIncomingSuccessFields,
-} from '../../../services/api';
+  TCategories,
+  TEntities,
+  TLoadingStatus,
+  TSelectedCategory,
+  TSelectedRoute,
+} from './goods.slice.type';
 
 /* eslint-disable no-param-reassign */
 
@@ -14,7 +16,7 @@ function findCategory({
   target,
   currRoute = [],
 }: {
-  categoriesArr: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+  categoriesArr: TCategories;
   target?: string;
   currRoute?: TSelectedRoute[];
 }) {
@@ -76,7 +78,7 @@ const goodsSlice = createSlice({
       state,
       action: {
         payload: {
-          categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+          categories: TCategories;
         };
         type: string;
       },
@@ -159,7 +161,7 @@ const goodsSlice = createSlice({
     pushEntities(
       state,
       action: {
-        payload: { entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'] };
+        payload: { entities: TEntities };
         type: string;
       },
     ) {
@@ -169,7 +171,7 @@ const goodsSlice = createSlice({
       state,
       action: {
         payload: {
-          entityId: TGoodsEntitiesIncomingSuccessFields['data']['entities'][number]['id'];
+          entityId: TEntities[number]['id'];
         };
         type: string;
       },
@@ -189,15 +191,56 @@ const goodsSlice = createSlice({
       state,
       action: {
         payload: {
-          entityId: TGoodsEntitiesIncomingSuccessFields['data']['entities'][number]['id'];
+          entityId: TEntities[number]['id'];
         };
         type: string;
       },
     ) {
-      const targetIdx = state.likedEntities.findIndex((el) => el.id === action.payload.entityId);
+      const targetIdx = current(state.likedEntities).findIndex(
+        (el) => el.id === action.payload.entityId,
+      );
 
       if (targetIdx !== -1) {
         state.likedEntities.splice(targetIdx, 1);
+      }
+    },
+    pushCartEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TEntities[number]['id'];
+        };
+        type: string;
+      },
+    ) {
+      const targetEntity = current(state.entities).find(
+        (entity) => entity.id === action.payload.entityId,
+      );
+
+      if (targetEntity !== undefined) {
+        state.cart.push(targetEntity);
+      }
+    },
+    removeCartEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TEntities[number]['id'];
+          modifier?: 'one' | 'all';
+        };
+        type: string;
+      },
+    ) {
+      const cart: TEntities = current(state.cart) as TEntities;
+
+      if (action.payload.modifier === undefined || action.payload.modifier === 'one') {
+        const targetIdx: number = cart.findLastIndex((el) => el.id === action.payload.entityId);
+
+        if (targetIdx !== -1) {
+          state.cart.splice(targetIdx, 1);
+        }
+      } else {
+        state.cart = cart.filter((el) => el.id !== action.payload.entityId);
       }
     },
     setGoodsLoadStatus(
@@ -226,6 +269,8 @@ const {
   pushEntities,
   pushLikedEntity,
   removeLikedEntity,
+  pushCartEntity,
+  removeCartEntity,
   setGoodsLoadStatus,
   getCategoriesAsync,
   fetchMoreEntitiesAsync,
@@ -240,6 +285,8 @@ export {
   increaseOffset,
   pushEntities,
   pushLikedEntity,
+  pushCartEntity,
+  removeCartEntity,
   removeLikedEntity,
   setGoodsLoadStatus,
   getCategoriesAsync,

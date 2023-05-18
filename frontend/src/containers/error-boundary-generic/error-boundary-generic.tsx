@@ -1,6 +1,6 @@
 import { Button } from '@chakra-ui/react';
-import type { FC } from 'react';
-import React, { useEffect, useRef } from 'react';
+import type { FC, ReactNode } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 const ErrorFallbackComponent: FC<{
@@ -30,8 +30,8 @@ const myErrorHandler = (error: Error, info: { componentStack: string }) => {
   console.groupEnd();
 };
 
-const ErrorBoundaryGenericContainer: React.FC<{
-  children: React.ReactNode;
+const ErrorBoundaryGenericContainer: FC<{
+  children: ReactNode;
 }> = ({ children }) => {
   const isActive = useRef(true);
 
@@ -55,4 +55,6 @@ const ErrorBoundaryGenericContainer: React.FC<{
   );
 };
 
-export { ErrorBoundaryGenericContainer };
+const ErrorBoundaryGenericContainerMemo = memo(ErrorBoundaryGenericContainer);
+
+export { ErrorBoundaryGenericContainerMemo };

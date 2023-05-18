@@ -4,6 +4,7 @@ const GOODS_INIT_STATE: TGoodsInitState = {
   entities: [],
   likedEntities: [],
   categories: [],
+  cart: [],
   selectedSection: { title: 'Home', pathname: '/' },
   selectedCategory: undefined,
   selectedCategoryRoute: [],

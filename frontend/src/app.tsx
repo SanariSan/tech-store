@@ -1,32 +1,32 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import type { FC } from 'react';
+import { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
 import { DebugContainer } from './containers/debug';
-import { ErrorBoundaryGenericContainer } from './containers/error-boundary-generic';
+import { ErrorBoundaryGenericContainerMemo } from './containers/error-boundary-generic';
 // import { ErrorBoundaryNativeContainer } from './containers/error-boundary-native';
+import { CartContainerMemo } from './containers/cart';
+import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-grid';
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
 import { getCategoriesAsync, goodsCategoriesSelector } from './store';
-import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-grid';
 
 const App: FC = () => {
   const d = useAppDispatch();
   const categories = useAppSelector(goodsCategoriesSelector);
 
   useEffect(() => {
-    console.log(categories);
     if (categories === undefined || categories.length <= 0) {
       void d(getCategoriesAsync());
     }
   }, [categories, d]);
 
   return (
-    <ErrorBoundaryGenericContainer>
+    <ErrorBoundaryGenericContainerMemo>
       <Box
         display={'flex'}
         w={'100%'}
@@ -36,6 +36,7 @@ const App: FC = () => {
         flexDirection={'column'}
       >
         <LoadingTrackerProgressContainer />
+        <CartContainerMemo />
         <LayoutContainer>
           <Switch>
             <Route exact path={'/'}>
@@ -92,7 +93,7 @@ const App: FC = () => {
         <DebugContainer />
       </Box>
       {/* <div id="bg" className={classNames(style.app, style[theme])} /> */}
-    </ErrorBoundaryGenericContainer>
+    </ErrorBoundaryGenericContainerMemo>
   );
 };
 export { App };

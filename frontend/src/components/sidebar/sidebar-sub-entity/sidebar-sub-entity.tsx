@@ -45,11 +45,13 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
         />
         <Text
           pl={8}
-          variant={{ base: 'base', sm: 'sm' }}
+          variant={{ base: 'sm' }}
           opacity={isSidebarOpened ? 1 : 0}
           color={isSelected ? 'yellow.400' : isHovered ? 'yellow.300' : 'blue.600'}
           transform={isHovered ? 'translateX(3px)' : 'none'}
-          transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.1s linear'}
+          transition={
+            'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.1s linear, color 0.1s linear'
+          }
         >
           {title}
         </Text>

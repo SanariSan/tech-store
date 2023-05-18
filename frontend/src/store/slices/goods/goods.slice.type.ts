@@ -14,6 +14,7 @@ type TGoodsInitState = {
   entities: TEntities;
   likedEntities: TEntities;
   categories: TCategories;
+  cart: TEntities;
   selectedSection: TSelectedRoute;
   selectedCategory: TSelectedCategory | undefined;
   selectedCategoryRoute: TSelectedRoute[];

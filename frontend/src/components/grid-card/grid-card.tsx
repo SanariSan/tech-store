@@ -1,13 +1,13 @@
+import { TimeIcon } from '@chakra-ui/icons';
 import { Box, Circle, Flex, Text } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo, useEffect, useRef, useState } from 'react';
-import { TimeIcon } from '@chakra-ui/icons';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import { useIntersection } from '../../hooks/use-intersection';
 import type { goodsEntitiesSelector } from '../../store';
 import { CartIcon, HeartIcon } from '../icons';
 
-type TCardComponent = Omit<
+type TGridCardComponent = Omit<
   ReturnType<typeof goodsEntitiesSelector>[number],
   'category' | 'modifier'
 > & {
@@ -17,7 +17,7 @@ type TCardComponent = Omit<
   onBuy: () => void;
 } & React.Attributes;
 
-const CardComponent: FC<TCardComponent> = ({
+const GridCardComponent: FC<TGridCardComponent> = ({
   id,
   name,
   price,
@@ -34,9 +34,10 @@ const CardComponent: FC<TCardComponent> = ({
   const reviews = useRef(Math.floor(Math.random() * (40 - 1)) + 1);
   const [hasBeenShown, setHasBeenShown] = useState(false);
   const { isIntersecting } = useIntersection({ ref: cardRef, shouldTrack: !hasBeenShown });
-
   const [isImageFocused, setIsImageFocused] = useState(false);
-  const imageFocusRef = useRef<HTMLDivElement | null>(null);
+
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  // const size = useHookThrottle({ useHook: useSize, args: [imgRef] });
 
   useEffect(() => {
     if (isIntersecting) setHasBeenShown(true);
@@ -48,9 +49,6 @@ const CardComponent: FC<TCardComponent> = ({
 
   return (
     <Flex
-      borderStyle={'dashed'}
-      borderColor={'white.400'}
-      borderWidth={'2px'}
       borderRadius={'20px'}
       direction={'column'}
       alignItems={'center'}
@@ -93,6 +91,7 @@ const CardComponent: FC<TCardComponent> = ({
           h={'100%'}
           hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
           lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
+          elRef={imgRef}
           // src={'http://localhost:80/api/v1/goods/assets/h/l3.jpg'}
           // fallbackSrc={'http://localhost:80/api/v1/goods/assets/l/l3.jpg'}
         />
@@ -110,6 +109,7 @@ const CardComponent: FC<TCardComponent> = ({
             <Circle
               opacity={isImageFocused ? 0.7 : 0}
               _hover={{ opacity: 1, background: 'blue.300' }}
+              transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
               onClick={onLike}
               background={'white.300'}
@@ -119,27 +119,38 @@ const CardComponent: FC<TCardComponent> = ({
             <Circle
               opacity={isImageFocused ? 0.7 : 0}
               _hover={{ opacity: 1, background: 'blue.300' }}
+              transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
               background={'white.300'}
             >
               <TimeIcon color={'blue.900'} boxSize={{ base: 4, sm: 5 }} />
             </Circle>
           </Flex>
+
           <Flex
             pos={'absolute'}
+            // w={size?.width ?? '100%'}
+            // h={size?.height ?? '100%'}
             w={'100%'}
             h={'100%'}
             backgroundColor={'blue.600'}
             borderRadius={'20px'}
             left={0}
+            right={0}
             top={0}
+            bottom={0}
+            margin={'0 auto'}
             opacity={isImageFocused ? 0.4 : 0}
+            transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           />
         </Flex>
       </Box>
       <Flex
         bg={'white.200'}
         borderRadius={'20px'}
+        borderStyle={'dashed'}
+        borderColor={'white.400'}
+        borderWidth={'2px'}
         w={'100%'}
         h={'135px'}
         direction={'column'}
@@ -150,7 +161,7 @@ const CardComponent: FC<TCardComponent> = ({
         <Flex direction={'row'} width={'100%'} height={'100%'}>
           <Flex direction={'column'} width={'75%'} height={'100%'} justifyContent={'space-between'}>
             <Flex direction={'column'}>
-              <Text variant={{ base: 'sm', sm: 'md' }} fontWeight={'bold'} color={'blue.800'}>
+              <Text variant={{ base: 'md', sm: 'xl' }} fontWeight={'bold'} color={'blue.800'}>
                 {name}
               </Text>
               <Text variant={{ base: 'base' }} color={'blue.600'}>
@@ -197,15 +208,10 @@ const CardComponent: FC<TCardComponent> = ({
               size={{ base: 10, sm: 12 }}
               background={'white.300'}
               _hover={{ background: 'blue.300' }}
+              onClick={onBuy}
+              cursor={'pointer'}
             >
-              <CartIcon
-                boxSize={{ base: 4, sm: 5 }}
-                color={'blue.600'}
-
-                // onClick={
-                // onBuy
-                // }
-              />
+              <CartIcon boxSize={{ base: 4, sm: 5 }} color={'blue.600'} />
             </Circle>
           </Flex>
         </Flex>
@@ -214,6 +220,6 @@ const CardComponent: FC<TCardComponent> = ({
   );
 };
 
-const CardComponentMemo = memo(CardComponent);
+const GridCardComponentMemo = memo(GridCardComponent);
 
-export { CardComponent, CardComponentMemo };
+export { GridCardComponentMemo };
