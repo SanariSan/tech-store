@@ -44,7 +44,7 @@ export const useElementScrollPosition = ({
         setIsElementEnd(false);
       }
     }, [elementRef, endOffset]),
-    500,
+    250,
   );
 
   // const update = useDebounceLeading(update1);

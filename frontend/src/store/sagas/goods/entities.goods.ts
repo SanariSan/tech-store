@@ -39,7 +39,9 @@ function* entitiesWorker(action: { type: string }) {
     )) as TSafeReturn<TGoodsEntitiesOutgoingFields>;
 
     if (validateStatus.error !== undefined) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(validateStatus.error) }));
+      yield put(
+        setGoodsLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
+      );
       return;
     }
 
@@ -53,7 +55,9 @@ function* entitiesWorker(action: { type: string }) {
     console.dir(fetchStatus);
 
     if (fetchStatus.error !== undefined) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+      yield put(
+        setGoodsLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+      );
       return;
     }
 
@@ -68,9 +72,10 @@ function* entitiesWorker(action: { type: string }) {
       yield put(
         setGoodsLoadStatus({
           status: 'failure',
-          error: String(fetchStatus.response.failure.detail),
+          message: String(fetchStatus.response.failure.detail),
         }),
       );
+
       return;
     }
   } finally {

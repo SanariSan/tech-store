@@ -6,7 +6,10 @@ import { CartIcon } from '../../icons';
 import { useAppDispatch } from '../../../hooks/redux';
 import { setIsCartOpened } from '../../../store';
 
-const NavbarIconsComponent: FC<{ isOpened: boolean }> = ({ isOpened }) => {
+const NavbarIconsComponent: FC<{ isOpened: boolean; toggleToolbar: () => void }> = ({
+  isOpened,
+  toggleToolbar,
+}) => {
   const d = useAppDispatch();
   return (
     <Flex
@@ -50,6 +53,7 @@ const NavbarIconsComponent: FC<{ isOpened: boolean }> = ({ isOpened }) => {
         }}
         onClick={() => {
           void d(setIsCartOpened({ isOpened: true }));
+          toggleToolbar();
         }}
         mb={{ base: 4, md: 0 }}
       />

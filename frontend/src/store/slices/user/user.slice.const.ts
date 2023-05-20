@@ -1,9 +1,9 @@
-import type { TUserAuthInitState } from './user-auth.slice.type';
+import type { TUserAuthInitState } from './user.slice.type';
 
 const USER_AUTH_INIT_STATE: TUserAuthInitState = {
   isAuthenticated: 'idle',
   loadingStatus: 'idle',
-  error: undefined,
+  username: undefined,
 };
 
 export { USER_AUTH_INIT_STATE };

@@ -11,15 +11,17 @@ import {
   Text,
 } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { Fragment, memo, useCallback, useEffect } from 'react';
+import { Fragment, memo, useCallback } from 'react';
 import { CartCardComponentMemo } from '../../components/cart-card';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   goodsCartEntitiesPriceSelector,
   goodsCartEntitiesStackedSelector,
+  purgeCart,
   pushCartEntity,
   removeCartEntity,
   setIsCartOpened,
+  setSuccessMessage,
   uiCartStateSelector,
 } from '../../store';
 
@@ -61,68 +63,107 @@ const CartContainer: FC<TCartContainer> = () => {
     [d],
   );
 
+  const onSubmit = useCallback(() => {
+    void d(purgeCart());
+    void d(
+      setSuccessMessage({
+        title: 'Order placed!',
+        description: 'Your order is being processed now. Thank you!',
+      }),
+    );
+    // toast({
+    //   title: 'Order placed!',
+    //   position: 'top-right',
+    //   description: 'Your order is being processed now. Thank you!',
+    //   status: 'success',
+    //   variant: 'subtle',
+    //   isClosable: true,
+    // });
+  }, [d]);
+
   return (
     <Drawer onClose={onClose} isOpen={isCartOpened} size={'sm'}>
-      <DrawerOverlay>
-        <DrawerContent bg={'white.900'}>
-          <DrawerCloseButton />
-          <DrawerHeader borderBottomWidth={'1px'}>{`Cart`}</DrawerHeader>
+      <DrawerOverlay
+        display={{
+          base: 'none',
+          sm: 'unset',
+        }}
+      />
+      <DrawerContent bg={'white.900'}>
+        <DrawerCloseButton />
+        <DrawerHeader borderBottomWidth={'1px'}>{`Cart`}</DrawerHeader>
 
-          <DrawerBody>
-            <Flex
-              direction={'column'}
-              justifyContent={'flex-start'}
-              alignItems={'flex-start'}
-              gap={3}
-            >
-              {/* <p>{JSON.stringify(cartEntities, null, 2)}</p> */}
-              {cartEntities.map(({ id, ...props }, idx) => (
-                <Fragment key={`cart_${id}`}>
-                  <CartCardComponentMemo
-                    orderIdx={idx}
-                    id={id}
-                    onAdd={onAddCb({ id })}
-                    onRemove={onRemoveCb({ id })}
-                    onDelete={onDeleteCb({ id })}
-                    {...props}
-                  />
-                </Fragment>
-              ))}
+        <DrawerBody>
+          <Flex
+            direction={'column'}
+            justifyContent={'flex-start'}
+            alignItems={'flex-start'}
+            gap={3}
+          >
+            {/* <p>{JSON.stringify(cartEntities, null, 2)}</p> */}
+            {cartEntities.map(({ id, ...props }, idx) => (
+              <Fragment key={`cart_${id}`}>
+                <CartCardComponentMemo
+                  orderIdx={idx}
+                  id={id}
+                  onAdd={onAddCb({ id })}
+                  onRemove={onRemoveCb({ id })}
+                  onDelete={onDeleteCb({ id })}
+                  {...props}
+                />
+              </Fragment>
+            ))}
+          </Flex>
+        </DrawerBody>
+
+        <DrawerFooter borderTopWidth="1px" p={'unset'}>
+          <Flex
+            direction={'column'}
+            width={'100%'}
+            height={'100%'}
+            alignItems={'flex-end'}
+            gap={3}
+            py={4}
+          >
+            <Flex w={'100%'} justifyContent={'flex-end'} gap={6} px={6}>
+              <Text variant={'md'} fontWeight={'bold'}>
+                Total:
+              </Text>
+              <Text variant={'md'}>{cartTotal} $</Text>
             </Flex>
-          </DrawerBody>
-
-          <DrawerFooter borderTopWidth="1px" p={'unset'}>
             <Flex
-              direction={'column'}
-              width={'100%'}
-              height={'100%'}
-              alignItems={'flex-end'}
-              gap={3}
-              py={4}
+              direction={'row'}
+              justifyContent={'flex-end'}
+              w={'100%'}
+              borderTopWidth={'1px'}
+              pt={3}
+              px={6}
             >
-              <Flex w={'100%'} justifyContent={'flex-end'} gap={6} px={6}>
-                <Text variant={'md'} fontWeight={'bold'}>
-                  Total:
-                </Text>
-                <Text variant={'md'}>{cartTotal} $</Text>
-              </Flex>
-              <Flex
-                direction={'row'}
-                justifyContent={'flex-end'}
-                w={'100%'}
-                borderTopWidth={'1px'}
-                pt={3}
-                px={6}
+              <Button variant="outline" mr={3} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme={'yellow'}
+                isDisabled={cartEntities.length <= 0}
+                opacity={1}
+                _disabled={{
+                  opacity: 0.5,
+                }}
+                cursor={cartEntities.length <= 0 ? 'not-allowed' : 'pointer'}
+                onClick={() => {
+                  if (cartEntities.length <= 0) return;
+
+                  onSubmit();
+                  onClose();
+                }}
               >
-                <Button variant="outline" mr={3} onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button colorScheme={'yellow'}>Place order</Button>
-              </Flex>
+                Place order
+              </Button>
             </Flex>
-          </DrawerFooter>
-        </DrawerContent>
-      </DrawerOverlay>
+          </Flex>
+        </DrawerFooter>
+      </DrawerContent>
+      {/* </DrawerOverlay> */}
     </Drawer>
   );
 };

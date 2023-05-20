@@ -12,7 +12,6 @@ const GOODS_INIT_STATE: TGoodsInitState = {
   offset: 0,
   offsetPerPage: 20,
   loadingStatus: 'idle',
-  error: undefined,
 };
 
 export { GOODS_INIT_STATE };

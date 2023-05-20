@@ -1,12 +1,7 @@
 import { createSlice, current } from '@reduxjs/toolkit';
+import type { TLoadingStatus } from '../slices.type';
 import { GOODS_INIT_STATE } from './goods.slice.const';
-import type {
-  TCategories,
-  TEntities,
-  TLoadingStatus,
-  TSelectedCategory,
-  TSelectedRoute,
-} from './goods.slice.type';
+import type { TCategories, TEntities, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
 
 /* eslint-disable no-param-reassign */
 
@@ -112,8 +107,6 @@ const goodsSlice = createSlice({
         target: action.payload.category,
       });
 
-      console.log('Found', result);
-
       if (result !== undefined) {
         state.selectedCategory = result.category;
         state.selectedCategoryRoute = result.categoryRoute;
@@ -149,13 +142,7 @@ const goodsSlice = createSlice({
         state.selectedModifier = result.modifier;
       }
     },
-    increaseOffset(
-      state,
-      action: {
-        payload: undefined;
-        type: string;
-      },
-    ) {
+    increaseOffset(state) {
       state.offset += state.offsetPerPage;
     },
     pushEntities(
@@ -243,15 +230,14 @@ const goodsSlice = createSlice({
         state.cart = cart.filter((el) => el.id !== action.payload.entityId);
       }
     },
+    purgeCart(state) {
+      state.cart.length = 0;
+    },
     setGoodsLoadStatus(
       state,
-      action: { payload: { status: TLoadingStatus; error?: unknown }; type: string },
+      action: { payload: { status: TLoadingStatus; message?: string }; type: string },
     ) {
       state.loadingStatus = action.payload.status;
-
-      if (action.payload.status === 'failure' && action.payload.error !== undefined) {
-        state.error = JSON.stringify(action.payload.error);
-      }
     },
     // sagas
     getCategoriesAsync() {},
@@ -271,6 +257,7 @@ const {
   removeLikedEntity,
   pushCartEntity,
   removeCartEntity,
+  purgeCart,
   setGoodsLoadStatus,
   getCategoriesAsync,
   fetchMoreEntitiesAsync,
@@ -287,6 +274,7 @@ export {
   pushLikedEntity,
   pushCartEntity,
   removeCartEntity,
+  purgeCart,
   removeLikedEntity,
   setGoodsLoadStatus,
   getCategoriesAsync,

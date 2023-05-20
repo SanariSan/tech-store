@@ -2,17 +2,29 @@ import { Button } from '@chakra-ui/react';
 import type { FC, ReactNode } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Persistor } from '../../store';
+import { sleep } from '../../helpers/util';
 
 const ErrorFallbackComponent: FC<{
   error: Error;
   resetErrorBoundary: () => void;
 }> = ({ error, resetErrorBoundary }) => (
-  <div>
-    <p>Something went wrong:</p>
+  <div
+    style={{
+      width: '100%',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '10px',
+    }}
+  >
+    <p style={{ fontSize: '18px', fontWeight: 'bold' }}>💀 Something went terribly wrong 💀</p>
     <Button
       type={'button'}
       onClick={() => {
-        window.location.reload();
+        resetErrorBoundary();
       }}
     >
       {/* onClick={resetErrorBoundary} */}
@@ -43,15 +55,29 @@ const ErrorBoundaryGenericContainer: FC<{
   );
 
   return (
-    <ErrorBoundary
-      FallbackComponent={ErrorFallbackComponent}
-      onError={myErrorHandler}
-      onReset={() => {
-        // reset the state of your app so the error doesn't happen again
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      {children}
-    </ErrorBoundary>
+      <ErrorBoundary
+        FallbackComponent={ErrorFallbackComponent}
+        onError={myErrorHandler}
+        onReset={() => {
+          // reset the state of app, reload the page
+          void Persistor.purge().then(() => {
+            window.location.reload();
+            return;
+          });
+        }}
+      >
+        {children}
+      </ErrorBoundary>
+    </div>
   );
 };
 

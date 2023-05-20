@@ -1,4 +1,4 @@
-import { DeleteIcon } from '@chakra-ui/icons';
+import { AddIcon, DeleteIcon, MinusIcon } from '@chakra-ui/icons';
 import { Box, Button, Circle, Flex, Text } from '@chakra-ui/react';
 import type { FC } from 'react';
 import React, { memo } from 'react';
@@ -50,9 +50,9 @@ const CartCardComponent: FC<TCartCardComponent> = ({
       transition={`
       transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)`}
       transform={'perspective(100px) translateZ(0px)'}
-      _hover={hover}
-      _active={hover}
-      _focus={hover}
+      _hover={{ sm: hover }}
+      _active={{ sm: hover }}
+      _focus={{ sm: hover }}
     >
       <Flex direction={'row'} width={'100%'} height={'max-content'} gap={3}>
         <Box
@@ -106,7 +106,7 @@ const CartCardComponent: FC<TCartCardComponent> = ({
                 color={'yellow.400'}
                 letterSpacing={'0.05rem'}
               >
-                {price} $
+                {price * qty} $
               </Text>
               <Text
                 variant={{ base: 'xs', sm: 'sm' }}
@@ -115,7 +115,7 @@ const CartCardComponent: FC<TCartCardComponent> = ({
                 textDecoration={'line-through'}
                 textDecorationColor={'blue.500'}
               >
-                {price + 100} $
+                {(price + 100) * qty} $
               </Text>
             </Flex>
           </Flex>
@@ -123,12 +123,32 @@ const CartCardComponent: FC<TCartCardComponent> = ({
       </Flex>
       <Flex w={'100%'} gap={3} alignItems={'center'} justifyContent={'space-between'}>
         <Flex w={'20%'} gap={3} pl={4} alignItems={'center'}>
-          <Button size={'sm'} borderRadius={'20px'} onClick={onRemove}>
-            -
+          <Button
+            size={'sm'}
+            borderRadius={'20px'}
+            background={'white.300'}
+            _hover={{ background: qty > 1 ? 'blue.300' : 'white.300' }}
+            _active={{ background: qty > 1 ? 'blue.400' : 'white.300' }}
+            onClick={qty > 1 ? onRemove : undefined}
+            isDisabled={qty <= 1}
+            opacity={1}
+            _disabled={{
+              opacity: 0.5,
+            }}
+            cursor={qty > 1 ? 'pointer' : 'not-allowed'}
+          >
+            <MinusIcon boxSize={{ base: 2, sm: 3 }} color={'blue.600'} />
           </Button>
           <Text>{qty}</Text>
-          <Button size={'sm'} borderRadius={'20px'} onClick={onAdd}>
-            +
+          <Button
+            size={'sm'}
+            borderRadius={'20px'}
+            background={'white.300'}
+            _hover={{ background: 'blue.300' }}
+            _active={{ background: 'blue.400' }}
+            onClick={onAdd}
+          >
+            <AddIcon boxSize={{ base: 2, sm: 3 }} color={'blue.600'} />
           </Button>
         </Flex>
         <Flex w={'80%'} gap={3} pr={8} alignItems={'center'} justifyContent={'flex-end'}>
@@ -138,6 +158,7 @@ const CartCardComponent: FC<TCartCardComponent> = ({
             _hover={{ background: 'blue.300' }}
             onClick={onDelete}
             cursor={'pointer'}
+            _active={{ background: 'blue.400' }}
           >
             <DeleteIcon boxSize={{ base: 3, sm: 4 }} color={'blue.600'} />
           </Circle>

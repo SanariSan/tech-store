@@ -2,10 +2,10 @@ import type {
   TGoodsCategoriesIncomingSuccessFields,
   TGoodsEntitiesIncomingSuccessFields,
 } from '../../../services/api';
+import type { TLoadingStatus } from '../slices.type';
 
 type TEntities = TGoodsEntitiesIncomingSuccessFields['data']['entities'];
 type TCategories = TGoodsCategoriesIncomingSuccessFields['data']['categories'];
-type TLoadingStatus = 'idle' | 'loading' | 'success' | 'failure';
 type TSelectedCategory = Exclude<TCategories, undefined>[number];
 type TSelectedModifier = Exclude<TSelectedCategory['modifiers'], undefined>[number];
 type TSelectedRoute = { title: string; pathname: string };
@@ -22,7 +22,6 @@ type TGoodsInitState = {
   offset: number;
   offsetPerPage: number;
   loadingStatus: TLoadingStatus;
-  error: string | undefined;
 };
 
 export type {
@@ -31,6 +30,5 @@ export type {
   TSelectedCategory,
   TSelectedModifier,
   TGoodsInitState,
-  TLoadingStatus,
   TSelectedRoute,
 };

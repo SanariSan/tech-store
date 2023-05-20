@@ -23,7 +23,9 @@ function* categoriesWorker(action: { type: string }) {
     console.dir(fetchStatus);
 
     if (fetchStatus.error !== undefined) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+      yield put(
+        setGoodsLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+      );
       return;
     }
 
@@ -38,7 +40,7 @@ function* categoriesWorker(action: { type: string }) {
       yield put(
         setGoodsLoadStatus({
           status: 'failure',
-          error: String(fetchStatus.response.failure.detail),
+          message: String(fetchStatus.response.failure.detail),
         }),
       );
       return;

@@ -22,28 +22,38 @@ const CatalogueContainer = () => {
   const areEntitiesLoading = entitiesLoadingStatus === 'loading';
   const gridRef = useRef<HTMLDivElement | null>(null);
 
-  const mountFetched = useRef(false);
+  const mountRenderCompleted = useRef(false);
 
   // sub to scroll position hook
   const { isElementEnd } = useElementScrollPosition({
     elementRef: gridRef,
-    endOffset: 800,
+    endOffset: 1600,
   });
 
-  // fetch items on mount
+  // fetch items on category change
+  // TODO: maybe move to saga (category change -> fetch entities)
   useEffect(() => {
-    if (!mountFetched.current && entities.length <= 0) {
-      void d(fetchMoreEntitiesAsync());
-      mountFetched.current = true;
-    }
-  }, [entities, d]);
+    // prevent from fetching on mount
+    if (mountRenderCompleted.current) void d(fetchMoreEntitiesAsync());
+  }, [selectedCategory, d]);
 
-  // fetch more items if reaching container end
+  /**
+   * Fetch more items if reaching container end
+   * areEntitiesLoading here to trigger effect in case view
+   * is still at the end after loading finished so it'd trigger fetch again
+   * Checking if loading is ongoing not needed, saga will handle auto-cancel
+   */
   useEffect(() => {
-    if (isElementEnd && !areEntitiesLoading) {
-      void d(fetchMoreEntitiesAsync());
-    }
+    if (isElementEnd) void d(fetchMoreEntitiesAsync());
   }, [isElementEnd, areEntitiesLoading, d]);
+
+  useEffect(() => {
+    if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
+
+    return () => {
+      mountRenderCompleted.current = false;
+    };
+  }, []);
 
   const breadcrumbList = useMemo(
     () => [selectedSection, ...selectedCategoryRoute],

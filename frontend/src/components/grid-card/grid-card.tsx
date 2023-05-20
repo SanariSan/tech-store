@@ -1,7 +1,8 @@
 import { TimeIcon } from '@chakra-ui/icons';
-import { Box, Circle, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Circle, Flex, Text, keyframes, useToken } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import type { FC } from 'react';
-import { memo, useEffect, useRef, useState } from 'react';
+import { useMemo, memo, useEffect, useRef, useState } from 'react';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import { useIntersection } from '../../hooks/use-intersection';
 import type { goodsEntitiesSelector } from '../../store';
@@ -35,17 +36,50 @@ const GridCardComponent: FC<TGridCardComponent> = ({
   const [hasBeenShown, setHasBeenShown] = useState(false);
   const { isIntersecting } = useIntersection({ ref: cardRef, shouldTrack: !hasBeenShown });
   const [isImageFocused, setIsImageFocused] = useState(false);
+  const [isCartIconPressed, setIsCartIconPressed] = useState(false);
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   // const size = useHookThrottle({ useHook: useSize, args: [imgRef] });
+
+  const cartAnimationDuration = useMemo(() => 300, []);
+  const animationKeyframes = useMemo(
+    () => keyframes`
+      0% { transform: scale(1) rotate(0); opacity: 0.9; }
+      50% { transform: scale(1.25) rotate(20deg); opacity: 0.1; }
+      100% { transform: scale(1.5) rotate(60deg); opacity: 0; }
+    `,
+    [],
+  );
+
+  const animation = useMemo(
+    () => `${animationKeyframes} ${cartAnimationDuration}ms ease-in-out`,
+    [animationKeyframes, cartAnimationDuration],
+  );
+
+  const hover = useMemo(
+    () => ({
+      transform: 'perspective(100px) translateZ(2px)',
+    }),
+    [],
+  );
+
+  const [yellow400] = useToken('colors', ['yellow.400']);
 
   useEffect(() => {
     if (isIntersecting) setHasBeenShown(true);
   }, [isIntersecting]);
 
-  const hover = {
-    transform: 'perspective(100px) translateZ(2px)',
-  };
+  const cartIconTimer = useRef<NodeJS.Timer>();
+
+  useEffect(() => {
+    if (!isCartIconPressed) return;
+    if (cartIconTimer.current !== undefined) return;
+
+    cartIconTimer.current = setTimeout(() => {
+      setIsCartIconPressed(false);
+      cartIconTimer.current = undefined;
+    }, cartAnimationDuration + 50);
+  }, [isCartIconPressed, cartAnimationDuration]);
 
   return (
     <Flex
@@ -64,9 +98,9 @@ const GridCardComponent: FC<TGridCardComponent> = ({
       }ms
       `}
       transform={'perspective(100px) translateZ(0px)'}
-      _hover={hover}
-      _active={hover}
-      _focus={hover}
+      _hover={{ sm: hover }}
+      _active={{ sm: hover }}
+      _focus={{ sm: hover }}
       ref={cardRef}
     >
       <Box
@@ -203,13 +237,39 @@ const GridCardComponent: FC<TGridCardComponent> = ({
             </Flex>
           </Flex>
 
-          <Flex alignItems={'flex-end'} justifyContent={'flex-end'} width={'25%'} height={'100%'}>
+          <Flex
+            alignItems={'flex-end'}
+            justifyContent={'flex-end'}
+            width={'25%'}
+            height={'100%'}
+            position={'relative'}
+          >
             <Circle
+              as={motion.div}
+              position={'absolute'}
+              animation={isCartIconPressed ? animation : undefined}
+              background={`url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23${yellow400.slice(
+                1,
+              )}' stroke-width='3' stroke-dasharray='4%2c10' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");`}
+              opacity={0}
+              size={{ base: 10, sm: 12 }}
+            />
+            <Circle
+              as={Button}
+              position={'absolute'}
               size={{ base: 10, sm: 12 }}
               background={'white.300'}
               _hover={{ background: 'blue.300' }}
-              onClick={onBuy}
+              onClick={() => {
+                onBuy();
+                setIsCartIconPressed(true);
+              }}
+              isDisabled={isCartIconPressed}
+              _disabled={{
+                opacity: 0.5,
+              }}
               cursor={'pointer'}
+              _active={{ background: 'blue.400' }}
             >
               <CartIcon boxSize={{ base: 4, sm: 5 }} color={'blue.600'} />
             </Circle>

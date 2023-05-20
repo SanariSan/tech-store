@@ -23,12 +23,14 @@ function* logoutUserWorker(action: { type: string }) {
     console.dir(fetchStatus);
 
     if (fetchStatus.error !== undefined) {
-      yield put(setUserAuthLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+      yield put(
+        setUserAuthLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+      );
       return;
     }
 
     if (fetchStatus.response.success !== undefined) {
-      yield put(setUserAuthLoadStatus({ status: 'success' }));
+      yield put(setUserAuthLoadStatus({ status: 'success', message: 'Successfully logged out!' }));
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),
       );
@@ -39,7 +41,7 @@ function* logoutUserWorker(action: { type: string }) {
       yield put(
         setUserAuthLoadStatus({
           status: 'failure',
-          error: String(fetchStatus.response.failure.detail),
+          message: String(fetchStatus.response.failure.detail),
         }),
       );
       yield put(

@@ -27,7 +27,9 @@ function* loginUserWorker(action: { type: string; payload: Partial<TAccessLoginO
     )) as TSafeReturn<TAccessLoginOutgoingFields>;
 
     if (validateStatus.error !== undefined) {
-      yield put(setUserAuthLoadStatus({ status: 'failure', error: String(validateStatus.error) }));
+      yield put(
+        setUserAuthLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
+      );
       return;
     }
 
@@ -41,12 +43,14 @@ function* loginUserWorker(action: { type: string; payload: Partial<TAccessLoginO
     console.dir(fetchStatus);
 
     if (fetchStatus.error !== undefined) {
-      yield put(setUserAuthLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+      yield put(
+        setUserAuthLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+      );
       return;
     }
 
     if (fetchStatus.response.success !== undefined) {
-      yield put(setUserAuthLoadStatus({ status: 'success' }));
+      yield put(setUserAuthLoadStatus({ status: 'success', message: 'Successfully logged in!' }));
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),
       );
@@ -58,7 +62,7 @@ function* loginUserWorker(action: { type: string; payload: Partial<TAccessLoginO
       yield put(
         setUserAuthLoadStatus({
           status: 'failure',
-          error: String(fetchStatus.response.failure.detail),
+          message: String(fetchStatus.response.failure.detail),
         }),
       );
       yield put(

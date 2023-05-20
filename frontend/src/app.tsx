@@ -13,7 +13,8 @@ import { LoadingTrackerProgressContainer } from './containers/loading-tracker-pr
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { getCategoriesAsync, goodsCategoriesSelector } from './store';
+import { getCategoriesAsync, goodsCategoriesSelector, logoutUserAsync } from './store';
+import { ToastsContainerMemo } from './containers/toast/toast';
 
 const App: FC = () => {
   const d = useAppDispatch();
@@ -36,6 +37,7 @@ const App: FC = () => {
         flexDirection={'column'}
       >
         <LoadingTrackerProgressContainer />
+        <ToastsContainerMemo />
         <CartContainerMemo />
         <LayoutContainer>
           <Switch>
@@ -82,9 +84,9 @@ const App: FC = () => {
             */}
             <Route path="/">
               <Button
-              // onClick={() => {
-              //   dispatch(logoutUserAsync());
-              // }}
+                onClick={() => {
+                  void d(logoutUserAsync());
+                }}
               />
               <div>Not found</div>
             </Route>
