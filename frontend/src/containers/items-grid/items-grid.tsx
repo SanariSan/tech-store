@@ -109,8 +109,16 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
       px={{ base: 6, sm: 8, md: 10 }}
       overflowY={'scroll'}
       ref={gridRef}
+      gap={3}
     >
-      <Flex w={'100%'} minH={'max-content'} pb={4} gap={6} direction={'column'}>
+      <Flex
+        w={'100%'}
+        minW={{ base: '230px', sm: '375px' }}
+        minH={'max-content'}
+        pb={4}
+        gap={6}
+        direction={'column'}
+      >
         <Flex w={'100%'} minH={'max-content'} gap={3} direction={'column'}>
           <BreadcrumbComponentMemo list={breadcrumbList} />
           <Text variant={{ base: 'md', sm: 'lg' }} fontWeight={'bold'}>

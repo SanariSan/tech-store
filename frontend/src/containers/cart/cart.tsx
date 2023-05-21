@@ -125,10 +125,12 @@ const CartContainer: FC<TCartContainer> = () => {
             py={4}
           >
             <Flex w={'100%'} justifyContent={'flex-end'} gap={6} px={6}>
-              <Text variant={'md'} fontWeight={'bold'}>
+              <Text variant={'md'} whiteSpace={'nowrap'} fontWeight={'bold'}>
                 Total:
               </Text>
-              <Text variant={'md'}>{cartTotal} $</Text>
+              <Text variant={'md'} whiteSpace={'nowrap'}>
+                {cartTotal} $
+              </Text>
             </Flex>
             <Flex
               direction={'row'}
@@ -138,11 +140,12 @@ const CartContainer: FC<TCartContainer> = () => {
               pt={3}
               px={6}
             >
-              <Button variant="outline" mr={3} onClick={onClose}>
+              <Button variant="outline" size={{ base: 'sm', sm: 'md' }} mr={3} onClick={onClose}>
                 Cancel
               </Button>
               <Button
                 colorScheme={'yellow'}
+                size={{ base: 'sm', sm: 'md' }}
                 bg={impact}
                 color={btnColor}
                 isDisabled={cartEntities.length <= 0}
@@ -158,7 +161,7 @@ const CartContainer: FC<TCartContainer> = () => {
                   onClose();
                 }}
               >
-                Place order
+                Order
               </Button>
             </Flex>
           </Flex>
