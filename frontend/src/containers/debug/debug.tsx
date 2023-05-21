@@ -3,12 +3,10 @@ import { useEffect } from 'react';
 import { useAppSelector } from '../../hooks/redux';
 import { useScreenDetails } from '../../hooks/use-screen-details';
 import {
-  themeSelector,
   userInfoUsernameSelector,
   userAuthIsAuthenticatedSelector,
   goodsLikedEntitiesSelector,
 } from '../../store';
-import style from './debug.module.scss';
 
 const DebugContainer: FC = () => {
   const {
@@ -16,7 +14,6 @@ const DebugContainer: FC = () => {
       default: { w, h },
     },
   } = useScreenDetails();
-  const theme = useAppSelector(themeSelector);
   const username = useAppSelector(userInfoUsernameSelector);
   const isAuthenticated = useAppSelector(userAuthIsAuthenticatedSelector);
   const liked = useAppSelector(goodsLikedEntitiesSelector);

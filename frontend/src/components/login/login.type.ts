@@ -6,7 +6,6 @@ type TProps = FormikProps<TLoginFormValues>;
 type TLogin = {
   [TKey in keyof TProps]: TProps[TKey];
 } & {
-  theme: string;
   isLoading: boolean;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
 };

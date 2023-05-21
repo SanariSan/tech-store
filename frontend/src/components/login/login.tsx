@@ -1,24 +1,18 @@
 import { Button, Flex, Input, Text } from '@chakra-ui/react';
-import classNames from 'classnames';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
 import { changeRoute } from '../../containers/history-catcher';
-import style from './login.module.scss';
 import type { TLogin } from './login.type';
 
-const LoginComponent: FC<TLogin> = ({ theme, isLoading, ...rest }) => {
+const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
   const { handleSubmit, errors, touched } = rest;
 
   return (
-    <Flex
-      w={'100%'}
-      h={'100%'}
-      className={classNames('h-100', 'd-flex', 'flex-column', 'align-items-center', style[theme])}
-    >
+    <Flex w={'100%'} h={'100%'}>
       <FormikForm onSubmit={handleSubmit}>
         <h2 style={{ textAlign: 'center' }}>Log in</h2>
 
-        <Text className={style[theme]}>Username</Text>
+        <Text>Username</Text>
         <Input
           as={Field}
           className="mb-1"
