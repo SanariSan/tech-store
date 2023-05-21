@@ -5,7 +5,7 @@ import { NavbarComponent } from '../../components/navbar';
 import { useScreenDetails } from '../../hooks/use-screen-details';
 import { SidebarContainerMemo } from '../sidebar';
 import type { TLayout } from './layout.type';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 const LayoutContainer: FC<TLayout> = ({ children }) => {
   const {
@@ -14,9 +14,10 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
     },
   } = useScreenDetails();
   const [isSidebarOpened, setIsSidebarOpened] = useState(() => w > 768);
-  const [bg, bgAlt] = [
-    useColorModeValue(COLORS_MAP_LIGHT.bg, COLORS_MAP_DARK.bg),
-    useColorModeValue(COLORS_MAP_LIGHT.bgAlt, COLORS_MAP_DARK.bgAlt),
+  const [bg, bgAlt, border] = [
+    useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
+    useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 
   const switchSidebarState = useCallback((payload?: { state: boolean }) => {
@@ -45,7 +46,17 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
       >
         <NavbarComponent switchSidebarState={switchSidebarState} />
       </GridItem>
-      <GridItem area={'side'} bg={bg}>
+      <GridItem
+        area={'side'}
+        bg={bg}
+        borderStyle={'dashed'}
+        borderColor={border}
+        borderWidth={'1px'}
+        // borderRadius={'20px'}
+        borderLeft={'none'}
+        borderTop={'none'}
+        borderBottom={'none'}
+      >
         <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
       </GridItem>
       <GridItem area={'main'} bg={bgAlt} overflow={'hidden'} position={'relative'}>

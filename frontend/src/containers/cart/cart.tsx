@@ -25,7 +25,7 @@ import {
   setSuccessMessage,
   uiCartStateSelector,
 } from '../../store';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 type TCartContainer = {
   [key: string]: unknown;
@@ -38,9 +38,9 @@ const CartContainer: FC<TCartContainer> = () => {
   const cartTotal = useAppSelector(goodsCartEntitiesPriceSelector);
 
   const [bgAlt, impact, btnColor] = [
-    useColorModeValue(COLORS_MAP_LIGHT.bgAlt, COLORS_MAP_DARK.bgAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.bgAlt),
+    useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
+    useColorModeValue(COLORS.blue[600], COLORS.darkBlue[600]),
   ];
 
   const onClose = useCallback(() => {
@@ -79,14 +79,6 @@ const CartContainer: FC<TCartContainer> = () => {
         description: 'Your order is being processed now. Thank you!',
       }),
     );
-    // toast({
-    //   title: 'Order placed!',
-    //   position: 'top-right',
-    //   description: 'Your order is being processed now. Thank you!',
-    //   status: 'success',
-    //   variant: 'subtle',
-    //   isClosable: true,
-    // });
   }, [d]);
 
   return (
@@ -108,7 +100,6 @@ const CartContainer: FC<TCartContainer> = () => {
             alignItems={'flex-start'}
             gap={3}
           >
-            {/* <p>{JSON.stringify(cartEntities, null, 2)}</p> */}
             {cartEntities.map(({ id, ...props }, idx) => (
               <Fragment key={`cart_${id}`}>
                 <CartCardComponentMemo
@@ -173,7 +164,6 @@ const CartContainer: FC<TCartContainer> = () => {
           </Flex>
         </DrawerFooter>
       </DrawerContent>
-      {/* </DrawerOverlay> */}
     </Drawer>
   );
 };

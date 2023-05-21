@@ -1,7 +1,7 @@
 import { Box, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useState, memo } from 'react';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../../chakra-setup';
+import { COLORS } from '../../../chakra-setup';
 
 interface ISidebarSubEntity {
   title: string;
@@ -18,11 +18,11 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [inactive, secondaryAlt, impact, impactHover, impactActive] = [
-    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
-    useColorModeValue(COLORS_MAP_LIGHT.impactHover, COLORS_MAP_DARK.impactHover),
-    useColorModeValue(COLORS_MAP_LIGHT.impactActive, COLORS_MAP_DARK.impactActive),
+    useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
+    useColorModeValue(COLORS.yellow[500], COLORS.yellow[500]),
+    useColorModeValue(COLORS.yellow[300], COLORS.yellow[300]),
   ];
 
   return (

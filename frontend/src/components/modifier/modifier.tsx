@@ -1,6 +1,6 @@
 import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 type TModifierProps = {
   title: string;
@@ -10,10 +10,10 @@ type TModifierProps = {
 
 export const ModifierComponent: FC<TModifierProps> = ({ title, isSelected, onClick }) => {
   const [bgAlt, secondaryAlt, wrapBg, accent] = [
-    useColorModeValue(COLORS_MAP_LIGHT.bgAlt, COLORS_MAP_DARK.bgAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.wrapBg, COLORS_MAP_DARK.wrapBg),
-    useColorModeValue(COLORS_MAP_LIGHT.accent, COLORS_MAP_DARK.accent),
+    useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[300]),
+    useColorModeValue(COLORS.blue[800], COLORS.white[900]),
   ];
 
   return (

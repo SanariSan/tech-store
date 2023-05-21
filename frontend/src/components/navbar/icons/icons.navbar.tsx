@@ -3,7 +3,7 @@ import { Flex, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
 import { CartIcon } from '../../icons';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../../chakra-setup';
+import { COLORS } from '../../../chakra-setup';
 
 const NavbarIconsComponent: FC<{
   isOpened: boolean;
@@ -11,10 +11,10 @@ const NavbarIconsComponent: FC<{
   onThemeToggle: () => void;
 }> = ({ isOpened, onCartToggle, onThemeToggle }) => {
   const [inactive, secondaryAlt, border, bg] = [
-    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
-    useColorModeValue(COLORS_MAP_LIGHT.bg, COLORS_MAP_DARK.bg),
+    useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[200]),
+    useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
   ];
 
   return (

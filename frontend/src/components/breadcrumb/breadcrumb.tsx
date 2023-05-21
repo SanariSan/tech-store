@@ -8,16 +8,14 @@ import {
 } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 type TBreadcrumbProps = {
   list: Array<{ title: string; pathname: string }>;
 };
 
 const BreadcrumbComponent: FC<TBreadcrumbProps> = ({ list }) => {
-  const [secondaryAlt] = [
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-  ];
+  const [secondaryAlt] = [useColorModeValue(COLORS.blue[600], COLORS.blue[500])];
 
   return (
     <Breadcrumb spacing="8px" separator={<ChevronRightIcon color={secondaryAlt} />}>
