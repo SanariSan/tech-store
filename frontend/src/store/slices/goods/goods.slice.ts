@@ -1,10 +1,7 @@
 import { createSlice, current } from '@reduxjs/toolkit';
+import type { TLoadingStatus } from '../slices.type';
 import { GOODS_INIT_STATE } from './goods.slice.const';
-import type { TLoadingStatus, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
-import type {
-  TGoodsCategoriesIncomingSuccessFields,
-  TGoodsEntitiesIncomingSuccessFields,
-} from '../../../services/api';
+import type { TCategories, TEntities, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
 
 /* eslint-disable no-param-reassign */
 
@@ -14,7 +11,7 @@ function findCategory({
   target,
   currRoute = [],
 }: {
-  categoriesArr: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+  categoriesArr: TCategories;
   target?: string;
   currRoute?: TSelectedRoute[];
 }) {
@@ -76,7 +73,7 @@ const goodsSlice = createSlice({
       state,
       action: {
         payload: {
-          categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+          categories: TCategories;
         };
         type: string;
       },
@@ -109,8 +106,6 @@ const goodsSlice = createSlice({
         categoriesArr: current(state.categories),
         target: action.payload.category,
       });
-
-      console.log('Found', result);
 
       if (result !== undefined) {
         state.selectedCategory = result.category;
@@ -147,33 +142,102 @@ const goodsSlice = createSlice({
         state.selectedModifier = result.modifier;
       }
     },
-    increaseOffset(
-      state,
-      action: {
-        payload: undefined;
-        type: string;
-      },
-    ) {
+    increaseOffset(state) {
       state.offset += state.offsetPerPage;
     },
     pushEntities(
       state,
       action: {
-        payload: { entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'] };
+        payload: { entities: TEntities };
         type: string;
       },
     ) {
       state.entities.push(...action.payload.entities);
     },
+    pushLikedEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TEntities[number]['id'];
+        };
+        type: string;
+      },
+    ) {
+      const targetEntity = current(state.entities).find(
+        (entity) => entity.id === action.payload.entityId,
+      );
+      const isInLiked = current(state.likedEntities).some(
+        (entity) => entity.id === action.payload.entityId,
+      );
+
+      if (targetEntity !== undefined && !isInLiked) {
+        state.likedEntities.push(targetEntity);
+      }
+    },
+    removeLikedEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TEntities[number]['id'];
+        };
+        type: string;
+      },
+    ) {
+      const targetIdx = current(state.likedEntities).findIndex(
+        (el) => el.id === action.payload.entityId,
+      );
+
+      if (targetIdx !== -1) {
+        state.likedEntities.splice(targetIdx, 1);
+      }
+    },
+    pushCartEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TEntities[number]['id'];
+        };
+        type: string;
+      },
+    ) {
+      const targetEntity = current(state.entities).find(
+        (entity) => entity.id === action.payload.entityId,
+      );
+
+      if (targetEntity !== undefined) {
+        state.cart.push(targetEntity);
+      }
+    },
+    removeCartEntity(
+      state,
+      action: {
+        payload: {
+          entityId: TEntities[number]['id'];
+          modifier?: 'one' | 'all';
+        };
+        type: string;
+      },
+    ) {
+      const cart: TEntities = current(state.cart) as TEntities;
+
+      if (action.payload.modifier === undefined || action.payload.modifier === 'one') {
+        const targetIdx: number = cart.findLastIndex((el) => el.id === action.payload.entityId);
+
+        if (targetIdx !== -1) {
+          state.cart.splice(targetIdx, 1);
+        }
+      } else {
+        state.cart = cart.filter((el) => el.id !== action.payload.entityId);
+      }
+    },
+    purgeCart(state) {
+      state.cart.length = 0;
+    },
     setGoodsLoadStatus(
       state,
-      action: { payload: { status: TLoadingStatus; error?: unknown }; type: string },
+      action: { payload: { status: TLoadingStatus; message?: string }; type: string },
     ) {
       state.loadingStatus = action.payload.status;
-
-      if (action.payload.status === 'failure' && action.payload.error !== undefined) {
-        state.error = JSON.stringify(action.payload.error);
-      }
     },
     // sagas
     getCategoriesAsync() {},
@@ -189,6 +253,11 @@ const {
   setSelectedModifier,
   increaseOffset,
   pushEntities,
+  pushLikedEntity,
+  removeLikedEntity,
+  pushCartEntity,
+  removeCartEntity,
+  purgeCart,
   setGoodsLoadStatus,
   getCategoriesAsync,
   fetchMoreEntitiesAsync,
@@ -202,6 +271,11 @@ export {
   setSelectedModifier,
   increaseOffset,
   pushEntities,
+  pushLikedEntity,
+  pushCartEntity,
+  removeCartEntity,
+  purgeCart,
+  removeLikedEntity,
   setGoodsLoadStatus,
   getCategoriesAsync,
   fetchMoreEntitiesAsync,

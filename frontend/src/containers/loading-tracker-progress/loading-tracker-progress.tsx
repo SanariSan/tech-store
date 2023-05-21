@@ -1,10 +1,13 @@
 import type { FC } from 'react';
 import { useMemo, useRef, useEffect, useState } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, useColorModeValue } from '@chakra-ui/react';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import { useLoadingTracker } from '../../hooks/use-loading-tracker';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 const LoadingTrackerProgressContainer: FC = () => {
+  const [impact] = [useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact)];
+
   const calculateExpPercentage = useMemo(
     () => (_x: number, _coeff: number) => (_x / (_x + _coeff)) * 100,
     [],
@@ -23,10 +26,17 @@ const LoadingTrackerProgressContainer: FC = () => {
     if (isLoading && isMounted) {
       if (timerRef.current === undefined) {
         const ms = Math.random() * (250 - 100) + 100;
-        timerRef.current = setInterval(() => {
-          if (percent >= 100) return;
+
+        const increaseX = () => {
+          if (percent >= 100) {
+            clearTimeout(timerRef.current);
+            return;
+          }
+
           setX((prev) => prev + 1);
-        }, ms);
+          setTimeout(increaseX, ms);
+        };
+        timerRef.current = setTimeout(increaseX, ms);
       }
     } else if (!isLoading && isMounted) {
       clearInterval(timerRef.current);
@@ -38,6 +48,11 @@ const LoadingTrackerProgressContainer: FC = () => {
   }, [isLoading, isMounted, percent]);
 
   useEffect(() => {
+    if (x === 0) {
+      setPercent(0);
+      return;
+    }
+
     setPercent(calculateExpPercentage(x, coeff));
   }, [x, calculateExpPercentage]);
 
@@ -52,9 +67,7 @@ const LoadingTrackerProgressContainer: FC = () => {
     <>
       {isMounted && (
         <Box
-          // bg={'cyan.600'}
-          // opacity={isLoading ? 0.6 : 0}
-          bg={'yellow.400'}
+          bg={impact}
           opacity={isLoading ? 1 : 0}
           boxShadow={'0px -2px 5px 0px rgba(0,0,0,0.75)'}
           position={'fixed'}

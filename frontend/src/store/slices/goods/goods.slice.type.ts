@@ -2,18 +2,19 @@ import type {
   TGoodsCategoriesIncomingSuccessFields,
   TGoodsEntitiesIncomingSuccessFields,
 } from '../../../services/api';
+import type { TLoadingStatus } from '../slices.type';
 
-type TLoadingStatus = 'idle' | 'loading' | 'success' | 'failure';
-type TSelectedCategory = Exclude<
-  TGoodsCategoriesIncomingSuccessFields['data']['categories'],
-  undefined
->[number];
+type TEntities = TGoodsEntitiesIncomingSuccessFields['data']['entities'];
+type TCategories = TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+type TSelectedCategory = Exclude<TCategories, undefined>[number];
 type TSelectedModifier = Exclude<TSelectedCategory['modifiers'], undefined>[number];
 type TSelectedRoute = { title: string; pathname: string };
 
 type TGoodsInitState = {
-  entities: TGoodsEntitiesIncomingSuccessFields['data']['entities'];
-  categories: TGoodsCategoriesIncomingSuccessFields['data']['categories'];
+  entities: TEntities;
+  likedEntities: TEntities;
+  categories: TCategories;
+  cart: TEntities;
   selectedSection: TSelectedRoute;
   selectedCategory: TSelectedCategory | undefined;
   selectedCategoryRoute: TSelectedRoute[];
@@ -21,13 +22,13 @@ type TGoodsInitState = {
   offset: number;
   offsetPerPage: number;
   loadingStatus: TLoadingStatus;
-  error: string | undefined;
 };
 
 export type {
+  TEntities,
+  TCategories,
   TSelectedCategory,
   TSelectedModifier,
   TGoodsInitState,
-  TLoadingStatus,
   TSelectedRoute,
 };

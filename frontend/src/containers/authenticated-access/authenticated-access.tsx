@@ -1,10 +1,11 @@
 import type { FC } from 'react';
-import { useEffect } from 'react';
-import { Spinner } from 'react-bootstrap';
+import { useMemo, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
+import { Spinner, useColorModeValue } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { checkUserAuthStatusAsync, userAuthIsAuthenticatedSelector } from '../../store';
 import type { TAuthRoute } from './authenticated-access.type';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
   children,
@@ -13,7 +14,8 @@ const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
 }) => {
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(userAuthIsAuthenticatedSelector);
-  const isLoading = isAuthenticated === 'idle';
+  const isLoading = useMemo(() => isAuthenticated === 'idle', [isAuthenticated]);
+  const [inactive] = [useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive)];
 
   useEffect(() => {
     if (isAuthenticated === 'idle') {
@@ -44,7 +46,7 @@ const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
           zIndex: 2,
         }}
       >
-        <Spinner animation="grow" variant="primary" />
+        <Spinner size={'xl'} color={inactive} />
       </div>
     );
 

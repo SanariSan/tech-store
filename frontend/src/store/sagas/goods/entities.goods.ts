@@ -6,20 +6,21 @@ import type {
   TGoodsEntitiesIncomingSuccessFields,
   TGoodsEntitiesOutgoingFields,
 } from '../../../services/api';
-import { GoodsEntitiesOutgoingDTO, validateDTO, getEntities } from '../../../services/api';
+import { GoodsEntitiesOutgoingDTO, getEntities, validateDTO } from '../../../services/api';
+import type { TRootState } from '../../redux.store.type';
+import { goodsSelector } from '../../selectors';
 import {
   fetchMoreEntitiesAsync,
   increaseOffset,
   pushEntities,
   setGoodsLoadStatus,
 } from '../../slices';
-import { goodsSelector } from '../../selectors';
-import type { TRootState } from '../../redux.store.type';
 
 function* entitiesWorker(action: { type: string }) {
   const abortController = new AbortController();
   try {
     yield put(setGoodsLoadStatus({ status: 'loading' }));
+    // todo: remove in prod (?), showcase delay
     yield delay(500);
 
     const { selectedCategory, selectedModifier, offset, offsetPerPage } = (yield select(
@@ -39,7 +40,9 @@ function* entitiesWorker(action: { type: string }) {
     )) as TSafeReturn<TGoodsEntitiesOutgoingFields>;
 
     if (validateStatus.error !== undefined) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(validateStatus.error) }));
+      yield put(
+        setGoodsLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
+      );
       return;
     }
 
@@ -53,7 +56,9 @@ function* entitiesWorker(action: { type: string }) {
     console.dir(fetchStatus);
 
     if (fetchStatus.error !== undefined) {
-      yield put(setGoodsLoadStatus({ status: 'failure', error: String(fetchStatus.error) }));
+      yield put(
+        setGoodsLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+      );
       return;
     }
 
@@ -68,14 +73,14 @@ function* entitiesWorker(action: { type: string }) {
       yield put(
         setGoodsLoadStatus({
           status: 'failure',
-          error: String(fetchStatus.response.failure.detail),
+          message: String(fetchStatus.response.failure.detail),
         }),
       );
+
       return;
     }
   } finally {
     if ((yield cancelled()) as boolean) {
-      console.log('cancelled');
       abortController.abort();
     }
   }

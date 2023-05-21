@@ -1,5 +1,6 @@
-import { BellIcon, MoonIcon, Search2Icon } from '@chakra-ui/icons';
+import { Search2Icon } from '@chakra-ui/icons';
 import {
+  Avatar,
   Box,
   Circle,
   Flex,
@@ -8,23 +9,52 @@ import {
   InputGroup,
   InputLeftElement,
   Spacer,
+  useColorMode,
+  useColorModeValue,
+  useToken,
 } from '@chakra-ui/react';
-import type { FC } from 'react';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import logo from '../../../assets/logo.png';
-import { CartIcon, HamburgerIcon } from '../icons';
+import pfp from '../../../assets/pfp.png';
+import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
+import { useAppDispatch } from '../../hooks/redux';
+import { setIsCartOpened } from '../../store';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 interface INavbarComponent {
   switchSidebarState: (payload?: { state: boolean }) => void;
 }
 
 export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
+  const d = useAppDispatch();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
+  const { colorMode, toggleColorMode } = useColorMode();
+  const [inactive, secondaryAlt, secondary, hoverColor, impact, border] = [
+    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+    useColorModeValue(COLORS_MAP_LIGHT.hover, COLORS_MAP_DARK.hover),
+    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
+    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
+  ];
+
+  const hover = {
+    transform: 'perspective(100px) translateZ(4px)',
+  };
 
   const toggleToolbar = useCallback(() => {
     setIsToolbarOpened((_) => !_);
   }, []);
+
+  const onCartToggle = useCallback(() => {
+    toggleToolbar();
+    void d(setIsCartOpened({ isOpened: 'toggle' }));
+  }, [d, toggleToolbar]);
+
+  useEffect(() => {
+    console.log(colorMode);
+  }, [colorMode]);
 
   return (
     <Flex
@@ -38,7 +68,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
     >
       <Image src={logo} objectFit={'contain'} maxH={{ base: '30px', sm: 'max-content' }} />
 
-      <Box h={'100%'} w={'2px'} minW={'2px'} bg="blue.300" />
+      <Box h={'100%'} w={'2px'} minW={'2px'} bg={secondary} />
 
       <Flex
         justifyContent={'space-between'}
@@ -49,9 +79,12 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       >
         <HamburgerIcon
           boxSize={{ base: 4, sm: 5 }}
-          color={'blue.500'}
+          color={inactive}
           _hover={{
-            color: 'blue.600',
+            color: secondaryAlt,
+          }}
+          _active={{
+            color: inactive,
           }}
           onClick={() => {
             switchSidebarState();
@@ -63,6 +96,10 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
           w={'max-content'}
           maxW={'300px'}
           display={{ base: 'flex', sm: 'flex' }}
+          borderStyle={'dashed'}
+          borderColor={border}
+          borderWidth={'1px'}
+          borderRadius={'20px'}
         >
           <InputLeftElement
             pl={'20px'}
@@ -75,7 +112,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
             // TODO: figure out why Input preset not working
             fontSize={{ base: '14px', sm: '16px' }}
             placeholder="Search"
-            bg={'white.400'}
+            bg={hoverColor}
             borderRadius={'20px'}
             pl={12}
           />
@@ -85,8 +122,33 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       <Spacer />
 
       <Flex direction={'row'} alignItems={'center'} gap={4}>
-        <NavbarIconsComponentMemo isOpened={isToolbarOpened} />
-        <Circle size={10} bg={'yellow.400'} cursor={'pointer'} onClick={toggleToolbar} />
+        <NavbarIconsComponentMemo
+          isOpened={isToolbarOpened}
+          onCartToggle={onCartToggle}
+          onThemeToggle={toggleColorMode}
+        />
+        <Circle
+          size={10}
+          cursor={'pointer'}
+          onClick={toggleToolbar}
+          borderRadius={'20px'}
+          background={`url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23${impact.slice(
+            1,
+          )}' stroke-width='3' stroke-dasharray='4%2c10' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");`}
+          transform={'perspective(100px) translateZ(0px)'}
+          _hover={hover}
+          _active={hover}
+          _focus={hover}
+        >
+          <Avatar
+            src={pfp}
+            bg={impact}
+            objectFit={'contain'}
+            borderRadius={'20px'}
+            w={'80%'}
+            h={'80%'}
+          />
+        </Circle>
       </Flex>
     </Flex>
   );
