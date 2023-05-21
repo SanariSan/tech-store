@@ -41,10 +41,18 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
         setIsHovered(false);
       }}
     >
-      <Box position={'absolute'} left={0} w={'2px'} h={'100%'} bg={inactive} />
+      <Box
+        position={'absolute'}
+        left={0}
+        ml={{ base: '3px', sm: '1px' }}
+        w={'2px'}
+        h={'100%'}
+        bg={inactive}
+      />
       <Flex h={'100%'} direction={'row'} alignItems={'center'}>
         <Box
           position={'absolute'}
+          ml={{ base: '3px', sm: '1px' }}
           w={'3px'}
           h={'50%'}
           borderRadius={'30px'}

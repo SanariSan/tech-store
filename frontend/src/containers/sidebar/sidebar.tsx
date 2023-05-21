@@ -73,7 +73,7 @@ const SidebarContainer: FC<ISidebarContainer> = ({
       h={'100%'}
       py={9}
       pb={6}
-      pr={2}
+      pr={{ base: 1, sm: 2 }}
     >
       {SIDEBAR_TEMPLATE.map(
         ({ icon, title, sub, sideAction: onSelectSideActionParent }, idxSection) => (

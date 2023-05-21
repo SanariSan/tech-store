@@ -62,7 +62,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       alignItems={'center'}
       h={'100%'}
       py={4}
-      gap={{ base: 3, sm: 6 }}
+      gap={{ base: 4, sm: 6 }}
       px={6}
       overflowX={'hidden'}
     >
