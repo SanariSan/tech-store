@@ -9,6 +9,7 @@ import {
   DrawerOverlay,
   Flex,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { Fragment, memo, useCallback } from 'react';
@@ -24,6 +25,7 @@ import {
   setSuccessMessage,
   uiCartStateSelector,
 } from '../../store';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 type TCartContainer = {
   [key: string]: unknown;
@@ -34,6 +36,12 @@ const CartContainer: FC<TCartContainer> = () => {
   const isCartOpened = useAppSelector(uiCartStateSelector);
   const cartEntities = useAppSelector(goodsCartEntitiesStackedSelector);
   const cartTotal = useAppSelector(goodsCartEntitiesPriceSelector);
+
+  const [bgAlt, impact, btnColor] = [
+    useColorModeValue(COLORS_MAP_LIGHT.bgAlt, COLORS_MAP_DARK.bgAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.bgAlt),
+  ];
 
   const onClose = useCallback(() => {
     void d(setIsCartOpened({ isOpened: false }));
@@ -89,7 +97,7 @@ const CartContainer: FC<TCartContainer> = () => {
           sm: 'unset',
         }}
       />
-      <DrawerContent bg={'white.900'}>
+      <DrawerContent bg={bgAlt}>
         <DrawerCloseButton />
         <DrawerHeader borderBottomWidth={'1px'}>{`Cart`}</DrawerHeader>
 
@@ -144,6 +152,8 @@ const CartContainer: FC<TCartContainer> = () => {
               </Button>
               <Button
                 colorScheme={'yellow'}
+                bg={impact}
+                color={btnColor}
                 isDisabled={cartEntities.length <= 0}
                 opacity={1}
                 _disabled={{

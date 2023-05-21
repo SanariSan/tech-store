@@ -1,60 +1,72 @@
+import { BellIcon, MoonIcon } from '@chakra-ui/icons';
+import { Flex, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
-import { Flex, useDisclosure } from '@chakra-ui/react';
-import { BellIcon, MoonIcon } from '@chakra-ui/icons';
 import { CartIcon } from '../../icons';
-import { useAppDispatch } from '../../../hooks/redux';
-import { setIsCartOpened } from '../../../store';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../../chakra-setup';
 
-const NavbarIconsComponent: FC<{ isOpened: boolean; toggleToolbar: () => void }> = ({
-  isOpened,
-  toggleToolbar,
-}) => {
-  const d = useAppDispatch();
+const NavbarIconsComponent: FC<{
+  isOpened: boolean;
+  onCartToggle: () => void;
+  onThemeToggle: () => void;
+}> = ({ isOpened, onCartToggle, onThemeToggle }) => {
+  const [inactive, secondaryAlt, border, bg] = [
+    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
+    useColorModeValue(COLORS_MAP_LIGHT.bg, COLORS_MAP_DARK.bg),
+  ];
+
   return (
     <Flex
       direction={{ base: 'column', md: 'row' }}
       position={{ base: 'absolute', md: 'unset' }}
-      width={{ base: '70px', md: 'max-content' }}
+      width={{ base: '60px', md: 'max-content' }}
       maxHeight={{ base: isOpened ? '120px' : '0px', md: 'max-content' }}
       overflow={'hidden'}
-      right={2}
-      top={65}
+      right={3}
+      top={77}
       alignItems={'center'}
       gap={4}
       borderStyle={'solid'}
-      borderColor={{ base: isOpened ? 'white.400' : 'transparent', md: 'transparent' }}
+      borderColor={{ base: isOpened ? border : 'transparent', md: 'transparent' }}
       borderWidth={{ base: '2px', md: '0px' }}
-      borderRadius={'20px'}
-      borderTop={'none'}
+      borderRadius={'100px'}
     >
       <MoonIcon
         boxSize={{ base: 4, md: 5 }}
-        color={'blue.500'}
+        color={inactive}
         _hover={{
-          color: 'blue.600',
+          color: secondaryAlt,
+        }}
+        _active={{
+          color: inactive,
         }}
         cursor={'pointer'}
+        onClick={onThemeToggle}
         mt={{ base: 4, md: 0 }}
       />
       <BellIcon
         boxSize={{ base: 4, md: 5 }}
-        color={'blue.500'}
+        color={inactive}
         _hover={{
-          color: 'blue.600',
+          color: secondaryAlt,
+        }}
+        _active={{
+          color: inactive,
         }}
         cursor={'pointer'}
       />
       <CartIcon
         boxSize={{ base: 4, md: 5 }}
-        color={'blue.500'}
+        color={inactive}
         _hover={{
-          color: 'blue.600',
+          color: secondaryAlt,
         }}
-        onClick={() => {
-          void d(setIsCartOpened({ isOpened: true }));
-          toggleToolbar();
+        _active={{
+          color: inactive,
         }}
+        onClick={onCartToggle}
         mb={{ base: 4, md: 0 }}
       />
       <Flex
@@ -64,7 +76,7 @@ const NavbarIconsComponent: FC<{ isOpened: boolean; toggleToolbar: () => void }>
         maxHeight={{ base: isOpened ? '120px' : '0px', md: 'max-content' }}
         opacity={0.9}
         transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
-        background={'blue.25'}
+        background={bg}
         zIndex={-1}
       />
     </Flex>

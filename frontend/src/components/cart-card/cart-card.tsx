@@ -1,9 +1,10 @@
 import { AddIcon, DeleteIcon, MinusIcon } from '@chakra-ui/icons';
-import { Box, Button, Circle, Flex, Text } from '@chakra-ui/react';
+import { Box, Button, Circle, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import React, { memo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import type { goodsCartEntitiesStackedSelector } from '../../store';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 type TCartCardComponent = Omit<
   ReturnType<typeof goodsCartEntitiesStackedSelector>[number],
@@ -27,9 +28,23 @@ const CartCardComponent: FC<TCartCardComponent> = ({
   onDelete,
   orderIdx,
 }) => {
-  const hover = {
-    transform: 'perspective(100px) translateZ(2px)',
-  };
+  const [inactive, secondaryAlt, accent, wrapBg, border, cardBg, impact, secondary] = [
+    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.accent, COLORS_MAP_DARK.accent),
+    useColorModeValue(COLORS_MAP_LIGHT.wrapBg, COLORS_MAP_DARK.wrapBg),
+    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
+    useColorModeValue(COLORS_MAP_LIGHT.cardBg, COLORS_MAP_DARK.cardBg),
+    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
+    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+  ];
+
+  const hover = useMemo(
+    () => ({
+      transform: 'perspective(100px) translateZ(2px)',
+    }),
+    [],
+  );
 
   return (
     <Flex
@@ -42,11 +57,12 @@ const CartCardComponent: FC<TCartCardComponent> = ({
       minH={{ base: '100px', sm: '125px' }}
       minW={'260px'}
       borderStyle={'dashed'}
-      borderColor={'white.400'}
+      borderColor={border}
       borderWidth={'2px'}
       borderRadius={'20px'}
       gap={3}
       p={3}
+      bg={cardBg}
       transition={`
       transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)`}
       transform={'perspective(100px) translateZ(0px)'}
@@ -54,7 +70,7 @@ const CartCardComponent: FC<TCartCardComponent> = ({
       _active={{ sm: hover }}
       _focus={{ sm: hover }}
     >
-      <Flex direction={'row'} width={'100%'} height={'max-content'} gap={3}>
+      <Flex direction={'row'} width={'100%'} height={'max-content'} gap={4}>
         <Box
           minH={{ base: '100px', sm: '125px' }}
           maxH={{ base: '125px', sm: '150px' }}
@@ -64,7 +80,6 @@ const CartCardComponent: FC<TCartCardComponent> = ({
         >
           <LazyImageContainer
             marginX={'auto'}
-            bg={'blue.300'}
             borderRadius={'20px'}
             objectFit={{ base: 'cover', sm: 'cover' }}
             backgroundColor={'transparent'}
@@ -78,7 +93,6 @@ const CartCardComponent: FC<TCartCardComponent> = ({
         <Flex
           direction={'column'}
           alignItems={'center'}
-          // justifyContent={'space-around'}
           w={'60%'}
           minW={'140px'}
           minH={{ base: '100px', sm: '125px' }}
@@ -91,10 +105,10 @@ const CartCardComponent: FC<TCartCardComponent> = ({
             py={2}
           >
             <Flex direction={'column'} alignItems={'flex-start'}>
-              <Text variant={{ base: 'md', sm: 'xl' }} fontWeight={'bold'} color={'blue.800'}>
+              <Text variant={{ base: 'md', sm: 'xl' }} fontWeight={'bold'} color={accent}>
                 {name}
               </Text>
-              <Text variant={{ base: 'base' }} color={'blue.600'}>
+              <Text variant={{ base: 'base' }} color={secondaryAlt}>
                 T.S. Official
               </Text>
             </Flex>
@@ -103,17 +117,17 @@ const CartCardComponent: FC<TCartCardComponent> = ({
               <Text
                 variant={{ base: 'md', sm: 'xl' }}
                 fontWeight={'bold'}
-                color={'yellow.400'}
+                color={impact}
                 letterSpacing={'0.05rem'}
               >
                 {price * qty} $
               </Text>
               <Text
                 variant={{ base: 'xs', sm: 'sm' }}
-                color={'blue.500'}
+                color={inactive}
                 letterSpacing={'0.05rem'}
                 textDecoration={'line-through'}
-                textDecorationColor={'blue.500'}
+                textDecorationColor={inactive}
               >
                 {(price + 100) * qty} $
               </Text>
@@ -126,9 +140,9 @@ const CartCardComponent: FC<TCartCardComponent> = ({
           <Button
             size={'sm'}
             borderRadius={'20px'}
-            background={'white.300'}
-            _hover={{ background: qty > 1 ? 'blue.300' : 'white.300' }}
-            _active={{ background: qty > 1 ? 'blue.400' : 'white.300' }}
+            background={wrapBg}
+            _hover={{ background: qty > 1 ? secondary : wrapBg }}
+            _active={{ background: wrapBg }}
             onClick={qty > 1 ? onRemove : undefined}
             isDisabled={qty <= 1}
             opacity={1}
@@ -137,30 +151,30 @@ const CartCardComponent: FC<TCartCardComponent> = ({
             }}
             cursor={qty > 1 ? 'pointer' : 'not-allowed'}
           >
-            <MinusIcon boxSize={{ base: 2, sm: 3 }} color={'blue.600'} />
+            <MinusIcon boxSize={{ base: 2, sm: 3 }} color={secondaryAlt} />
           </Button>
           <Text>{qty}</Text>
           <Button
             size={'sm'}
             borderRadius={'20px'}
-            background={'white.300'}
-            _hover={{ background: 'blue.300' }}
-            _active={{ background: 'blue.400' }}
+            background={wrapBg}
+            _hover={{ background: secondary }}
+            _active={{ background: wrapBg }}
             onClick={onAdd}
           >
-            <AddIcon boxSize={{ base: 2, sm: 3 }} color={'blue.600'} />
+            <AddIcon boxSize={{ base: 2, sm: 3 }} color={secondaryAlt} />
           </Button>
         </Flex>
         <Flex w={'80%'} gap={3} pr={8} alignItems={'center'} justifyContent={'flex-end'}>
           <Circle
             size={{ base: 7, sm: 9 }}
-            background={'white.300'}
-            _hover={{ background: 'blue.300' }}
+            background={wrapBg}
+            _hover={{ background: secondary }}
             onClick={onDelete}
             cursor={'pointer'}
-            _active={{ background: 'blue.400' }}
+            _active={{ background: wrapBg }}
           >
-            <DeleteIcon boxSize={{ base: 3, sm: 4 }} color={'blue.600'} />
+            <DeleteIcon boxSize={{ base: 3, sm: 4 }} color={secondaryAlt} />
           </Circle>
         </Flex>
       </Flex>

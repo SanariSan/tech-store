@@ -20,6 +20,7 @@ function* entitiesWorker(action: { type: string }) {
   const abortController = new AbortController();
   try {
     yield put(setGoodsLoadStatus({ status: 'loading' }));
+    // todo: remove in prod (?), showcase delay
     yield delay(500);
 
     const { selectedCategory, selectedModifier, offset, offsetPerPage } = (yield select(

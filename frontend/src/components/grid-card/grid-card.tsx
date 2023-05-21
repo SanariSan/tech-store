@@ -1,5 +1,14 @@
 import { TimeIcon } from '@chakra-ui/icons';
-import { Box, Button, Circle, Flex, Text, keyframes, useToken } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Circle,
+  Flex,
+  Text,
+  keyframes,
+  useColorModeValue,
+  useToken,
+} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
 import { useMemo, memo, useEffect, useRef, useState } from 'react';
@@ -7,6 +16,7 @@ import { LazyImageContainer } from '../../containers/lazy-image';
 import { useIntersection } from '../../hooks/use-intersection';
 import type { goodsEntitiesSelector } from '../../store';
 import { CartIcon, HeartIcon } from '../icons';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 type TGridCardComponent = Omit<
   ReturnType<typeof goodsEntitiesSelector>[number],
@@ -41,6 +51,32 @@ const GridCardComponent: FC<TGridCardComponent> = ({
   const imgRef = useRef<HTMLImageElement | null>(null);
   // const size = useHookThrottle({ useHook: useSize, args: [imgRef] });
 
+  const [
+    inactive,
+    secondaryAlt,
+    wrapBg,
+    secondary,
+    cardBg,
+    impact,
+    accent,
+    border,
+    liked,
+    icons,
+    dimmer,
+  ] = [
+    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.wrapBg, COLORS_MAP_DARK.wrapBg),
+    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+    useColorModeValue(COLORS_MAP_LIGHT.cardBg, COLORS_MAP_DARK.cardBg),
+    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
+    useColorModeValue(COLORS_MAP_LIGHT.accent, COLORS_MAP_DARK.accent),
+    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
+    useColorModeValue(COLORS_MAP_LIGHT.liked, COLORS_MAP_DARK.liked),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.accent),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.bg),
+  ];
+
   const cartAnimationDuration = useMemo(() => 300, []);
   const animationKeyframes = useMemo(
     () => keyframes`
@@ -62,8 +98,6 @@ const GridCardComponent: FC<TGridCardComponent> = ({
     }),
     [],
   );
-
-  const [yellow400] = useToken('colors', ['yellow.400']);
 
   useEffect(() => {
     if (isIntersecting) setHasBeenShown(true);
@@ -118,7 +152,6 @@ const GridCardComponent: FC<TGridCardComponent> = ({
       >
         <LazyImageContainer
           marginX={'auto'}
-          bg={'blue.300'}
           borderRadius={'20px'}
           objectFit={{ base: 'cover', sm: 'cover' }}
           backgroundColor={'transparent'}
@@ -141,23 +174,23 @@ const GridCardComponent: FC<TGridCardComponent> = ({
         >
           <Flex zIndex={1} gap={3}>
             <Circle
-              opacity={isImageFocused ? 0.7 : 0}
-              _hover={{ opacity: 1, background: 'blue.300' }}
+              opacity={isImageFocused ? 0.8 : 0}
+              _hover={{ opacity: 1, background: secondary }}
               transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
               onClick={onLike}
-              background={'white.300'}
+              background={wrapBg}
             >
-              <HeartIcon color={isLiked ? 'red.400' : 'blue.900'} boxSize={{ base: 4, sm: 5 }} />
+              <HeartIcon color={isLiked ? liked : icons} boxSize={{ base: 4, sm: 5 }} />
             </Circle>
             <Circle
               opacity={isImageFocused ? 0.7 : 0}
-              _hover={{ opacity: 1, background: 'blue.300' }}
+              _hover={{ opacity: 1, background: secondary }}
               transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
-              background={'white.300'}
+              background={wrapBg}
             >
-              <TimeIcon color={'blue.900'} boxSize={{ base: 4, sm: 5 }} />
+              <TimeIcon color={icons} boxSize={{ base: 4, sm: 5 }} />
             </Circle>
           </Flex>
 
@@ -167,7 +200,7 @@ const GridCardComponent: FC<TGridCardComponent> = ({
             // h={size?.height ?? '100%'}
             w={'100%'}
             h={'100%'}
-            backgroundColor={'blue.600'}
+            backgroundColor={dimmer}
             borderRadius={'20px'}
             left={0}
             right={0}
@@ -180,25 +213,27 @@ const GridCardComponent: FC<TGridCardComponent> = ({
         </Flex>
       </Box>
       <Flex
-        bg={'white.200'}
+        bg={cardBg}
         borderRadius={'20px'}
         borderStyle={'dashed'}
-        borderColor={'white.400'}
+        borderColor={border}
         borderWidth={'2px'}
         w={'100%'}
-        h={'135px'}
+        h={{ base: '150px', sm: '175px' }}
+        // minH={'135px'}
         direction={'column'}
         alignItems={'flex-start'}
-        px={5}
+        px={3}
+        ps={5}
         py={3}
       >
         <Flex direction={'row'} width={'100%'} height={'100%'}>
           <Flex direction={'column'} width={'75%'} height={'100%'} justifyContent={'space-between'}>
             <Flex direction={'column'}>
-              <Text variant={{ base: 'md', sm: 'xl' }} fontWeight={'bold'} color={'blue.800'}>
+              <Text variant={{ base: 'md', sm: 'xl' }} fontWeight={'bold'} color={accent}>
                 {name}
               </Text>
-              <Text variant={{ base: 'base' }} color={'blue.600'}>
+              <Text variant={{ base: 'base' }} color={secondaryAlt}>
                 T.S. Official
               </Text>
             </Flex>
@@ -208,29 +243,29 @@ const GridCardComponent: FC<TGridCardComponent> = ({
                 <Text
                   variant={{ base: 'base', sm: 'sm' }}
                   fontWeight={'bold'}
-                  color={'yellow.400'}
+                  color={impact}
                   letterSpacing={'0.05rem'}
                 >
                   {price} $
                 </Text>
                 <Text
                   variant={{ base: 'base', sm: 'sm' }}
-                  color={'blue.500'}
+                  color={inactive}
                   letterSpacing={'0.05rem'}
                   textDecoration={'line-through'}
-                  textDecorationColor={'blue.500'}
+                  textDecorationColor={inactive}
                 >
                   {price + 100} $
                 </Text>
               </Flex>
               <Flex w={'100%'} gap={3}>
-                <Text variant={{ base: 'base' }} color={'blue.600'}>
+                <Text variant={{ base: 'base' }} color={secondaryAlt}>
                   {sales.current} sales
                 </Text>
-                <Text variant={{ base: 'base' }} color={'blue.600'}>
+                <Text variant={{ base: 'base' }} color={secondaryAlt}>
                   🏆 {rating.current}
                 </Text>
-                <Text variant={{ base: 'base' }} color={'blue.600'}>
+                <Text variant={{ base: 'base' }} color={secondaryAlt}>
                   ({reviews.current})
                 </Text>
               </Flex>
@@ -248,7 +283,7 @@ const GridCardComponent: FC<TGridCardComponent> = ({
               as={motion.div}
               position={'absolute'}
               animation={isCartIconPressed ? animation : undefined}
-              background={`url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23${yellow400.slice(
+              background={`url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23${impact.slice(
                 1,
               )}' stroke-width='3' stroke-dasharray='4%2c10' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");`}
               opacity={0}
@@ -258,8 +293,8 @@ const GridCardComponent: FC<TGridCardComponent> = ({
               as={Button}
               position={'absolute'}
               size={{ base: 10, sm: 12 }}
-              background={'white.300'}
-              _hover={{ background: 'blue.300' }}
+              background={wrapBg}
+              _hover={{ background: secondary }}
               onClick={() => {
                 onBuy();
                 setIsCartIconPressed(true);
@@ -269,9 +304,9 @@ const GridCardComponent: FC<TGridCardComponent> = ({
                 opacity: 0.5,
               }}
               cursor={'pointer'}
-              _active={{ background: 'blue.400' }}
+              _active={{ background: wrapBg }}
             >
-              <CartIcon boxSize={{ base: 4, sm: 5 }} color={'blue.600'} />
+              <CartIcon boxSize={{ base: 4, sm: 5 }} color={icons} />
             </Circle>
           </Flex>
         </Flex>

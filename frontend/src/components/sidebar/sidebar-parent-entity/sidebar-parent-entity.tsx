@@ -1,8 +1,9 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import type { IconProps } from '@chakra-ui/react';
-import { Box, Circle, Flex, Text } from '@chakra-ui/react';
+import { useColorModeValue, Box, Circle, Flex, Text } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
+import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../../chakra-setup';
 
 interface ISidebarParentEntity {
   isSidebarOpened: boolean;
@@ -24,83 +25,96 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
   isSubUnfolded,
   onSubUnfold,
   onSelect,
-}) => (
-  <Flex
-    w={'100%'}
-    h={'50px'}
-    direction={'row'}
-    color={isSelected ? 'blue.800' : 'blue.600'}
-    bg={isSelected ? 'white.300' : 'transparent'}
-    _hover={{
-      bg: isSelected ? 'white.300' : 'white.400',
-    }}
-    borderRadius={'0 25px 25px 0'}
-    cursor={'pointer'}
-  >
-    <Box
-      opacity={isSelected ? 1 : 0}
-      transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
-      h={'100%'}
-      w={'12px'}
-      minW={'12px'}
-      maxW={'12px'}
-      bg={'yellow.400'}
-      clipPath={'polygon(0 0, 0% 100%, 100% 50%)'}
-    />
+}) => {
+  const [inactive, inactiveAlt, secondaryAlt, wrapBg, accent, impact, hover, secondary] = [
+    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
+    useColorModeValue(COLORS_MAP_LIGHT.inactiveAlt, COLORS_MAP_DARK.inactiveAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
+    useColorModeValue(COLORS_MAP_LIGHT.wrapBg, COLORS_MAP_DARK.wrapBg),
+    useColorModeValue(COLORS_MAP_LIGHT.accent, COLORS_MAP_DARK.accent),
+    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
+    useColorModeValue(COLORS_MAP_LIGHT.hover, COLORS_MAP_DARK.hover),
+    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+  ];
+
+  return (
     <Flex
       w={'100%'}
+      h={'50px'}
       direction={'row'}
-      alignItems={'center'}
-      justifyContent={'flex-start'}
-      onClick={() => {
-        onSelect();
-      }}
-      transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
+      color={isSelected ? accent : secondaryAlt}
+      bg={isSelected ? wrapBg : 'transparent'}
       _hover={{
-        transform: 'translateX(3px)',
+        bg: isSelected ? wrapBg : hover,
       }}
+      borderRadius={'0 25px 25px 0'}
+      cursor={'pointer'}
     >
-      <Icon
-        boxSize={{ base: 4, sm: 5 }}
-        ml={{ base: 3, sm: 5 }}
-        color={isSelected ? 'yellow.400' : 'blue.500'}
-        _hover={{
-          color: isSelected ? 'yellow.400' : 'blue.600',
-        }}
+      <Box
+        opacity={isSelected ? 1 : 0}
+        transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
+        h={'100%'}
+        w={'12px'}
+        minW={'12px'}
+        maxW={'12px'}
+        bg={impact}
+        clipPath={'polygon(0 0, 0% 100%, 100% 50%)'}
       />
-
-      <Text
-        pl={{ base: 3, sm: 5 }}
-        variant={{ base: 'sm' }}
-        opacity={isSidebarOpened ? 1 : 0}
-        transition={'opacity 0.1s linear'}
+      <Flex
+        w={'100%'}
+        direction={'row'}
+        alignItems={'center'}
+        justifyContent={'flex-start'}
+        onClick={() => {
+          onSelect();
+        }}
+        transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
+        _hover={{
+          transform: 'translateX(3px)',
+        }}
       >
-        {title}
-      </Text>
+        <Icon
+          boxSize={{ base: 4, sm: 5 }}
+          ml={{ base: 3, sm: 5 }}
+          color={isSelected ? impact : inactive}
+          _hover={{
+            color: isSelected ? impact : secondaryAlt,
+          }}
+        />
 
-      {hasSub && (
-        <Box
-          ml={'auto'}
-          mr={5}
+        <Text
+          pl={{ base: 3, sm: 5 }}
+          variant={{ base: 'sm' }}
           opacity={isSidebarOpened ? 1 : 0}
           transition={'opacity 0.1s linear'}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSubUnfold();
-          }}
         >
-          <Circle size={'18px'} border={'2px'} borderColor={'blue.300'}>
-            {isSubUnfolded ? (
-              <ChevronUpIcon color={'blue.400'} />
-            ) : (
-              <ChevronDownIcon color={'blue.400'} />
-            )}
-          </Circle>
-        </Box>
-      )}
+          {title}
+        </Text>
+
+        {hasSub && (
+          <Box
+            ml={'auto'}
+            mr={5}
+            opacity={isSidebarOpened ? 1 : 0}
+            transition={'opacity 0.1s linear'}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSubUnfold();
+            }}
+          >
+            <Circle size={'18px'} border={'2px'} borderColor={secondary}>
+              {isSubUnfolded ? (
+                <ChevronUpIcon color={inactiveAlt} />
+              ) : (
+                <ChevronDownIcon color={inactiveAlt} />
+              )}
+            </Circle>
+          </Box>
+        )}
+      </Flex>
     </Flex>
-  </Flex>
-);
+  );
+};
 
 const SidebarParentEntityMemo = memo(SidebarParentEntity);
 

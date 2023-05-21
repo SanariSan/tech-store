@@ -1,4 +1,4 @@
-import { ChakraProvider /* ChakraBaseProvider */ } from '@chakra-ui/react';
+import { ChakraProvider /* ChakraBaseProvider */, ColorModeScript } from '@chakra-ui/react';
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
@@ -23,6 +23,7 @@ root.render(
     <Provider store={Store}>
       <PersistGate loading={null} persistor={Persistor}>
         <ChakraProvider theme={THEME} resetCSS={true}>
+          <ColorModeScript initialColorMode={THEME.config.initialColorMode} />
           <Fonts />
           {/* <ThemeControllerContainer /> */}
           <Router history={history}>

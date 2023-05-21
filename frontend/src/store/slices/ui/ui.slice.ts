@@ -35,8 +35,11 @@ const uiSlice = createSlice({
     setErrorMessage(state, action: { payload: TMessage | undefined }) {
       state.errorMessage = action.payload;
     },
-    setIsCartOpened(state, action: { payload: { isOpened: boolean } }) {
-      state.isCartOpened = action.payload.isOpened;
+    setIsCartOpened(state, action: { payload: { isOpened: boolean | 'toggle' } }) {
+      state.isCartOpened =
+        typeof action.payload.isOpened === 'boolean'
+          ? action.payload.isOpened
+          : !state.isCartOpened;
     },
   },
 });
