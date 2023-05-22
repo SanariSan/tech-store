@@ -95,7 +95,7 @@ const CartContainer: FC<TCartContainer> = () => {
           Cart
         </DrawerHeader>
 
-        <DrawerBody>
+        <DrawerBody overflowY={'scroll'} overscrollBehaviorY={'contain'}>
           <Flex
             direction={'column'}
             justifyContent={'flex-start'}

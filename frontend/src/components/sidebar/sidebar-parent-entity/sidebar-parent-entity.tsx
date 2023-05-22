@@ -1,6 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import type { IconProps } from '@chakra-ui/react';
-import { useColorModeValue, Box, Circle, Flex, Text } from '@chakra-ui/react';
+import { Box, Circle, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
 import { COLORS } from '../../../chakra-setup';
@@ -41,6 +41,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
     <Flex
       w={'100%'}
       h={'50px'}
+      minH={'50px'}
       direction={'row'}
       color={isSelected ? accent : secondaryAlt}
       bg={isSelected ? wrapBg : 'transparent'}
@@ -65,6 +66,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
         direction={'row'}
         alignItems={'center'}
         justifyContent={'flex-start'}
+        overflowX={'hidden'}
         onClick={() => {
           onSelect();
         }}

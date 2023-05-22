@@ -1,7 +1,7 @@
 import { extendTheme /* extendBaseTheme */ } from '@chakra-ui/react';
 import { COLORS } from './colors.chakra-setup';
 import { Text } from './components.chakra-setup';
-import { THEME_CONFIG } from './theme';
+import { THEME_CONFIG } from './theme.chakra-setup';
 
 const THEME = extendTheme({
   config: THEME_CONFIG,

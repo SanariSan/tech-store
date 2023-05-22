@@ -12,12 +12,16 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import pfp from '../../../assets/pfp.png';
 import { COLORS } from '../../chakra-setup';
-import { useAppDispatch } from '../../hooks/redux';
-import { setIsCartOpened, toggleColorMode } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import {
+  initiateColorModeChange,
+  setIsCartOpened,
+  uiColorModeChangeStatusSelector,
+} from '../../store';
 import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
 
@@ -29,6 +33,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
   const d = useAppDispatch();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
   const { colorMode } = useColorMode();
+  const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const [inactive, secondaryAlt, secondary, hoverColor, impact, border, inputHover] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
@@ -51,10 +56,6 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
     toggleToolbar();
     void d(setIsCartOpened({ isOpened: 'toggle' }));
   }, [d, toggleToolbar]);
-
-  useEffect(() => {
-    console.log(colorMode);
-  }, [colorMode]);
 
   return (
     <Flex
@@ -128,8 +129,10 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
         <NavbarIconsComponentMemo
           isOpened={isToolbarOpened}
           onCartToggle={onCartToggle}
+          isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
+          currentTheme={colorMode}
           onThemeToggle={() => {
-            void d(toggleColorMode());
+            void d(initiateColorModeChange());
           }}
         />
         <Circle

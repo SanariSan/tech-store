@@ -43,13 +43,13 @@ svg {
 
 p,
 div {
-  transition: background-color 0.2s linear, color 0.15s $trans, max-height 0.3s $trans,
-    max-width 0.3s $trans, border-color 0.3s $trans, grid-template-columns 0.3s $trans,
-    transform 0.3s $trans;
+  transition: background-color 0.2s linear, color 0.15s $trans, height 0.3s $trans,
+    max-height 0.3s $trans, min-height 0.3s $trans, max-width 0.3s $trans, border-color 0.3s $trans,
+    grid-template-columns 0.4s $trans, transform 0.3s $trans;
 }
 
 * {
-  box-sizing: border-box;
+  // box-sizing: border-box;
   // outline: 1px solid lightseagreen !important;
   // background: rgba(141, 234, 255, 0.1);
 }

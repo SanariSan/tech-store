@@ -1,7 +1,10 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useElementScrollPosition } from '../../hooks/use-scroll-position';
 import {
   fetchMoreEntitiesAsync,
+  getCategoriesAsync,
+  goodsCategoriesSelector,
   goodsEntitiesSelector,
   goodsLoadingStatusSelector,
   goodsSelectedCategoryRouteSelector,
@@ -9,11 +12,11 @@ import {
   goodsSelectedSectionSelector,
 } from '../../store';
 import { ItemsGridComponentMemo } from './items-grid';
-import { useElementScrollPosition } from '../../hooks/use-scroll-position';
 
 const CatalogueContainer = () => {
   const d = useAppDispatch();
   const entities = useAppSelector(goodsEntitiesSelector);
+  const categories = useAppSelector(goodsCategoriesSelector);
   const selectedSection = useAppSelector(goodsSelectedSectionSelector);
   const selectedCategory = useAppSelector(goodsSelectedCategorySelector);
   const selectedCategoryRoute = useAppSelector(goodsSelectedCategoryRouteSelector);
@@ -29,6 +32,23 @@ const CatalogueContainer = () => {
     elementRef: gridRef,
     endOffset: 1600,
   });
+
+  // scroll to the top on selectedCategory change
+  useLayoutEffect(() => {
+    if (gridRef.current !== null) {
+      gridRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+  }, [gridRef, selectedCategory]);
+
+  // fetch global categories
+  useEffect(() => {
+    if (categories === undefined || categories.length <= 0) {
+      void d(getCategoriesAsync());
+    }
+  }, [categories, d]);
 
   // fetch items on category change
   // TODO: maybe move to saga (category change -> fetch entities)

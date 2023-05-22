@@ -1,3 +1,3 @@
-type TLocalStorageKey = 'globalTheme';
+type TLocalStorageKey = 'chakra-ui-color-mode';
 
 export type { TLocalStorageKey };

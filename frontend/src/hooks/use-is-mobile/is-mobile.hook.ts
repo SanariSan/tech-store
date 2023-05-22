@@ -18,7 +18,7 @@ const useIsMobile = () => {
     [d],
   );
 
-  if ((w <= 400 && h <= 800) || (w <= 800 && h <= 400)) {
+  if ((w <= 400 && h <= 850) || (w <= 850 && h <= 400)) {
     setTypeDebounced({ isMobile: true });
     return;
   }

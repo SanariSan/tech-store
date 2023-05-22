@@ -40,6 +40,12 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         bg={bg}
         boxShadow={'0px -5px 20px -5px rgba(0,0,0,0.3)'}
         zIndex={1}
+        borderStyle={'dashed'}
+        borderColor={border}
+        borderWidth={'1px'}
+        borderLeft={'none'}
+        borderRight={'none'}
+        borderTop={'none'}
       >
         <NavbarComponent switchSidebarState={switchSidebarState} />
       </GridItem>
@@ -49,10 +55,11 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         borderStyle={'dashed'}
         borderColor={border}
         borderWidth={'1px'}
-        // borderRadius={'20px'}
         borderLeft={'none'}
         borderTop={'none'}
         borderBottom={'none'}
+        // chrome places visible scrollbar on pc even when no overflow, so mobile only
+        overflowY={{ base: 'scroll', lg: 'hidden' }}
       >
         <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
       </GridItem>

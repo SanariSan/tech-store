@@ -38,7 +38,7 @@ const useScreenshot = ({ type = 'image/png', quality = 1 }: TUseScreenshotArgume
         if (croppedCanvasContext === null)
           throw new Error('Browser does not support canvas 2d context.');
 
-        // init data
+        // crop weird 1px border
         const cropPositionTop = -1;
         const cropPositionLeft = -1;
 

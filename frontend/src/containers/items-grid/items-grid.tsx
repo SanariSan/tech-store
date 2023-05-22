@@ -1,24 +1,24 @@
 import { Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import type { MutableRefObject } from 'react';
-import React, { useState, memo, useCallback, useEffect, useMemo } from 'react';
+import React, { useLayoutEffect, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { GridCardComponentMemo } from '../../components/grid-card';
 import { SkeletonPlaceholderComponentMemo } from '../../components/skeleton';
+import { sleep } from '../../helpers/util';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import type { TEntities } from '../../store';
 import {
-  uiColorModeAnimationDurationSelector,
-  uiColorModeFlagSelector,
-  uiIsMobileSelector,
-  pushCartEntity,
   goodsLikedEntitiesIdsSelector,
   goodsOffsetPerPageSelector,
+  pushCartEntity,
   pushLikedEntity,
   removeLikedEntity,
+  uiColorModeAnimationDurationSelector,
+  uiColorModeChangeStatusSelector,
+  uiIsMobileSelector,
 } from '../../store';
 import { ModifiersContainer } from '../modifiers';
-import { sleep } from '../../helpers/util';
 
 type TItemsGridContainerProps = {
   title: string;
@@ -40,32 +40,48 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
   const d = useAppDispatch();
   const chunkSize = useAppSelector(goodsOffsetPerPageSelector);
   const likedItems = useAppSelector(goodsLikedEntitiesIdsSelector);
-  const colorModeFlag = useAppSelector(uiColorModeFlagSelector);
-  const splashAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
-  const [lastFlag, setLastFlag] = useState<boolean>(colorModeFlag);
+  const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
+  const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
+  const [colorModeChangeStatusProxy, setColorModeChangeStatusProxy] =
+    useState(colorModeChangeStatus);
   const isMobile = useAppSelector(uiIsMobileSelector);
-
-  useEffect(() => {
-    // extra delay to let animation properly finish
-    void sleep(isMobile ? splashAnimationDuration : splashAnimationDuration + 750).then(() => {
-      setLastFlag(colorModeFlag);
-      return;
-    });
-  }, [colorModeFlag, splashAnimationDuration, isMobile]);
-
   const { isMounted: areSkeletonsMounted } = useDelayedUnmount({
     isVisible: areEntitiesLoading,
     delay: 1000,
   });
 
   useEffect(() => {
-    if (gridRef.current !== null) {
+    const ac = new AbortController();
+
+    // replicate state locally
+    if (colorModeChangeStatus === 'ongoing') {
+      setColorModeChangeStatusProxy('ongoing');
+      return;
+    }
+
+    // extra delay to let color theme animation properly finish, then replicate state
+    void sleep(
+      isMobile ? colorModeChangeAnimationDuration : colorModeChangeAnimationDuration + 750,
+    ).then(() => {
+      if (ac.signal.aborted) return;
+      setColorModeChangeStatusProxy(colorModeChangeStatus);
+      return;
+    });
+
+    return () => {
+      ac.abort();
+    };
+  }, [colorModeChangeStatus, colorModeChangeAnimationDuration, isMobile]);
+
+  // scroll to the top on theme change so screenshot matches page state
+  useLayoutEffect(() => {
+    if (gridRef.current !== null && colorModeChangeStatus === 'ongoing') {
       gridRef.current.scrollTo({
         top: 0,
-        behavior: 'smooth',
+        behavior: 'auto',
       });
     }
-  }, [gridRef]);
+  }, [gridRef, colorModeChangeStatus]);
 
   const isInLiked = useCallback(({ id }: { id: string }) => likedItems.includes(id), [likedItems]);
 
@@ -102,7 +118,8 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
     () =>
       entitiesList.map(({ id, ...entity }, idx) => (
         <React.Fragment key={`${id}`}>
-          {lastFlag === colorModeFlag ? (
+          {/* show cards only if color theme change is fully completed */}
+          {colorModeChangeStatus === 'completed' && colorModeChangeStatusProxy === 'completed' ? (
             <GridCardComponentMemo
               isLiked={isInLiked({ id })}
               // isInCart={isInCart}
@@ -117,7 +134,16 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
           )}
         </React.Fragment>
       )),
-    [chunkSize, entitiesList, isInLiked, onLikeCb, onDislikeCb, onBuyCb, lastFlag, colorModeFlag],
+    [
+      chunkSize,
+      entitiesList,
+      isInLiked,
+      onLikeCb,
+      onDislikeCb,
+      onBuyCb,
+      colorModeChangeStatus,
+      colorModeChangeStatusProxy,
+    ],
   );
 
   return (

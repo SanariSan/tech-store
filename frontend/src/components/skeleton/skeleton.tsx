@@ -9,7 +9,7 @@ type TSkeleton = {
 
 const SkeletonPlaceholderComponent: FC<TSkeleton> = ({ isLoading }) => {
   const [bg, inactiveAlt] = [
-    useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[500]),
     useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 

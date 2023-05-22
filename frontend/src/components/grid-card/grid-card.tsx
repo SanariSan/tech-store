@@ -1,22 +1,13 @@
 import { TimeIcon } from '@chakra-ui/icons';
-import {
-  Box,
-  Button,
-  Circle,
-  Flex,
-  Text,
-  keyframes,
-  useColorModeValue,
-  useToken,
-} from '@chakra-ui/react';
+import { Box, Button, Circle, Flex, Text, keyframes, useColorModeValue } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
-import { useMemo, memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { COLORS } from '../../chakra-setup';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import { useIntersection } from '../../hooks/use-intersection';
 import type { goodsEntitiesSelector } from '../../store';
 import { CartIcon, HeartIcon } from '../icons';
-import { COLORS } from '../../chakra-setup';
 
 type TGridCardComponent = Omit<
   ReturnType<typeof goodsEntitiesSelector>[number],
