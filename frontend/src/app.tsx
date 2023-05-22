@@ -1,6 +1,6 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { AuthenticatedAccessContainer } from './containers/authenticated-access';
 import { DebugContainer } from './containers/debug';
@@ -12,23 +12,27 @@ import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
-import { useAppDispatch, useAppSelector } from './hooks/redux';
-import { getCategoriesAsync, goodsCategoriesSelector, logoutUserAsync } from './store';
+import { ScreenDetailsTrackerContainerMemo } from './containers/screen-details-tracker';
+import { ThemeSwitchContainerMemo } from './containers/theme-switch';
 import { ToastsContainerMemo } from './containers/toast/toast';
+import { useAppDispatch } from './hooks/redux';
+import { logoutUserAsync } from './store';
 
 const App: FC = () => {
   const d = useAppDispatch();
-  const categories = useAppSelector(goodsCategoriesSelector);
 
-  useEffect(() => {
-    if (categories === undefined || categories.length <= 0) {
-      void d(getCategoriesAsync());
-    }
-  }, [categories, d]);
+  const screenshotTargetRef = useRef(null);
 
   return (
     <ErrorBoundaryGenericContainerMemo>
+      <ThemeSwitchContainerMemo screenshotTargetRef={screenshotTargetRef} />
+      <LoadingTrackerProgressContainer />
+      <ScreenDetailsTrackerContainerMemo />
+      <ToastsContainerMemo />
+      <CartContainerMemo />
+
       <Box
+        ref={screenshotTargetRef}
         display={'flex'}
         w={'100%'}
         h={'100%'}
@@ -36,9 +40,6 @@ const App: FC = () => {
         justifyContent={'center'}
         flexDirection={'column'}
       >
-        <LoadingTrackerProgressContainer />
-        <ToastsContainerMemo />
-        <CartContainerMemo />
         <LayoutContainer>
           <Switch>
             <Route exact path={'/'}>
@@ -65,13 +66,11 @@ const App: FC = () => {
               </Flex>
             </Route>
             <Route exact path="/login">
-              {/* <LandingNavbarContainer /> */}
               <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
                 <LoginContainer />
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path="/register">
-              {/* <LandingNavbarContainer /> */}
               <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
                 <RegisterContainer />
               </AuthenticatedAccessContainer>
@@ -94,7 +93,6 @@ const App: FC = () => {
         </LayoutContainer>
         <DebugContainer />
       </Box>
-      {/* <div id="bg" className={classNames(style.app, style[theme])} /> */}
     </ErrorBoundaryGenericContainerMemo>
   );
 };

@@ -3,22 +3,21 @@ import classNames from 'classnames';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
 import { changeRoute } from '../../containers/history-catcher';
-import style from './register.module.scss';
 import type { TRegister } from './register.type';
 
-const RegisterComponent: FC<TRegister> = ({ isLoading, theme, ...rest }) => {
+const RegisterComponent: FC<TRegister> = ({ isLoading, ...rest }) => {
   const { handleSubmit, errors, touched } = rest;
 
   return (
     <Flex
       w={'100%'}
       h={'100%'}
-      className={classNames('h-100', 'd-flex', 'flex-column', 'align-items-center', style[theme])}
+      className={classNames('h-100', 'd-flex', 'flex-column', 'align-items-center')}
     >
       <FormikForm onSubmit={handleSubmit}>
         <h2 style={{ textAlign: 'center' }}>Register</h2>
 
-        <Text className={style[theme]}>Email</Text>
+        <Text>Email</Text>
         <Input
           as={Field}
           className="mb-1"
@@ -32,7 +31,7 @@ const RegisterComponent: FC<TRegister> = ({ isLoading, theme, ...rest }) => {
           {(errorMessage: string) => <Text className="ms-1 text-danger">{errorMessage}</Text>}
         </ErrorMessage>
 
-        <Text className={style[theme]}>Username</Text>
+        <Text>Username</Text>
         <Input
           as={Field}
           className="mb-1"

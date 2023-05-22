@@ -4,7 +4,7 @@ import type { FC } from 'react';
 import React, { useMemo, memo } from 'react';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import type { goodsCartEntitiesStackedSelector } from '../../store';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 type TCartCardComponent = Omit<
   ReturnType<typeof goodsCartEntitiesStackedSelector>[number],
@@ -29,14 +29,14 @@ const CartCardComponent: FC<TCartCardComponent> = ({
   orderIdx,
 }) => {
   const [inactive, secondaryAlt, accent, wrapBg, border, cardBg, impact, secondary] = [
-    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.accent, COLORS_MAP_DARK.accent),
-    useColorModeValue(COLORS_MAP_LIGHT.wrapBg, COLORS_MAP_DARK.wrapBg),
-    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
-    useColorModeValue(COLORS_MAP_LIGHT.cardBg, COLORS_MAP_DARK.cardBg),
-    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
-    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+    useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
+    useColorModeValue(COLORS.blue[800], COLORS.white[900]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[300]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[200]),
+    useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 
   const hover = useMemo(

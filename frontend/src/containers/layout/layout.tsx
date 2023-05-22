@@ -1,22 +1,20 @@
 import { Grid, GridItem, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
+import { COLORS } from '../../chakra-setup';
 import { NavbarComponent } from '../../components/navbar';
-import { useScreenDetails } from '../../hooks/use-screen-details';
+import { useAppSelector } from '../../hooks/redux';
+import { uiIsMobileSelector } from '../../store';
 import { SidebarContainerMemo } from '../sidebar';
 import type { TLayout } from './layout.type';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 const LayoutContainer: FC<TLayout> = ({ children }) => {
-  const {
-    screenResolutionDetails: {
-      default: { w },
-    },
-  } = useScreenDetails();
-  const [isSidebarOpened, setIsSidebarOpened] = useState(() => w > 768);
-  const [bg, bgAlt] = [
-    useColorModeValue(COLORS_MAP_LIGHT.bg, COLORS_MAP_DARK.bg),
-    useColorModeValue(COLORS_MAP_LIGHT.bgAlt, COLORS_MAP_DARK.bgAlt),
+  const isMobile = useAppSelector(uiIsMobileSelector);
+  const [isSidebarOpened, setIsSidebarOpened] = useState(() => !isMobile);
+  const [bg, bgAlt, border] = [
+    useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
+    useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 
   const switchSidebarState = useCallback((payload?: { state: boolean }) => {
@@ -42,10 +40,27 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         bg={bg}
         boxShadow={'0px -5px 20px -5px rgba(0,0,0,0.3)'}
         zIndex={1}
+        borderStyle={'dashed'}
+        borderColor={border}
+        borderWidth={'1px'}
+        borderLeft={'none'}
+        borderRight={'none'}
+        borderTop={'none'}
       >
         <NavbarComponent switchSidebarState={switchSidebarState} />
       </GridItem>
-      <GridItem area={'side'} bg={bg}>
+      <GridItem
+        area={'side'}
+        bg={bg}
+        borderStyle={'dashed'}
+        borderColor={border}
+        borderWidth={'1px'}
+        borderLeft={'none'}
+        borderTop={'none'}
+        borderBottom={'none'}
+        // chrome places visible scrollbar on pc even when no overflow, so mobile only
+        overflowY={{ base: 'scroll', lg: 'hidden' }}
+      >
         <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
       </GridItem>
       <GridItem area={'main'} bg={bgAlt} overflow={'hidden'} position={'relative'}>

@@ -5,7 +5,7 @@ import { Spinner, useColorModeValue } from '@chakra-ui/react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { checkUserAuthStatusAsync, userAuthIsAuthenticatedSelector } from '../../store';
 import type { TAuthRoute } from './authenticated-access.type';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
   children,
@@ -15,7 +15,7 @@ const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(userAuthIsAuthenticatedSelector);
   const isLoading = useMemo(() => isAuthenticated === 'idle', [isAuthenticated]);
-  const [inactive] = [useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive)];
+  const [inactive] = [useColorModeValue(COLORS.blue[500], COLORS.blue[600])];
 
   useEffect(() => {
     if (isAuthenticated === 'idle') {

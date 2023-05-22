@@ -1,7 +1,7 @@
 import { Skeleton, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 type TSkeleton = {
   isLoading: boolean;
@@ -9,8 +9,8 @@ type TSkeleton = {
 
 const SkeletonPlaceholderComponent: FC<TSkeleton> = ({ isLoading }) => {
   const [bg, inactiveAlt] = [
-    useColorModeValue(COLORS_MAP_LIGHT.bg, COLORS_MAP_DARK.bg),
-    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[500]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 
   return (

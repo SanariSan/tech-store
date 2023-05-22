@@ -1,7 +1,7 @@
 import { extendTheme /* extendBaseTheme */ } from '@chakra-ui/react';
 import { COLORS } from './colors.chakra-setup';
 import { Text } from './components.chakra-setup';
-import { THEME_CONFIG } from './theme';
+import { THEME_CONFIG } from './theme.chakra-setup';
 
 const THEME = extendTheme({
   config: THEME_CONFIG,
@@ -13,6 +13,24 @@ const THEME = extendTheme({
     Text,
     // Input,
     // InputGroup,
+  },
+  // https://github.com/chakra-ui/chakra-ui/discussions/6095
+  styles: {
+    global: {
+      html: {
+        overflow: { base: 'scroll', sm: 'hidden' },
+      },
+      p: {
+        whiteSpace: 'nowrap',
+      },
+      header: {
+        whiteSpace: 'nowrap',
+      },
+      //     body: {
+      //       transitionProperty: "all",
+      //       transitionDuration: "ultra-slow"
+      //     }
+    },
   },
 });
 

@@ -11,16 +11,19 @@ import {
   Spacer,
   useColorMode,
   useColorModeValue,
-  useToken,
 } from '@chakra-ui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import pfp from '../../../assets/pfp.png';
+import { COLORS } from '../../chakra-setup';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import {
+  initiateColorModeChange,
+  setIsCartOpened,
+  uiColorModeChangeStatusSelector,
+} from '../../store';
 import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
-import { useAppDispatch } from '../../hooks/redux';
-import { setIsCartOpened } from '../../store';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 interface INavbarComponent {
   switchSidebarState: (payload?: { state: boolean }) => void;
@@ -29,14 +32,16 @@ interface INavbarComponent {
 export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
   const d = useAppDispatch();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
-  const { colorMode, toggleColorMode } = useColorMode();
-  const [inactive, secondaryAlt, secondary, hoverColor, impact, border] = [
-    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
-    useColorModeValue(COLORS_MAP_LIGHT.hover, COLORS_MAP_DARK.hover),
-    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
-    useColorModeValue(COLORS_MAP_LIGHT.border, COLORS_MAP_DARK.border),
+  const { colorMode } = useColorMode();
+  const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
+  const [inactive, secondaryAlt, secondary, hoverColor, impact, border, inputHover] = [
+    useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[400]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
+    useColorModeValue(COLORS.white[100], COLORS.darkBlue[300]),
   ];
 
   const hover = {
@@ -52,17 +57,13 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
     void d(setIsCartOpened({ isOpened: 'toggle' }));
   }, [d, toggleToolbar]);
 
-  useEffect(() => {
-    console.log(colorMode);
-  }, [colorMode]);
-
   return (
     <Flex
       direction={'row'}
       alignItems={'center'}
       h={'100%'}
       py={4}
-      gap={{ base: 3, sm: 6 }}
+      gap={{ base: 4, sm: 6 }}
       px={6}
       overflowX={'hidden'}
     >
@@ -113,6 +114,9 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
             fontSize={{ base: '14px', sm: '16px' }}
             placeholder="Search"
             bg={hoverColor}
+            _hover={{
+              bg: inputHover,
+            }}
             borderRadius={'20px'}
             pl={12}
           />
@@ -125,7 +129,11 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
         <NavbarIconsComponentMemo
           isOpened={isToolbarOpened}
           onCartToggle={onCartToggle}
-          onThemeToggle={toggleColorMode}
+          isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
+          currentTheme={colorMode}
+          onThemeToggle={() => {
+            void d(initiateColorModeChange());
+          }}
         />
         <Circle
           size={10}

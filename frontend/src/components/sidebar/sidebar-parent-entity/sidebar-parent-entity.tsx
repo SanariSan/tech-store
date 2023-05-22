@@ -1,9 +1,9 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import type { IconProps } from '@chakra-ui/react';
-import { useColorModeValue, Box, Circle, Flex, Text } from '@chakra-ui/react';
+import { Box, Circle, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../../chakra-setup';
+import { COLORS } from '../../../chakra-setup';
 
 interface ISidebarParentEntity {
   isSidebarOpened: boolean;
@@ -27,20 +27,21 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
   onSelect,
 }) => {
   const [inactive, inactiveAlt, secondaryAlt, wrapBg, accent, impact, hover, secondary] = [
-    useColorModeValue(COLORS_MAP_LIGHT.inactive, COLORS_MAP_DARK.inactive),
-    useColorModeValue(COLORS_MAP_LIGHT.inactiveAlt, COLORS_MAP_DARK.inactiveAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.secondaryAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.wrapBg, COLORS_MAP_DARK.wrapBg),
-    useColorModeValue(COLORS_MAP_LIGHT.accent, COLORS_MAP_DARK.accent),
-    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
-    useColorModeValue(COLORS_MAP_LIGHT.hover, COLORS_MAP_DARK.hover),
-    useColorModeValue(COLORS_MAP_LIGHT.secondary, COLORS_MAP_DARK.secondary),
+    useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[400], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
+    useColorModeValue(COLORS.white[300], COLORS.darkBlue[300]),
+    useColorModeValue(COLORS.blue[800], COLORS.white[900]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
+    useColorModeValue(COLORS.white[100], COLORS.darkBlue[400]),
+    useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 
   return (
     <Flex
       w={'100%'}
       h={'50px'}
+      minH={'50px'}
       direction={'row'}
       color={isSelected ? accent : secondaryAlt}
       bg={isSelected ? wrapBg : 'transparent'}
@@ -65,6 +66,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
         direction={'row'}
         alignItems={'center'}
         justifyContent={'flex-start'}
+        overflowX={'hidden'}
         onClick={() => {
           onSelect();
         }}
@@ -75,7 +77,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
       >
         <Icon
           boxSize={{ base: 4, sm: 5 }}
-          ml={{ base: 3, sm: 5 }}
+          ml={{ base: 4, sm: 5 }}
           color={isSelected ? impact : inactive}
           _hover={{
             color: isSelected ? impact : secondaryAlt,
@@ -83,7 +85,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
         />
 
         <Text
-          pl={{ base: 3, sm: 5 }}
+          pl={{ base: 4, sm: 5 }}
           variant={{ base: 'sm' }}
           opacity={isSidebarOpened ? 1 : 0}
           transition={'opacity 0.1s linear'}

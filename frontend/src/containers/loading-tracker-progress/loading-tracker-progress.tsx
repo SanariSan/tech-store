@@ -1,64 +1,57 @@
-import type { FC } from 'react';
-import { useMemo, useRef, useEffect, useState } from 'react';
 import { Box, useColorModeValue } from '@chakra-ui/react';
+import type { FC } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { COLORS } from '../../chakra-setup';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import { useLoadingTracker } from '../../hooks/use-loading-tracker';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
 
 const LoadingTrackerProgressContainer: FC = () => {
-  const [impact] = [useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact)];
-
+  const coeff = useMemo(() => 20, []);
   const calculateExpPercentage = useMemo(
     () => (_x: number, _coeff: number) => (_x / (_x + _coeff)) * 100,
     [],
   );
 
   const { isLoading } = useLoadingTracker();
-  const { isMounted } = useDelayedUnmount({ isVisible: isLoading, delay: 500 });
-
-  const [x, setX] = useState(0);
-  const coeff = 20;
-  const [percent, setPercent] = useState(() => calculateExpPercentage(x, coeff));
-
+  const isLoadingRef = useRef(isLoading);
+  const { isMounted } = useDelayedUnmount({ isVisible: isLoading, delay: 700 });
+  const [percent, setPercent] = useState(() => calculateExpPercentage(0, coeff));
   const timerRef = useRef<NodeJS.Timer>();
+  const [impact] = [useColorModeValue(COLORS.yellow[400], COLORS.yellow[400])];
 
+  // first set live loading state to be able to access in setTimeout cb
   useEffect(() => {
-    if (isLoading && isMounted) {
-      if (timerRef.current === undefined) {
-        const ms = Math.random() * (250 - 100) + 100;
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
 
-        const increaseX = () => {
-          if (percent >= 100) {
-            clearTimeout(timerRef.current);
-            return;
-          }
-
-          setX((prev) => prev + 1);
-          setTimeout(increaseX, ms);
-        };
-        timerRef.current = setTimeout(increaseX, ms);
-      }
-    } else if (!isLoading && isMounted) {
-      clearInterval(timerRef.current);
+  // if loading is ongoing - increase progress percent
+  // if loading is done - set percent to 100 and exit timer
+  const increaseX = useCallback(() => {
+    if (!isLoadingRef.current) {
       timerRef.current = undefined;
       setPercent(100);
-    } else if (!isLoading && !isMounted) {
-      setX(0);
-    }
-  }, [isLoading, isMounted, percent]);
-
-  useEffect(() => {
-    if (x === 0) {
-      setPercent(0);
       return;
     }
 
-    setPercent(calculateExpPercentage(x, coeff));
-  }, [x, calculateExpPercentage]);
+    const ms = Math.random() * (250 - 100) + 100;
+    setPercent((s) => calculateExpPercentage(s + 1, coeff));
+    setTimeout(increaseX, ms);
+  }, [isLoadingRef, coeff, calculateExpPercentage]);
 
+  // if loading is ongoing - and we don't have a timer yet - start one
+  useEffect(() => {
+    if (isLoading && timerRef.current === undefined) increaseX();
+  }, [isLoading, increaseX]);
+
+  // when loading is done and progress bar (not full component) "unmounted" - reset percent to 0
+  useEffect(() => {
+    if (!isMounted) setPercent(0);
+  }, [isMounted]);
+
+  // cleanup
   useEffect(
     () => () => {
-      clearInterval(timerRef.current);
+      clearTimeout(timerRef.current);
     },
     [],
   );
@@ -74,7 +67,7 @@ const LoadingTrackerProgressContainer: FC = () => {
           top={0}
           left={0}
           h={'5px'}
-          transition={'opacity 0.6s linear, max-width 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)'}
+          transition={'opacity 0.7s linear, max-width 0.6s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           zIndex={1000}
           w={`100%`}
           maxW={`${percent}%`}

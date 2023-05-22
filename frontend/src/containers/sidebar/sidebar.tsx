@@ -73,60 +73,67 @@ const SidebarContainer: FC<ISidebarContainer> = ({
       h={'100%'}
       py={9}
       pb={6}
-      pr={2}
+      pr={{ base: 1, sm: 2 }}
     >
       {SIDEBAR_TEMPLATE.map(
-        ({ icon, title, sub, sideAction: onSelectSideActionParent }, idxSection) => (
-          <Fragment key={`side-p-${idxSection}`}>
-            {idxSection === SIDEBAR_TEMPLATE.length - 2 && <Spacer />}
+        ({ icon, title, sub, sideAction: onSelectSideActionParent }, idxSection) => {
+          const isUnfolded = unfoldedIdxs.includes(idxSection);
+          const subH =
+            isSidebarOpened && isUnfolded && sub !== null ? `${sub.length * 50}px` : '0px';
 
-            <SidebarParentEntityMemo
-              title={title}
-              icon={icon}
-              hasSub={sub !== null}
-              isSidebarOpened={isSidebarOpened}
-              isSelected={selectedSection === idxSection}
-              isSubUnfolded={unfoldedIdxs.includes(idxSection)}
-              onSelect={() => {
-                onSelectSideActionParent();
-                updateSelectedIdxs({ section: idxSection });
-              }}
-              onSubUnfold={() => {
-                onSubUnfold(idxSection);
-              }}
-            />
+          return (
+            <Fragment key={`side-p-${idxSection}`}>
+              {idxSection === SIDEBAR_TEMPLATE.length - 2 && <Spacer />}
 
-            {sub !== null && (
-              <Flex
-                direction={'column'}
-                width={'100%'}
-                pl={{ base: 8, sm: 10 }}
-                overflow={'hidden'}
-                maxH={
-                  isSidebarOpened && unfoldedIdxs.includes(idxSection)
-                    ? `${sub.length * 50}px`
-                    : '0px'
-                }
-              >
-                {sub.map(({ title: titleSub, sideAction: onSelectSideActionSub }, idxCategory) => (
-                  <SidebarSubEntityMemo
-                    key={`side-p-${idxSection}-c-${idxCategory}`}
-                    title={titleSub}
-                    isSidebarOpened={isSidebarOpened}
-                    isSelected={selectedSection === idxSection && selectedCategory === idxCategory}
-                    onSelect={() => {
-                      if (selectedSection !== idxSection) onSelectSideActionParent();
-                      if (selectedSection !== idxSection || selectedCategory !== idxCategory) {
-                        onSelectSideActionSub();
-                      }
-                      updateSelectedIdxs({ section: idxSection, category: idxCategory });
-                    }}
-                  />
-                ))}
-              </Flex>
-            )}
-          </Fragment>
-        ),
+              <SidebarParentEntityMemo
+                title={title}
+                icon={icon}
+                hasSub={sub !== null}
+                isSidebarOpened={isSidebarOpened}
+                isSelected={selectedSection === idxSection}
+                isSubUnfolded={isUnfolded}
+                onSelect={() => {
+                  onSelectSideActionParent();
+                  updateSelectedIdxs({ section: idxSection });
+                }}
+                onSubUnfold={() => {
+                  onSubUnfold(idxSection);
+                }}
+              />
+
+              {sub !== null && (
+                <Flex
+                  direction={'column'}
+                  w={'100%'}
+                  pl={{ base: 8, sm: 10 }}
+                  overflow={'hidden'}
+                  h={subH}
+                  minH={subH}
+                >
+                  {sub.map(
+                    ({ title: titleSub, sideAction: onSelectSideActionSub }, idxCategory) => (
+                      <SidebarSubEntityMemo
+                        key={`side-p-${idxSection}-c-${idxCategory}`}
+                        title={titleSub}
+                        isSidebarOpened={isSidebarOpened}
+                        isSelected={
+                          selectedSection === idxSection && selectedCategory === idxCategory
+                        }
+                        onSelect={() => {
+                          if (selectedSection !== idxSection) onSelectSideActionParent();
+                          if (selectedSection !== idxSection || selectedCategory !== idxCategory) {
+                            onSelectSideActionSub();
+                          }
+                          updateSelectedIdxs({ section: idxSection, category: idxCategory });
+                        }}
+                      />
+                    ),
+                  )}
+                </Flex>
+              )}
+            </Fragment>
+          );
+        },
       )}
     </Flex>
   );

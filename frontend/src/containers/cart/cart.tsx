@@ -25,7 +25,7 @@ import {
   setSuccessMessage,
   uiCartStateSelector,
 } from '../../store';
-import { COLORS_MAP_DARK, COLORS_MAP_LIGHT } from '../../chakra-setup';
+import { COLORS } from '../../chakra-setup';
 
 type TCartContainer = {
   [key: string]: unknown;
@@ -38,9 +38,9 @@ const CartContainer: FC<TCartContainer> = () => {
   const cartTotal = useAppSelector(goodsCartEntitiesPriceSelector);
 
   const [bgAlt, impact, btnColor] = [
-    useColorModeValue(COLORS_MAP_LIGHT.bgAlt, COLORS_MAP_DARK.bgAlt),
-    useColorModeValue(COLORS_MAP_LIGHT.impact, COLORS_MAP_DARK.impact),
-    useColorModeValue(COLORS_MAP_LIGHT.secondaryAlt, COLORS_MAP_DARK.bgAlt),
+    useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
+    useColorModeValue(COLORS.blue[600], COLORS.darkBlue[600]),
   ];
 
   const onClose = useCallback(() => {
@@ -79,14 +79,6 @@ const CartContainer: FC<TCartContainer> = () => {
         description: 'Your order is being processed now. Thank you!',
       }),
     );
-    // toast({
-    //   title: 'Order placed!',
-    //   position: 'top-right',
-    //   description: 'Your order is being processed now. Thank you!',
-    //   status: 'success',
-    //   variant: 'subtle',
-    //   isClosable: true,
-    // });
   }, [d]);
 
   return (
@@ -99,16 +91,17 @@ const CartContainer: FC<TCartContainer> = () => {
       />
       <DrawerContent bg={bgAlt}>
         <DrawerCloseButton />
-        <DrawerHeader borderBottomWidth={'1px'}>{`Cart`}</DrawerHeader>
+        <DrawerHeader borderBottomWidth={'1px'} minW={'200px'}>
+          Cart
+        </DrawerHeader>
 
-        <DrawerBody>
+        <DrawerBody overflowY={'scroll'} overscrollBehaviorY={'contain'}>
           <Flex
             direction={'column'}
             justifyContent={'flex-start'}
             alignItems={'flex-start'}
             gap={3}
           >
-            {/* <p>{JSON.stringify(cartEntities, null, 2)}</p> */}
             {cartEntities.map(({ id, ...props }, idx) => (
               <Fragment key={`cart_${id}`}>
                 <CartCardComponentMemo
@@ -124,7 +117,7 @@ const CartContainer: FC<TCartContainer> = () => {
           </Flex>
         </DrawerBody>
 
-        <DrawerFooter borderTopWidth="1px" p={'unset'}>
+        <DrawerFooter borderTopWidth="1px" p={'unset'} minW={'200px'}>
           <Flex
             direction={'column'}
             width={'100%'}
@@ -134,10 +127,12 @@ const CartContainer: FC<TCartContainer> = () => {
             py={4}
           >
             <Flex w={'100%'} justifyContent={'flex-end'} gap={6} px={6}>
-              <Text variant={'md'} fontWeight={'bold'}>
+              <Text variant={'md'} whiteSpace={'nowrap'} fontWeight={'bold'}>
                 Total:
               </Text>
-              <Text variant={'md'}>{cartTotal} $</Text>
+              <Text variant={'md'} whiteSpace={'nowrap'}>
+                {cartTotal} $
+              </Text>
             </Flex>
             <Flex
               direction={'row'}
@@ -147,11 +142,12 @@ const CartContainer: FC<TCartContainer> = () => {
               pt={3}
               px={6}
             >
-              <Button variant="outline" mr={3} onClick={onClose}>
+              <Button variant="outline" size={{ base: 'sm', sm: 'md' }} mr={3} onClick={onClose}>
                 Cancel
               </Button>
               <Button
                 colorScheme={'yellow'}
+                size={{ base: 'sm', sm: 'md' }}
                 bg={impact}
                 color={btnColor}
                 isDisabled={cartEntities.length <= 0}
@@ -167,13 +163,12 @@ const CartContainer: FC<TCartContainer> = () => {
                   onClose();
                 }}
               >
-                Place order
+                Order
               </Button>
             </Flex>
           </Flex>
         </DrawerFooter>
       </DrawerContent>
-      {/* </DrawerOverlay> */}
     </Drawer>
   );
 };

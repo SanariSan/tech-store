@@ -1,13 +1,13 @@
 import type { TLocalStorageKey } from './local-storage.helper.type';
 
-const getLSValue = (key: TLocalStorageKey): unknown | undefined => {
+const getLSValue = (key: TLocalStorageKey, logging = false): string | undefined => {
   const item = window.localStorage.getItem(key);
-  let parsed: unknown;
+  let parsed: string | undefined;
 
   try {
-    parsed = item !== null ? JSON.parse(item) : undefined;
+    parsed = item !== null ? String(item) : undefined;
   } catch {
-    console.warn('No key in local storage, please clear cookies and refresh');
+    if (logging) console.warn('No key in local storage, please clear cookies and refresh');
   }
 
   return parsed;
