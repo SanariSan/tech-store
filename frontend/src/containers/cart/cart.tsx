@@ -91,7 +91,9 @@ const CartContainer: FC<TCartContainer> = () => {
       />
       <DrawerContent bg={bgAlt}>
         <DrawerCloseButton />
-        <DrawerHeader borderBottomWidth={'1px'}>{`Cart`}</DrawerHeader>
+        <DrawerHeader borderBottomWidth={'1px'} minW={'200px'}>
+          Cart
+        </DrawerHeader>
 
         <DrawerBody>
           <Flex
@@ -115,7 +117,7 @@ const CartContainer: FC<TCartContainer> = () => {
           </Flex>
         </DrawerBody>
 
-        <DrawerFooter borderTopWidth="1px" p={'unset'}>
+        <DrawerFooter borderTopWidth="1px" p={'unset'} minW={'200px'}>
           <Flex
             direction={'column'}
             width={'100%'}

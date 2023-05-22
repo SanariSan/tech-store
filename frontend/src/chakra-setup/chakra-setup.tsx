@@ -14,6 +14,24 @@ const THEME = extendTheme({
     // Input,
     // InputGroup,
   },
+  // https://github.com/chakra-ui/chakra-ui/discussions/6095
+  styles: {
+    global: {
+      html: {
+        overflow: { base: 'scroll', sm: 'hidden' },
+      },
+      p: {
+        whiteSpace: 'nowrap',
+      },
+      header: {
+        whiteSpace: 'nowrap',
+      },
+      //     body: {
+      //       transitionProperty: "all",
+      //       transitionDuration: "ultra-slow"
+      //     }
+    },
+  },
 });
 
 export { THEME };

@@ -1,6 +1,6 @@
 import { Flex, SimpleGrid, Text } from '@chakra-ui/react';
 import type { MutableRefObject } from 'react';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, memo, useCallback, useEffect, useMemo } from 'react';
 import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { GridCardComponentMemo } from '../../components/grid-card';
 import { SkeletonPlaceholderComponentMemo } from '../../components/skeleton';
@@ -8,6 +8,9 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import type { TEntities } from '../../store';
 import {
+  uiColorModeAnimationDurationSelector,
+  uiColorModeFlagSelector,
+  uiIsMobileSelector,
   pushCartEntity,
   goodsLikedEntitiesIdsSelector,
   goodsOffsetPerPageSelector,
@@ -15,6 +18,7 @@ import {
   removeLikedEntity,
 } from '../../store';
 import { ModifiersContainer } from '../modifiers';
+import { sleep } from '../../helpers/util';
 
 type TItemsGridContainerProps = {
   title: string;
@@ -36,6 +40,18 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
   const d = useAppDispatch();
   const chunkSize = useAppSelector(goodsOffsetPerPageSelector);
   const likedItems = useAppSelector(goodsLikedEntitiesIdsSelector);
+  const colorModeFlag = useAppSelector(uiColorModeFlagSelector);
+  const splashAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
+  const [lastFlag, setLastFlag] = useState<boolean>(colorModeFlag);
+  const isMobile = useAppSelector(uiIsMobileSelector);
+
+  useEffect(() => {
+    // extra delay to let animation properly finish
+    void sleep(isMobile ? splashAnimationDuration : splashAnimationDuration + 750).then(() => {
+      setLastFlag(colorModeFlag);
+      return;
+    });
+  }, [colorModeFlag, splashAnimationDuration, isMobile]);
 
   const { isMounted: areSkeletonsMounted } = useDelayedUnmount({
     isVisible: areEntitiesLoading,
@@ -86,18 +102,22 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
     () =>
       entitiesList.map(({ id, ...entity }, idx) => (
         <React.Fragment key={`${id}`}>
-          <GridCardComponentMemo
-            isLiked={isInLiked({ id })}
-            // isInCart={isInCart}
-            onLike={isInLiked({ id }) ? onDislikeCb({ id }) : onLikeCb({ id })}
-            onBuy={onBuyCb({ id })}
-            orderIdx={idx % (chunkSize / 2)}
-            id={id}
-            {...entity}
-          />
+          {lastFlag === colorModeFlag ? (
+            <GridCardComponentMemo
+              isLiked={isInLiked({ id })}
+              // isInCart={isInCart}
+              onLike={isInLiked({ id }) ? onDislikeCb({ id }) : onLikeCb({ id })}
+              onBuy={onBuyCb({ id })}
+              orderIdx={idx % (chunkSize / 2)}
+              id={id}
+              {...entity}
+            />
+          ) : (
+            <SkeletonPlaceholderComponentMemo isLoading={true} />
+          )}
         </React.Fragment>
       )),
-    [chunkSize, entitiesList, isInLiked, onLikeCb, onDislikeCb, onBuyCb],
+    [chunkSize, entitiesList, isInLiked, onLikeCb, onDislikeCb, onBuyCb, lastFlag, colorModeFlag],
   );
 
   return (
@@ -121,7 +141,7 @@ const ItemsGridContainer: React.FC<TItemsGridContainerProps> = ({
       >
         <Flex w={'100%'} minH={'max-content'} gap={3} direction={'column'}>
           <BreadcrumbComponentMemo list={breadcrumbList} />
-          <Text variant={{ base: 'md', sm: 'lg' }} fontWeight={'bold'}>
+          <Text variant={{ base: 'md', sm: 'lg' }} fontWeight={'bold'} whiteSpace={'normal'}>
             {title}
           </Text>
         </Flex>

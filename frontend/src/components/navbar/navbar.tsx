@@ -17,7 +17,7 @@ import logo from '../../../assets/logo.png';
 import pfp from '../../../assets/pfp.png';
 import { COLORS } from '../../chakra-setup';
 import { useAppDispatch } from '../../hooks/redux';
-import { setIsCartOpened } from '../../store';
+import { setIsCartOpened, toggleColorMode } from '../../store';
 import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
 
@@ -28,7 +28,7 @@ interface INavbarComponent {
 export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
   const d = useAppDispatch();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const [inactive, secondaryAlt, secondary, hoverColor, impact, border, inputHover] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
@@ -128,7 +128,9 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
         <NavbarIconsComponentMemo
           isOpened={isToolbarOpened}
           onCartToggle={onCartToggle}
-          onThemeToggle={toggleColorMode}
+          onThemeToggle={() => {
+            void d(toggleColorMode());
+          }}
         />
         <Circle
           size={10}

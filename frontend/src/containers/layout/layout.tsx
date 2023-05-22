@@ -1,19 +1,16 @@
 import { Grid, GridItem, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
+import { COLORS } from '../../chakra-setup';
 import { NavbarComponent } from '../../components/navbar';
-import { useScreenDetails } from '../../hooks/use-screen-details';
+import { useAppSelector } from '../../hooks/redux';
+import { uiIsMobileSelector } from '../../store';
 import { SidebarContainerMemo } from '../sidebar';
 import type { TLayout } from './layout.type';
-import { COLORS } from '../../chakra-setup';
 
 const LayoutContainer: FC<TLayout> = ({ children }) => {
-  const {
-    screenResolutionDetails: {
-      default: { w },
-    },
-  } = useScreenDetails();
-  const [isSidebarOpened, setIsSidebarOpened] = useState(() => w > 768);
+  const isMobile = useAppSelector(uiIsMobileSelector);
+  const [isSidebarOpened, setIsSidebarOpened] = useState(() => !isMobile);
   const [bg, bgAlt, border] = [
     useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
     useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),

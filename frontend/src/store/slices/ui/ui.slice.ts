@@ -15,12 +15,18 @@ const uiSlice = createSlice({
     infoMessage: undefined,
     errorMessage: undefined,
     isCartOpened: false,
+    colorModeAnimationDuration: 1000,
+    colorModeFlag: false,
+    isMobile: true,
   } as {
     successMessage: TMessage | undefined;
     infoMessage: TMessage | undefined;
     warningMessage: TMessage | undefined;
     errorMessage: TMessage | undefined;
     isCartOpened: boolean;
+    colorModeAnimationDuration: number;
+    colorModeFlag: boolean;
+    isMobile: boolean;
   },
   reducers: {
     setSuccessMessage(state, action: { payload: TMessage | undefined }) {
@@ -41,12 +47,25 @@ const uiSlice = createSlice({
           ? action.payload.isOpened
           : !state.isCartOpened;
     },
+    toggleColorMode(state) {
+      state.colorModeFlag = !state.colorModeFlag;
+    },
+    setIsMobile(state, action: { payload: { isMobile: boolean } }) {
+      state.isMobile = action.payload.isMobile;
+    },
   },
 });
 
 const ui = uiSlice.reducer;
-const { setSuccessMessage, setWarningMessage, setInfoMessage, setIsCartOpened, setErrorMessage } =
-  uiSlice.actions;
+const {
+  setSuccessMessage,
+  setWarningMessage,
+  setInfoMessage,
+  setIsCartOpened,
+  setErrorMessage,
+  toggleColorMode,
+  setIsMobile,
+} = uiSlice.actions;
 
 export {
   ui,
@@ -55,4 +74,6 @@ export {
   setWarningMessage,
   setInfoMessage,
   setErrorMessage,
+  toggleColorMode,
+  setIsMobile,
 };

@@ -55,29 +55,19 @@ const ErrorBoundaryGenericContainer: FC<{
   );
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+    <ErrorBoundary
+      FallbackComponent={ErrorFallbackComponent}
+      onError={myErrorHandler}
+      onReset={() => {
+        // reset the state of app, reload the page
+        void Persistor.purge().then(() => {
+          window.location.reload();
+          return;
+        });
       }}
     >
-      <ErrorBoundary
-        FallbackComponent={ErrorFallbackComponent}
-        onError={myErrorHandler}
-        onReset={() => {
-          // reset the state of app, reload the page
-          void Persistor.purge().then(() => {
-            window.location.reload();
-            return;
-          });
-        }}
-      >
-        {children}
-      </ErrorBoundary>
-    </div>
+      {children}
+    </ErrorBoundary>
   );
 };
 

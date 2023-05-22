@@ -24,9 +24,9 @@ const DebugContainer: FC = () => {
 
   return (
     <>
-      {/* <pre style={{ position: 'fixed', bottom: 0, width: '100%' }} className={style[theme]}>
+      <pre style={{ position: 'fixed', top: 0, width: '100%', zIndex: 99_999, display: 'none' }}>
         Current page size - {`${w} x ${h}`}
-      </pre> */}
+      </pre>
       <textarea
         readOnly
         // value={`isAuthenticated: ${isAuthenticated}\nusername: ${username}`}
