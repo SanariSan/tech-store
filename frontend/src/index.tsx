@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { App } from './app';
-import { GlobalHistoryCatcherContainer } from './containers/history-catcher';
+import { GlobalHistoryCatcherContainer } from './containers/functional/history-catcher';
 // import { ThemeControllerContainer } from './containers/theme-controller';
 import { Fonts, THEME } from './chakra-setup';
 import './index.scss';

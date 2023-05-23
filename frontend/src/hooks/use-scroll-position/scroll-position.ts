@@ -1,6 +1,6 @@
 import type { MutableRefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { throttleWrap } from '../../helpers/util';
+import { useThrottle } from '../use-throttle';
 
 type TElementRef = MutableRefObject<HTMLElement | null>;
 
@@ -17,37 +17,35 @@ export const useElementScrollPosition = ({
   const [scrollTop, setScrollTop] = useState(0);
   const [isElementEnd, setIsElementEnd] = useState(false);
 
-  const update = throttleWrap(
-    useCallback(() => {
-      if (elementRef.current === null) return;
+  const updateCb = useCallback(() => {
+    console.log('op');
+    if (elementRef.current === null) return;
 
-      const { width, height } = elementRef.current.getBoundingClientRect();
-      setW(width);
-      setH(height);
-      setScrollHeight(elementRef.current.scrollHeight);
-      setScrollTop(elementRef.current.scrollTop);
+    const { width, height } = elementRef.current.getBoundingClientRect();
+    setW(width);
+    setH(height);
+    setScrollHeight(elementRef.current.scrollHeight);
+    setScrollTop(elementRef.current.scrollTop);
 
-      // console.log(
-      //   elementRef.current.scrollHeight,
-      //   elementRef.current.scrollTop,
-      //   height,
-      //   elementRef.current.scrollHeight - (elementRef.current.scrollTop + height),
-      //   endOffset,
-      // );
+    // console.log(
+    //   elementRef.current.scrollHeight,
+    //   elementRef.current.scrollTop,
+    //   height,
+    //   elementRef.current.scrollHeight - (elementRef.current.scrollTop + height),
+    //   endOffset,
+    // );
 
-      if (
-        elementRef.current.scrollTop >= 0 &&
-        elementRef.current.scrollHeight - (elementRef.current.scrollTop + height) <= endOffset
-      ) {
-        setIsElementEnd(true);
-      } else {
-        setIsElementEnd(false);
-      }
-    }, [elementRef, endOffset]),
-    250,
-  );
+    if (
+      elementRef.current.scrollTop >= 0 &&
+      elementRef.current.scrollHeight - (elementRef.current.scrollTop + height) <= endOffset
+    ) {
+      setIsElementEnd(true);
+    } else {
+      setIsElementEnd(false);
+    }
+  }, [elementRef, endOffset]);
 
-  // const update = useDebounceLeading(update1);
+  const [update] = useThrottle({ cb: updateCb, delay: 250 });
 
   useEffect(() => {
     let el: Exclude<TElementRef['current'], null>;

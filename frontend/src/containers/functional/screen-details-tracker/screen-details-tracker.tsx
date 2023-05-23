@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import { memo, useEffect } from 'react';
-import { useAppDispatch } from '../../hooks/redux';
-import { useScreenDetails } from '../../hooks/use-screen-details';
-import { setScreenDetails } from '../../store';
+import { useAppDispatch } from '../../../hooks/redux';
+import { useScreenDetails } from '../../../hooks/use-screen-details';
+import { setScreenDetails } from '../../../store';
 
 type TScreenDetailsTrackerContainer = {
   [key: string]: unknown;

@@ -2,8 +2,7 @@ import { Button } from '@chakra-ui/react';
 import type { FC, ReactNode } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Persistor } from '../../store';
-import { sleep } from '../../helpers/util';
+import { Persistor } from '../../../store';
 
 const ErrorFallbackComponent: FC<{
   error: Error;

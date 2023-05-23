@@ -2,7 +2,7 @@ import { Button, Flex, Input, Text } from '@chakra-ui/react';
 import classNames from 'classnames';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
-import { changeRoute } from '../../containers/history-catcher';
+import { changeRoute } from '../../containers/functional/history-catcher';
 import type { TRegister } from './register.type';
 
 const RegisterComponent: FC<TRegister> = ({ isLoading, ...rest }) => {
