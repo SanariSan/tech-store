@@ -1,7 +1,7 @@
 import { Button, Flex, Input, Text } from '@chakra-ui/react';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
-import { changeRoute } from '../../containers/history-catcher';
+import { changeRoute } from '../../containers/functional/history-catcher';
 import type { TLogin } from './login.type';
 
 const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {

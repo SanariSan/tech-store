@@ -1,5 +1,6 @@
-import { memo, useMemo, useRef } from 'react';
 import { Text } from '@chakra-ui/react';
+import { memo, useMemo, useRef } from 'react';
+import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppSelector } from '../../hooks/redux';
 import { goodsLikedEntitiesSelector, goodsSelectedSectionSelector } from '../../store';
 import { ItemsGridComponentMemo } from './items-grid';
@@ -7,7 +8,7 @@ import { ItemsGridComponentMemo } from './items-grid';
 const LikedContainer = () => {
   const entities = useAppSelector(goodsLikedEntitiesSelector);
   const selectedSection = useAppSelector(goodsSelectedSectionSelector);
-  const gridRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<Grid | null>(null);
 
   const breadcrumbList = useMemo(() => [selectedSection], [selectedSection]);
   const modifiersList = useMemo(() => [], []);
@@ -15,17 +16,18 @@ const LikedContainer = () => {
   return (
     <>
       <ItemsGridComponentMemo
+        gridRef={gridRef}
         title={'Your favourite items all in one place!'}
         breadcrumbList={breadcrumbList}
         modifiersList={modifiersList}
         entitiesList={entities}
-        gridRef={gridRef}
+        variant="static"
       />
       {entities.length <= 0 && (
         <Text
           position={'absolute'}
           top={{ base: '250px', sm: '175px' }}
-          left={{ base: '25px', sm: '35px', md: '40px' }}
+          left={{ base: '100px', sm: '125px', md: '140px' }}
           variant={{ base: 'sm', sm: 'md' }}
         >
           Nothing here yet 😥

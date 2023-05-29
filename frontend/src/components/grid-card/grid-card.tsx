@@ -5,18 +5,19 @@ import type { FC } from 'react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { COLORS } from '../../chakra-setup';
 import { LazyImageContainer } from '../../containers/lazy-image';
-import { useIntersection } from '../../hooks/use-intersection';
+import { useAppSelector } from '../../hooks/redux';
 import type { goodsEntitiesSelector } from '../../store';
+import { goodsIsInLikedSelector } from '../../store';
 import { CartIcon, HeartIcon } from '../icons';
+import { useIntersection } from '../../hooks/use-intersection';
 
-type TGridCardComponent = Omit<
+export type TGridCardComponent = Omit<
   ReturnType<typeof goodsEntitiesSelector>[number],
   'category' | 'modifier'
 > & {
-  orderIdx: number;
-  isLiked: boolean;
-  onLike: () => void;
-  onBuy: () => void;
+  onLike: ({ id }: { id: string }) => void;
+  onDislike: ({ id }: { id: string }) => void;
+  onBuy: ({ id }: { id: string }) => void;
 } & React.Attributes;
 
 const GridCardComponent: FC<TGridCardComponent> = ({
@@ -25,9 +26,8 @@ const GridCardComponent: FC<TGridCardComponent> = ({
   price,
   hsrc,
   lsrc,
-  orderIdx,
-  isLiked,
   onLike,
+  onDislike,
   onBuy,
 }) => {
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -38,6 +38,7 @@ const GridCardComponent: FC<TGridCardComponent> = ({
   const { isIntersecting } = useIntersection({ ref: cardRef, shouldTrack: !hasBeenShown });
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isCartIconPressed, setIsCartIconPressed] = useState(false);
+  const isLiked = useAppSelector(goodsIsInLikedSelector({ id }));
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   // const size = useHookThrottle({ useHook: useSize, args: [imgRef] });
@@ -114,14 +115,13 @@ const GridCardComponent: FC<TGridCardComponent> = ({
       justifyContent={'space-between'}
       minH={{ base: '250px', sm: '375px' }}
       minW={{ base: '230px', sm: '375px' }}
+      maxW={{ base: '230px', sm: '450px' }}
       h={'max-content'}
       w={'100%'}
       cursor={'pointer'}
       opacity={hasBeenShown ? 1 : 0}
       transition={`
-      transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.2s linear ${
-        (orderIdx + 1) * 50
-      }ms
+      transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.1s linear
       `}
       transform={'perspective(100px) translateZ(0px)'}
       _hover={{ sm: hover }}
@@ -170,7 +170,14 @@ const GridCardComponent: FC<TGridCardComponent> = ({
               _hover={{ opacity: 1, background: secondary }}
               transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
-              onClick={onLike}
+              onClick={() => {
+                if (isLiked) {
+                  onDislike({ id });
+                  return;
+                }
+
+                onLike({ id });
+              }}
               background={wrapBg}
             >
               <HeartIcon color={isLiked ? liked : icons} boxSize={{ base: 4, sm: 5 }} />
@@ -289,7 +296,7 @@ const GridCardComponent: FC<TGridCardComponent> = ({
                 background={wrapBg}
                 _hover={{ background: secondary }}
                 onClick={() => {
-                  onBuy();
+                  onBuy({ id });
                   setIsCartIconPressed(true);
                 }}
                 isDisabled={isCartIconPressed}

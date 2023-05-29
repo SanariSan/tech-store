@@ -2,10 +2,10 @@ import type { FC } from 'react';
 import { useMemo, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Spinner, useColorModeValue } from '@chakra-ui/react';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { checkUserAuthStatusAsync, userAuthIsAuthenticatedSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { checkUserAuthStatusAsync, userAuthIsAuthenticatedSelector } from '../../../store';
 import type { TAuthRoute } from './authenticated-access.type';
-import { COLORS } from '../../chakra-setup';
+import { COLORS } from '../../../chakra-setup';
 
 const AuthenticatedAccessContainer: FC<TAuthRoute> = ({
   children,

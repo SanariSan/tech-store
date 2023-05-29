@@ -2,11 +2,12 @@ import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import type { ColorMode } from '@chakra-ui/react';
 import { Flex, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { memo, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, memo, useEffect, useMemo, useRef } from 'react';
 import { COLORS } from '../../../chakra-setup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { setColorModeToogleCoords, uiScreenDetailsSelector } from '../../../store';
 import { CartIcon } from '../../icons';
+import { useDebounce } from '../../../hooks/use-debounce';
 
 const NavbarIconsComponent: FC<{
   isOpened: boolean;
@@ -25,12 +26,17 @@ const NavbarIconsComponent: FC<{
     useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
   ];
 
-  useLayoutEffect(() => {
+  const updateIconsCoordsCb = useCallback(() => {
     if (refIcons.current !== null) {
       const { x, y } = refIcons.current.getBoundingClientRect();
       void d(setColorModeToogleCoords({ x: x + 10, y: y + 10 }));
     }
-  }, [d, refIcons, screenDetails]);
+  }, [d]);
+  const [updateIconsCoordsDebounced] = useDebounce({ cb: updateIconsCoordsCb, delay: 350 });
+
+  useEffect(() => {
+    updateIconsCoordsDebounced();
+  }, [d, screenDetails, updateIconsCoordsDebounced]);
 
   const themeSwitchProps = useMemo(
     () => ({

@@ -1,6 +1,6 @@
-import { memo, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { useElementScrollPosition } from '../../hooks/use-scroll-position';
 import {
   fetchMoreEntitiesAsync,
   getCategoriesAsync,
@@ -9,6 +9,7 @@ import {
   goodsLoadingStatusSelector,
   goodsSelectedCategoryRouteSelector,
   goodsSelectedCategorySelector,
+  goodsSelectedModifierSelector,
   goodsSelectedSectionSelector,
 } from '../../store';
 import { ItemsGridComponentMemo } from './items-grid';
@@ -16,32 +17,24 @@ import { ItemsGridComponentMemo } from './items-grid';
 const CatalogueContainer = () => {
   const d = useAppDispatch();
   const entities = useAppSelector(goodsEntitiesSelector);
+  const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
   const categories = useAppSelector(goodsCategoriesSelector);
   const selectedSection = useAppSelector(goodsSelectedSectionSelector);
   const selectedCategory = useAppSelector(goodsSelectedCategorySelector);
+  const selectedModifier = useAppSelector(goodsSelectedModifierSelector);
   const selectedCategoryRoute = useAppSelector(goodsSelectedCategoryRouteSelector);
-
-  const entitiesLoadingStatus = useAppSelector(goodsLoadingStatusSelector);
-  const areEntitiesLoading = entitiesLoadingStatus === 'loading';
-  const gridRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<Grid | null>(null);
 
   const mountRenderCompleted = useRef(false);
 
-  // sub to scroll position hook
-  const { isElementEnd } = useElementScrollPosition({
-    elementRef: gridRef,
-    endOffset: 1600,
-  });
+  const fetchMoreEntities = useCallback(() => d(fetchMoreEntitiesAsync()), [d]);
 
   // scroll to the top on selectedCategory change
   useLayoutEffect(() => {
     if (gridRef.current !== null) {
-      gridRef.current.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
+      gridRef.current.scrollTo({ scrollTop: 0 });
     }
-  }, [gridRef, selectedCategory]);
+  }, [gridRef, selectedCategory, selectedModifier]);
 
   // fetch global categories
   useEffect(() => {
@@ -50,22 +43,12 @@ const CatalogueContainer = () => {
     }
   }, [categories, d]);
 
-  // fetch items on category change
+  // fetch items on category/modifier change
   // TODO: maybe move to saga (category change -> fetch entities)
   useEffect(() => {
     // prevent from fetching on mount
-    if (mountRenderCompleted.current) void d(fetchMoreEntitiesAsync());
-  }, [selectedCategory, d]);
-
-  /**
-   * Fetch more items if reaching container end
-   * areEntitiesLoading here to trigger effect in case view
-   * is still at the end after loading finished so it'd trigger fetch again
-   * Checking if loading is ongoing not needed, saga will handle auto-cancel
-   */
-  useEffect(() => {
-    if (isElementEnd) void d(fetchMoreEntitiesAsync());
-  }, [isElementEnd, areEntitiesLoading, d]);
+    if (mountRenderCompleted.current) fetchMoreEntities();
+  }, [selectedCategory, selectedModifier, fetchMoreEntities]);
 
   useEffect(() => {
     if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
@@ -88,14 +71,20 @@ const CatalogueContainer = () => {
     [selectedCategory],
   );
 
+  const onEntitiesEndReachCb = useCallback(() => {
+    // prevent infinite fetch-cancel on constant calls (bcs of saga's take latest)
+    if (loadingStatus !== 'loading') fetchMoreEntities();
+  }, [fetchMoreEntities, loadingStatus]);
+
   return (
     <ItemsGridComponentMemo
       title={'Best Selling Electronics Products - Weekly Update.'}
       breadcrumbList={breadcrumbList}
       modifiersList={modifiersList}
       entitiesList={entities}
-      areEntitiesLoading={areEntitiesLoading}
+      onEntitiesEndReachCb={onEntitiesEndReachCb}
       gridRef={gridRef}
+      variant="infinite"
     />
   );
 };

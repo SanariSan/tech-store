@@ -1,6 +1,6 @@
 import { QuestionIcon, SettingsIcon } from '@chakra-ui/icons';
 import { BoxIcon, HeartIcon, HomeIcon } from '../../components/icons';
-import { changeRoute } from '../history-catcher';
+import { changeRoute } from '../functional/history-catcher';
 import { CATALOGUE_TEMPLATE } from '../catalogue';
 import { Store, setSelectedCategory, setSelectedModifier, setSelectedSection } from '../../store';
 
