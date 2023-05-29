@@ -39,6 +39,10 @@ const goodsCartEntitiesPriceSelector = createSelector(goodsCartEntitiesSelector,
 const goodsLikedEntitiesIdsSelector = createSelector(goodsLikedEntitiesSelector, (likedEntities) =>
   likedEntities.map(({ id }) => id),
 );
+const goodsIsInLikedSelector = ({ id: targetId }: { id: string }) =>
+  createSelector(goodsLikedEntitiesSelector, (likedEntities) =>
+    likedEntities.some(({ id }) => id === targetId),
+  );
 
 export {
   goodsSelector,
@@ -56,4 +60,5 @@ export {
   goodsLikedEntitiesIdsSelector,
   goodsCartEntitiesStackedSelector,
   goodsCartEntitiesPriceSelector,
+  goodsIsInLikedSelector,
 };

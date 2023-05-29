@@ -3,7 +3,7 @@ import type { FC } from 'react';
 import { memo } from 'react';
 import { COLORS } from '../../chakra-setup';
 
-type TSkeleton = {
+export type TSkeleton = {
   isLoading: boolean;
 };
 
@@ -15,6 +15,10 @@ const SkeletonPlaceholderComponent: FC<TSkeleton> = ({ isLoading }) => {
 
   return (
     <Skeleton
+      minW={{ base: '250px', sm: '400px' }}
+      maxW={{ base: '230px', sm: '450px' }}
+      minH={{ base: '350px', sm: '475px' }}
+      w={'100%'}
       height={{ base: '350px', sm: '435px' }}
       opacity={isLoading ? 1 : 0}
       borderRadius={'20px'}

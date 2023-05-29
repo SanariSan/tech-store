@@ -18,7 +18,6 @@ export const useElementScrollPosition = ({
   const [isElementEnd, setIsElementEnd] = useState(false);
 
   const updateCb = useCallback(() => {
-    console.log('op');
     if (elementRef.current === null) return;
 
     const { width, height } = elementRef.current.getBoundingClientRect();

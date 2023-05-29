@@ -91,7 +91,7 @@ const App: FC = () => {
             </Route>
           </Switch>
         </LayoutContainer>
-        <DebugContainer />
+        {/* <DebugContainer /> */}
       </Box>
     </ErrorBoundaryGenericContainerMemo>
   );
