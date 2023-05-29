@@ -1,8 +1,9 @@
 import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import type { ColorMode } from '@chakra-ui/react';
-import { Flex, useColorModeValue } from '@chakra-ui/react';
+import { Icon, Flex, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useCallback, memo, useEffect, useMemo, useRef } from 'react';
+import { BiUserCircle } from 'react-icons/bi';
 import { COLORS } from '../../../chakra-setup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { setColorModeToogleCoords, uiScreenDetailsSelector } from '../../../store';
@@ -50,7 +51,6 @@ const NavbarIconsComponent: FC<{
       },
       cursor: 'pointer',
       onClick: isThemeToggleAvailable ? onThemeToggle : undefined,
-      mt: { base: 4, md: 0 },
     }),
     [inactive, isThemeToggleAvailable, onThemeToggle, secondaryAlt],
   );
@@ -60,7 +60,7 @@ const NavbarIconsComponent: FC<{
       direction={{ base: 'column', md: 'row' }}
       position={{ base: 'absolute', md: 'unset' }}
       width={{ base: '60px', md: 'max-content' }}
-      maxHeight={{ base: isOpened ? '120px' : '0px', md: 'max-content' }}
+      maxHeight={{ base: isOpened ? '150px' : '0px', md: 'max-content' }}
       overflow={'hidden'}
       right={3}
       top={77}
@@ -72,6 +72,20 @@ const NavbarIconsComponent: FC<{
       borderRadius={'100px'}
       ref={refIcons}
     >
+      <Icon
+        display={{ base: 'flex', md: 'none' }}
+        as={BiUserCircle}
+        mt={{ base: 4, md: 0 }}
+        boxSize={{ base: 4, md: 5 }}
+        color={inactive}
+        _hover={{
+          color: secondaryAlt,
+        }}
+        _active={{
+          color: inactive,
+        }}
+        cursor={'pointer'}
+      />
       {currentTheme === 'light' ? (
         <MoonIcon {...themeSwitchProps} />
       ) : (
@@ -104,7 +118,7 @@ const NavbarIconsComponent: FC<{
         position={{ base: 'absolute', md: 'unset' }}
         width={{ base: '70px', md: '0px' }}
         height={'100%'}
-        maxHeight={{ base: isOpened ? '120px' : '0px', md: 'max-content' }}
+        maxHeight={{ base: isOpened ? '150px' : '0px', md: 'max-content' }}
         opacity={0.9}
         transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
         background={bg}

@@ -37,11 +37,6 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
       templateAreas={`"nav"
                     "main"`}
     >
-      {/* // <GridItem */}
-      {/* //   area={'nav'}
-    //   height={75} */}
-
-      {/* // <Box h={'100%'} maxH={'100%'} w={'100%'}> */}
       <GridItem
         area={'nav'}
         w={'100%'}
@@ -94,7 +89,6 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         </Box>
       </GridItem>
     </Grid>
-    // </Box>
   );
 };
 

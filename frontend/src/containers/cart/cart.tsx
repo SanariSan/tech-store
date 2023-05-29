@@ -40,7 +40,7 @@ const CartContainer: FC<TCartContainer> = () => {
   const [bgAlt, impact, btnColor] = [
     useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
     useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
-    useColorModeValue(COLORS.blue[600], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.blue[800], COLORS.darkBlue[600]),
   ];
 
   const onClose = useCallback(() => {
@@ -102,6 +102,7 @@ const CartContainer: FC<TCartContainer> = () => {
             alignItems={'flex-start'}
             gap={3}
           >
+            {cartEntities.length <= 0 && <Text variant={'md'}>It's lonely here 😢</Text>}
             {cartEntities.map(({ id, ...props }, idx) => (
               <Fragment key={`cart_${id}`}>
                 <CartCardComponentMemo

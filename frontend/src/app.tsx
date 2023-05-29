@@ -17,6 +17,7 @@ import { ThemeSwitchContainerMemo } from './containers/theme-switch';
 import { ToastsContainerMemo } from './containers/toast/toast';
 import { useAppDispatch } from './hooks/redux';
 import { logoutUserAsync } from './store';
+import { HelpComponentMemo } from './components/help';
 
 const App: FC = () => {
   const d = useAppDispatch();
@@ -62,17 +63,31 @@ const App: FC = () => {
             </Route>
             <Route exact path={'/help'}>
               <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
-                help
+                <HelpComponentMemo />
               </Flex>
             </Route>
             <Route exact path="/login">
-              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
+              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/lk'}>
                 <LoginContainer />
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path="/register">
-              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
+              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/lk'}>
                 <RegisterContainer />
+              </AuthenticatedAccessContainer>
+            </Route>
+            <Route exact path="/lk">
+              <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
+                <div>
+                  <p>very cool lk</p>
+                  <Button
+                    onClick={() => {
+                      void d(logoutUserAsync());
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </div>
               </AuthenticatedAccessContainer>
             </Route>
             {/* <Route exact path="/dashboard">
@@ -82,11 +97,6 @@ const App: FC = () => {
               </Route> 
             */}
             <Route path="/">
-              <Button
-                onClick={() => {
-                  void d(logoutUserAsync());
-                }}
-              />
               <div>Not found</div>
             </Route>
           </Switch>
