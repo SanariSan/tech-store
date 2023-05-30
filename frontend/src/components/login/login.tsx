@@ -86,7 +86,7 @@ const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
               _disabled={{
                 opacity: 0.5,
               }}
-              disabled={isLoading}
+              isDisabled={isLoading}
             >
               {isLoading ? 'Loading...' : 'Log in'}
             </Button>
@@ -94,7 +94,7 @@ const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
             <Button
               variant={'outline'}
               size={{ base: 'sm', sm: 'md' }}
-              disabled={isLoading}
+              isDisabled={isLoading}
               onClick={() => {
                 changeRoute('/register');
               }}

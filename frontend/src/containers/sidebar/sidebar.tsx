@@ -4,18 +4,16 @@ import { useEffect, Fragment, memo, useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SidebarParentEntityMemo, SidebarSubEntityMemo } from '../../components/sidebar';
 import { SIDEBAR_TEMPLATE } from './sidebar.const';
-import { useAppDispatch } from '../../hooks/redux';
-import { setSelectedSection as setSelectedSectionStore } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { setSelectedSection as setSelectedSectionStore, uiSidebarStateSelector } from '../../store';
 
 interface ISidebarContainer {
-  isSidebarOpened: boolean;
+  [key: string]: unknown;
 }
 
-const SidebarContainer: FC<ISidebarContainer> = ({
-  isSidebarOpened,
-}: {
-  isSidebarOpened: boolean;
-}) => {
+const SidebarContainer: FC<ISidebarContainer> = () => {
+  const isSidebarOpened = useAppSelector(uiSidebarStateSelector);
+
   // ensuring right initial menu entry is chosen based on current pathname
   const { pathname } = useLocation();
   const [selectedSection, setSelectedSection] = useState(() =>

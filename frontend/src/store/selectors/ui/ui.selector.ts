@@ -1,6 +1,7 @@
 import type { TRootState } from '../../redux.store.type';
 
 const uiCartStateSelector = (state: TRootState) => state.ui.isCartOpened;
+const uiSidebarStateSelector = (state: TRootState) => state.ui.isSidebarOpened;
 const uiSuccessSelector = (state: TRootState) => state.ui.successMessage;
 const uiWarningSelector = (state: TRootState) => state.ui.warningMessage;
 const uiInfoSelector = (state: TRootState) => state.ui.infoMessage;
@@ -14,6 +15,7 @@ const uiScreenDetailsSelector = (state: TRootState) => state.ui.screenDetails;
 
 export {
   uiCartStateSelector,
+  uiSidebarStateSelector,
   uiSuccessSelector,
   uiWarningSelector,
   uiInfoSelector,

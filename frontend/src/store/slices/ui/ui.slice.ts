@@ -1,46 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { UI_INIT_STATE } from './ui.slice.const';
+import type { TMessage } from './ui.slice.type';
 
 /* eslint-disable no-param-reassign */
 
-type TMessage = {
-  title?: string;
-  description?: string;
-};
-
 const uiSlice = createSlice({
   name: 'ui',
-  initialState: {
-    successMessage: undefined,
-    warningMessage: undefined,
-    infoMessage: undefined,
-    errorMessage: undefined,
-    isCartOpened: false,
-    colorModeAnimationDuration: 1500,
-    colorModeChangeStatus: 'completed',
-    isMobile: true,
-    colorModeToogleCoords: {
-      x: 0,
-      y: 0,
-    },
-    screenDetails: {
-      w: 0,
-      h: 0,
-    },
-  } as {
-    successMessage: TMessage | undefined;
-    infoMessage: TMessage | undefined;
-    warningMessage: TMessage | undefined;
-    errorMessage: TMessage | undefined;
-    isCartOpened: boolean;
-    colorModeAnimationDuration: number;
-    colorModeChangeStatus: 'completed' | 'ongoing';
-    isMobile: boolean;
-    colorModeToogleCoords: { x: number; y: number };
-    screenDetails: {
-      w: number;
-      h: number;
-    };
-  },
+  initialState: UI_INIT_STATE,
   reducers: {
     setSuccessMessage(state, action: { payload: TMessage | undefined }) {
       state.successMessage = action.payload;
@@ -59,6 +25,12 @@ const uiSlice = createSlice({
         typeof action.payload.isOpened === 'boolean'
           ? action.payload.isOpened
           : !state.isCartOpened;
+    },
+    setIsSidebarOpened(state, action: { payload: { isOpened: boolean | 'toggle' } }) {
+      state.isSidebarOpened =
+        typeof action.payload.isOpened === 'boolean'
+          ? action.payload.isOpened
+          : !state.isSidebarOpened;
     },
     initiateColorModeChange(state) {
       state.colorModeChangeStatus = 'ongoing';
@@ -84,6 +56,7 @@ const {
   setWarningMessage,
   setInfoMessage,
   setIsCartOpened,
+  setIsSidebarOpened,
   setErrorMessage,
   initiateColorModeChange,
   finalizeColorModeChange,
@@ -95,6 +68,7 @@ const {
 export {
   ui,
   setIsCartOpened,
+  setIsSidebarOpened,
   setSuccessMessage,
   setWarningMessage,
   setInfoMessage,

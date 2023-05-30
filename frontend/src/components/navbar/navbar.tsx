@@ -14,6 +14,7 @@ import {
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
@@ -28,10 +29,6 @@ import {
 } from '../../store';
 import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
-
-interface INavbarComponent {
-  switchSidebarState: (payload?: { state: boolean }) => void;
-}
 
 const animationKeyframes = keyframes`
             0% {
@@ -126,7 +123,11 @@ const animationKeyframes = keyframes`
 
 const animation = `${animationKeyframes} 20s ease-in-out 5s infinite`;
 
-export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
+interface INavbarComponent {
+  onSidebarToggle: () => void;
+}
+
+export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
   const d = useAppDispatch();
   const { pathname } = useLocation();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
@@ -149,30 +150,32 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
     transform: 'perspective(100px) translateZ(-2px)',
   };
 
-  const toggleToolbar = useCallback(() => {
+  const toggleToolbarCb = useCallback(() => {
     setIsToolbarOpened((_) => !_);
   }, []);
 
-  const onCartToggle = useCallback(() => {
-    toggleToolbar();
+  const onCartToggleCb = useCallback(() => {
+    toggleToolbarCb();
     void d(setIsCartOpened({ isOpened: 'toggle' }));
-  }, [d, toggleToolbar]);
+  }, [d, toggleToolbarCb]);
+
+  const profileClickCb = useCallback(() => {
+    switch (pathname) {
+      case '/login':
+        changeRoute('/register');
+        break;
+      case '/register':
+        changeRoute('/login');
+        break;
+      default:
+        changeRoute('/login');
+    }
+  }, [pathname]);
 
   const onAvatarClickCb = useBreakpointValue(
     {
-      base: toggleToolbar,
-      md: () => {
-        switch (pathname) {
-          case '/login':
-            changeRoute('/register');
-            break;
-          case '/register':
-            changeRoute('/login');
-            break;
-          default:
-            changeRoute('/login');
-        }
-      },
+      base: toggleToolbarCb,
+      md: profileClickCb,
     },
     {
       fallback: 'desktop',
@@ -195,6 +198,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
         brightness={'100%'}
         objectFit={'contain'}
         maxH={{ base: '30px', sm: 'max-content' }}
+        as={motion.img}
         animation={animation}
       />
 
@@ -216,9 +220,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
           _active={{
             color: inactive,
           }}
-          onClick={() => {
-            switchSidebarState();
-          }}
+          onClick={onSidebarToggle}
         />
 
         <InputGroup
@@ -257,12 +259,13 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       <Flex direction={'row'} alignItems={'center'} gap={4}>
         <NavbarIconsComponentMemo
           isOpened={isToolbarOpened}
-          onCartToggle={onCartToggle}
+          onCartToggle={onCartToggleCb}
           isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
           currentTheme={colorMode}
           onThemeToggle={() => {
             void d(initiateColorModeChange());
           }}
+          onProfileClick={profileClickCb}
         />
         <Circle
           size={10}

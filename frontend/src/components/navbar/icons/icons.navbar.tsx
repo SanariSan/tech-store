@@ -1,6 +1,6 @@
 import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import type { ColorMode } from '@chakra-ui/react';
-import { Icon, Flex, useColorModeValue } from '@chakra-ui/react';
+import { useBreakpointValue, Icon, Flex, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useCallback, memo, useEffect, useMemo, useRef } from 'react';
 import { BiUserCircle } from 'react-icons/bi';
@@ -16,7 +16,15 @@ const NavbarIconsComponent: FC<{
   currentTheme: ColorMode;
   onCartToggle: () => void;
   onThemeToggle: () => void;
-}> = ({ isOpened, isThemeToggleAvailable, currentTheme, onCartToggle, onThemeToggle }) => {
+  onProfileClick: () => void;
+}> = ({
+  isOpened,
+  isThemeToggleAvailable,
+  currentTheme,
+  onCartToggle,
+  onThemeToggle,
+  onProfileClick,
+}) => {
   const d = useAppDispatch();
   const screenDetails = useAppSelector(uiScreenDetailsSelector);
   const refIcons = useRef<HTMLDivElement | null>(null);
@@ -27,12 +35,26 @@ const NavbarIconsComponent: FC<{
     useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
   ];
 
+  const fallback = useMemo(() => ({ x: 10, y: 40 }), []);
+  const colorModeIconOffset =
+    useBreakpointValue(
+      {
+        base: { x: 25, y: 55 },
+        md: { x: 10, y: 10 },
+      },
+      {
+        fallback: 'base',
+      },
+    ) ?? fallback;
+
   const updateIconsCoordsCb = useCallback(() => {
     if (refIcons.current !== null) {
       const { x, y } = refIcons.current.getBoundingClientRect();
-      void d(setColorModeToogleCoords({ x: x + 10, y: y + 10 }));
+      void d(
+        setColorModeToogleCoords({ x: x + colorModeIconOffset.x, y: y + colorModeIconOffset.y }),
+      );
     }
-  }, [d]);
+  }, [d, colorModeIconOffset]);
   const [updateIconsCoordsDebounced] = useDebounce({ cb: updateIconsCoordsCb, delay: 350 });
 
   useEffect(() => {
@@ -78,6 +100,7 @@ const NavbarIconsComponent: FC<{
         mt={{ base: 4, md: 0 }}
         boxSize={{ base: 4, md: 5 }}
         color={inactive}
+        onClick={onProfileClick}
         _hover={{
           color: secondaryAlt,
         }}

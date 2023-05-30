@@ -138,7 +138,7 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
           />
         ))}
       <Image
-        as={motion.div}
+        as={motion.image}
         position={'absolute'}
         zIndex={999_999}
         w={'100%'}

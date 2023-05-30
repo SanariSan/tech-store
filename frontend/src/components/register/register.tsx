@@ -129,14 +129,14 @@ const RegisterComponent: FC<TRegister> = ({ isLoading, ...rest }) => {
               _disabled={{
                 opacity: 0.5,
               }}
-              disabled={isLoading}
+              isDisabled={isLoading}
             >
               {isLoading ? 'Loading...' : 'Register'}
             </Button>
             <Button
               variant={'outline'}
               size={{ base: 'sm', sm: 'md' }}
-              disabled={isLoading}
+              isDisabled={isLoading}
               onClick={() => {
                 changeRoute('/login');
               }}
