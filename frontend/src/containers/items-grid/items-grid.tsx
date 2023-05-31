@@ -68,6 +68,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
 
   const entitiesRef = useRef(entitiesList);
+  const mountRenderCompleted = useRef(false);
 
   const [scrollPos, setScrollPos] = useState({ top: 0, left: 0 });
   const [rowColPos, setRowColPos] = useState({ rowIndex: 0, columnIndex: 0 });
@@ -134,7 +135,15 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     [colorModeChangeStatus, colorModeChangeStatusProxy],
   );
 
+  // replicate entities state to ref so it could be passed to memoized component not breaking cache
   useEffect(() => {
+    entitiesRef.current = entitiesList;
+    // update current row count in case of category-modifier change
+    setRowCount(getRowCountCb());
+  }, [entitiesList, getRowCountCb]);
+
+  useEffect(() => {
+    if (!mountRenderCompleted.current) return;
     if (!hasMoreEntities) return;
 
     const maxRows = rowCount;
@@ -146,13 +155,6 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
       setRowCount(getRowCountCb());
     }
   }, [rowColPos, rowCount, rowsPerChunk, getRowCountCb, onEntitiesEndReachCb, hasMoreEntities]);
-
-  // replicate entities state to ref so it could be passed to memoized component not breaking cache
-  useEffect(() => {
-    entitiesRef.current = entitiesList;
-    // update current row count in case of category-modifier change
-    setRowCount(getRowCountCb());
-  }, [entitiesList, getRowCountCb]);
 
   // reset items grid state on screen size breakpoint change
   useEffect(() => {
@@ -212,6 +214,14 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
       setForceRerenderFlag((s) => !s);
     }
   }, [gridRef, entitiesList]);
+
+  useEffect(() => {
+    if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
+
+    return () => {
+      mountRenderCompleted.current = false;
+    };
+  }, []);
 
   // compose and memoize props for memoized grid Item component
   const itemData = createItemData(

@@ -51,7 +51,6 @@ const NavbarIconsComponent: FC<{
 
   const updateIconsCoordsCb = useCallback(() => {
     if (refIcons.current !== null) {
-      console.log(colorModeIconOffset);
       const { x, y } = refIcons.current.getBoundingClientRect();
       void d(
         setColorModeToggleCoords({ x: x + colorModeIconOffset.x, y: y + colorModeIconOffset.y }),

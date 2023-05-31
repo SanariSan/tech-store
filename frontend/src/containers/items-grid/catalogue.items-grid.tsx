@@ -23,6 +23,7 @@ const CatalogueContainer = () => {
   const selectedCategory = useAppSelector(goodsSelectedCategorySelector);
   const selectedModifier = useAppSelector(goodsSelectedModifierSelector);
   const selectedCategoryRoute = useAppSelector(goodsSelectedCategoryRouteSelector);
+  const loadingStatusRef = useRef(loadingStatus);
   const gridRef = useRef<Grid | null>(null);
 
   const mountRenderCompleted = useRef(false);
@@ -71,10 +72,14 @@ const CatalogueContainer = () => {
     [selectedCategory],
   );
 
+  useEffect(() => {
+    loadingStatusRef.current = loadingStatus;
+  }, [loadingStatus]);
+
   const onEntitiesEndReachCb = useCallback(() => {
     // prevent infinite fetch-cancel on constant calls (bcs of saga's take latest)
-    if (loadingStatus !== 'loading') fetchMoreEntities();
-  }, [fetchMoreEntities, loadingStatus]);
+    if (loadingStatusRef.current !== 'loading') fetchMoreEntities();
+  }, [fetchMoreEntities]);
 
   return (
     <ItemsGridComponentMemo
