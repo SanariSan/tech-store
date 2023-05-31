@@ -218,9 +218,9 @@ const goodsSlice = createSlice({
         type: string;
       },
     ) {
-      const targetEntity = current(state.entities).find(
-        (entity) => entity.id === action.payload.entityId,
-      );
+      const targetEntity =
+        current(state.entities).find((entity) => entity.id === action.payload.entityId) ??
+        current(state.likedEntities).find((entity) => entity.id === action.payload.entityId);
 
       if (targetEntity !== undefined) {
         state.cart.push(targetEntity);

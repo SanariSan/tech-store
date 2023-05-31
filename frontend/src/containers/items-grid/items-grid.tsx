@@ -91,9 +91,10 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const getRowCountCb = useCallback(
     () =>
       variant === 'infinite'
-        ? Math.floor(entitiesRef.current.length / columnCount) + rowsPerChunk
+        ? Math.floor(entitiesRef.current.length / columnCount) +
+          (hasMoreEntities ? rowsPerChunk : 0)
         : Math.ceil(entitiesRef.current.length / columnCount),
-    [columnCount, variant, rowsPerChunk],
+    [columnCount, variant, rowsPerChunk, hasMoreEntities],
   );
   const [rowCount, setRowCount] = useState(() => getRowCountCb());
 
@@ -142,6 +143,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     setRowCount(getRowCountCb());
   }, [entitiesList, getRowCountCb]);
 
+  // fetch more on end reaching
   useEffect(() => {
     if (!mountRenderCompleted.current) return;
     if (!hasMoreEntities) return;

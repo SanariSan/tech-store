@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { setIsMobile } from '../../store';
 import { useAppDispatch } from '../redux';
 import { useScreenDetails } from '../use-screen-details';
@@ -21,12 +21,14 @@ const useIsMobile = () => {
 
   const [setTypeDebounced] = useDebounce({ cb: setTypeCb, delay: 500 });
 
-  if ((w <= 400 && h <= 850) || (w <= 850 && h <= 400)) {
-    setTypeDebounced({ isMobile: true });
-    return;
-  }
+  useEffect(() => {
+    if ((w <= 400 && h <= 850) || (w <= 850 && h <= 400)) {
+      setTypeDebounced({ isMobile: true });
+      return;
+    }
 
-  setTypeDebounced({ isMobile: false });
+    setTypeDebounced({ isMobile: false });
+  }, [w, h, setTypeDebounced]);
 };
 
 export { useIsMobile };

@@ -47,8 +47,7 @@ const CatalogueContainer = () => {
   // fetch items on category/modifier change
   // TODO: maybe move to saga (category change -> fetch entities)
   useEffect(() => {
-    // prevent from fetching on mount
-    if (mountRenderCompleted.current) fetchMoreEntities();
+    fetchMoreEntities();
   }, [selectedCategory, selectedModifier, fetchMoreEntities]);
 
   useEffect(() => {
