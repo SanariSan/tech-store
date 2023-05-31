@@ -41,7 +41,7 @@ const uiSlice = createSlice({
     setIsMobile(state, action: { payload: { isMobile: boolean } }) {
       state.isMobile = action.payload.isMobile;
     },
-    setColorModeToogleCoords(state, action: { payload: { x: number; y: number } }) {
+    setColorModeToggleCoords(state, action: { payload: { x: number; y: number } }) {
       state.colorModeToogleCoords = action.payload;
     },
     setScreenDetails(state, action: { payload: { w: number; h: number } }) {
@@ -61,7 +61,7 @@ const {
   initiateColorModeChange,
   finalizeColorModeChange,
   setIsMobile,
-  setColorModeToogleCoords,
+  setColorModeToggleCoords,
   setScreenDetails,
 } = uiSlice.actions;
 
@@ -76,6 +76,6 @@ export {
   initiateColorModeChange,
   finalizeColorModeChange,
   setIsMobile,
-  setColorModeToogleCoords,
+  setColorModeToggleCoords,
   setScreenDetails,
 };

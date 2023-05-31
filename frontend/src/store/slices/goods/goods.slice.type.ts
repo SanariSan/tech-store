@@ -21,6 +21,8 @@ type TGoodsInitState = {
   selectedModifier: TSelectedModifier | undefined;
   offset: number;
   offsetPerPage: number;
+  hasMoreEntities: boolean;
+  totalQty: number;
   loadingStatus: TLoadingStatus;
 };
 

@@ -8,6 +8,7 @@ import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import type { TEntities } from '../../store';
 import {
+  goodsHasMoreEntitiesSelector,
   goodsOffsetPerPageSelector,
   pushCartEntity,
   pushLikedEntity,
@@ -62,6 +63,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const d = useAppDispatch();
   const isMobile = useAppSelector(uiIsMobileSelector);
   const chunkSize = useAppSelector(goodsOffsetPerPageSelector);
+  const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
 
@@ -133,6 +135,8 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   );
 
   useEffect(() => {
+    if (!hasMoreEntities) return;
+
     const maxRows = rowCount;
     const rowsSeen = rowColPos.rowIndex;
     const bufferRows = 3;
@@ -141,7 +145,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
       if (onEntitiesEndReachCb !== undefined) onEntitiesEndReachCb();
       setRowCount(getRowCountCb());
     }
-  }, [rowColPos, rowCount, rowsPerChunk, getRowCountCb, onEntitiesEndReachCb]);
+  }, [rowColPos, rowCount, rowsPerChunk, getRowCountCb, onEntitiesEndReachCb, hasMoreEntities]);
 
   // replicate entities state to ref so it could be passed to memoized component not breaking cache
   useEffect(() => {
@@ -182,7 +186,6 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   // may be buggy, still works
   useEffect(() => {
     if (gridRef.current !== null && colorModeChangeStatus === 'ongoing') {
-      console.log(rowColPos);
       gridRef.current.scrollToItem({
         columnIndex: rowColPos.columnIndex,
         rowIndex: rowColPos.rowIndex,
@@ -192,6 +195,8 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   }, [gridRef, colorModeChangeStatus, rowColPos]);
 
   const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
+
+  // reset flag since it's affecting useIsScrolling grid prop
   useEffect(() => {
     if (forceRerenderFlag) {
       setForceRerenderFlag(false);

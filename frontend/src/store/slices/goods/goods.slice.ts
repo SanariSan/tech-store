@@ -145,6 +145,24 @@ const goodsSlice = createSlice({
     increaseOffset(state) {
       state.offset += state.offsetPerPage;
     },
+    setTotalQty(
+      state,
+      action: {
+        payload: { amount: number };
+        type: string;
+      },
+    ) {
+      state.totalQty = action.payload.amount;
+    },
+    setHasMoreEntities(
+      state,
+      action: {
+        payload: { hasMore: boolean };
+        type: string;
+      },
+    ) {
+      state.hasMoreEntities = action.payload.hasMore;
+    },
     pushEntities(
       state,
       action: {
@@ -241,7 +259,7 @@ const goodsSlice = createSlice({
     },
     // sagas
     getCategoriesAsync() {},
-    fetchMoreEntitiesAsync(state, action: { payload: undefined; type: string }) {},
+    fetchMoreEntitiesAsync() {},
   },
 });
 
@@ -252,6 +270,8 @@ const {
   setSelectedCategory,
   setSelectedModifier,
   increaseOffset,
+  setTotalQty,
+  setHasMoreEntities,
   pushEntities,
   pushLikedEntity,
   removeLikedEntity,
@@ -270,6 +290,8 @@ export {
   setSelectedCategory,
   setSelectedModifier,
   increaseOffset,
+  setTotalQty,
+  setHasMoreEntities,
   pushEntities,
   pushLikedEntity,
   pushCartEntity,

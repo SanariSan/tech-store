@@ -1,3 +1,4 @@
+import { createSelector } from '@reduxjs/toolkit';
 import type { TRootState } from '../../redux.store.type';
 
 const uiCartStateSelector = (state: TRootState) => state.ui.isCartOpened;
@@ -11,7 +12,10 @@ const uiColorModeAnimationDurationSelector = (state: TRootState) =>
   state.ui.colorModeAnimationDuration;
 const uiIsMobileSelector = (state: TRootState) => state.ui.isMobile;
 const uiColorModeToogleCoordsSelector = (state: TRootState) => state.ui.colorModeToogleCoords;
-const uiScreenDetailsSelector = (state: TRootState) => state.ui.screenDetails;
+const uiScreenDetailsSelector = createSelector(
+  (state: TRootState) => state.ui.screenDetails,
+  (screenDetails) => screenDetails,
+);
 
 export {
   uiCartStateSelector,

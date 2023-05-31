@@ -2,6 +2,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import type { TRootState } from '../../redux.store.type';
 
 const goodsSelector = (state: TRootState) => state.goods;
+const goodsHasMoreEntitiesSelector = (state: TRootState) => state.goods.hasMoreEntities;
+const goodsTotalEntitiesQtySelector = (state: TRootState) => state.goods.totalQty;
 const goodsOffsetSelector = (state: TRootState) => state.goods.offset;
 const goodsOffsetPerPageSelector = (state: TRootState) => state.goods.offsetPerPage;
 const goodsLoadingStatusSelector = (state: TRootState) => state.goods.loadingStatus;
@@ -21,7 +23,7 @@ const goodsCartEntitiesStackedSelector = createSelector(
 
     cartEntities.forEach((entity) => {
       if (hash.has(entity.id)) {
-        // @ts-expect-error ts is trippin, acc[entity.id] can't be undefined...
+        // @ts-expect-error ts is trippin, hash[entity.id] can't be undefined...
         hash.get(entity.id).qty += 1;
         return;
       }
@@ -46,6 +48,8 @@ const goodsIsInLikedSelector = ({ id: targetId }: { id: string }) =>
 
 export {
   goodsSelector,
+  goodsHasMoreEntitiesSelector,
+  goodsTotalEntitiesQtySelector,
   goodsOffsetSelector,
   goodsOffsetPerPageSelector,
   goodsLoadingStatusSelector,

@@ -1,5 +1,5 @@
 import type { InferType } from 'yup';
-import { array, number, object, string } from 'yup';
+import { boolean, array, number, object, string } from 'yup';
 import { DEFAULT_FAILURE_DTO } from '../dto.const';
 
 const GoodsEntitiesOutgoingDTO = object({
@@ -24,6 +24,8 @@ const GoodsEntitiesIncomingSuccessDTO = object({
         }).required(),
       )
       .required(),
+    totalQty: number().required(),
+    hasMore: boolean().required(),
   }).required(),
 });
 

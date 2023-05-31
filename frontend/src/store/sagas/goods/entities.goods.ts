@@ -14,6 +14,8 @@ import {
   increaseOffset,
   pushEntities,
   setGoodsLoadStatus,
+  setHasMoreEntities,
+  setTotalQty,
 } from '../../slices';
 
 function* entitiesWorker(action: { type: string }) {
@@ -64,7 +66,13 @@ function* entitiesWorker(action: { type: string }) {
 
     if (fetchStatus.response.success !== undefined) {
       yield put(pushEntities({ entities: fetchStatus.response.success.data.entities }));
-      yield put(increaseOffset());
+      yield put(setTotalQty({ amount: fetchStatus.response.success.data.totalQty }));
+      yield put(setHasMoreEntities({ hasMore: fetchStatus.response.success.data.hasMore }));
+
+      if (fetchStatus.response.success.data.hasMore) {
+        yield put(increaseOffset());
+      }
+
       yield put(setGoodsLoadStatus({ status: 'success' }));
       return;
     }

@@ -11,6 +11,8 @@ const GOODS_INIT_STATE: TGoodsInitState = {
   selectedModifier: undefined,
   offset: 0,
   offsetPerPage: 20,
+  hasMoreEntities: true,
+  totalQty: Number.POSITIVE_INFINITY,
   loadingStatus: 'idle',
 };
 

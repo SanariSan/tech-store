@@ -6,7 +6,7 @@ import { useCallback, memo, useEffect, useMemo, useRef } from 'react';
 import { BiUserCircle } from 'react-icons/bi';
 import { COLORS } from '../../../chakra-setup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { setColorModeToogleCoords, uiScreenDetailsSelector } from '../../../store';
+import { setColorModeToggleCoords, uiScreenDetailsSelector } from '../../../store';
 import { CartIcon } from '../../icons';
 import { useDebounce } from '../../../hooks/use-debounce';
 
@@ -35,12 +35,14 @@ const NavbarIconsComponent: FC<{
     useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
   ];
 
+  const base = useMemo(() => ({ x: 25, y: 55 }), []);
+  const md = useMemo(() => ({ x: 10, y: 10 }), []);
   const fallback = useMemo(() => ({ x: 10, y: 40 }), []);
   const colorModeIconOffset =
     useBreakpointValue(
       {
-        base: { x: 25, y: 55 },
-        md: { x: 10, y: 10 },
+        base,
+        md,
       },
       {
         fallback: 'base',
@@ -49,9 +51,10 @@ const NavbarIconsComponent: FC<{
 
   const updateIconsCoordsCb = useCallback(() => {
     if (refIcons.current !== null) {
+      console.log(colorModeIconOffset);
       const { x, y } = refIcons.current.getBoundingClientRect();
       void d(
-        setColorModeToogleCoords({ x: x + colorModeIconOffset.x, y: y + colorModeIconOffset.y }),
+        setColorModeToggleCoords({ x: x + colorModeIconOffset.x, y: y + colorModeIconOffset.y }),
       );
     }
   }, [d, colorModeIconOffset]);
