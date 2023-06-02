@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchMoreEntitiesAsync,
   goodsEntitiesSelector,
-  goodsLoadingStatusSelector,
+  goodsEntitiesLoadingStatusSelector,
   goodsSelectedCategorySelector,
   goodsSelectedModifierSelector,
   uiSelectedCategoryRouteBreadcrumbFormattedSelector,
@@ -15,7 +15,7 @@ import { ItemsGridComponentMemo } from './items-grid';
 const CatalogueContainer = () => {
   const d = useAppDispatch();
   const entities = useAppSelector(goodsEntitiesSelector);
-  const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
+  const loadingStatus = useAppSelector(goodsEntitiesLoadingStatusSelector);
 
   const selectedSection = useAppSelector(uiSelectedSectionSelector);
   const selectedCategory = useAppSelector(goodsSelectedCategorySelector);

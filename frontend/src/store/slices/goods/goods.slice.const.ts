@@ -11,7 +11,8 @@ const GOODS_INIT_STATE: TGoodsInitState = {
   offsetPerPage: 20,
   hasMoreEntities: true,
   totalQty: Number.POSITIVE_INFINITY,
-  loadingStatus: 'idle',
+  entitiesLoadingStatus: 'idle',
+  categoriesLoadingStatus: 'idle',
 };
 
 export { GOODS_INIT_STATE };

@@ -18,7 +18,7 @@ import {
   fetchMoreEntitiesAsync,
   increaseOffset,
   pushEntities,
-  setGoodsLoadStatus,
+  setEntitiesLoadStatus,
   setHasMoreEntities,
   setTotalQty,
 } from '../../slices';
@@ -26,9 +26,9 @@ import {
 function* entitiesWorker(action: { type: string }) {
   const abortController = new AbortController();
   try {
-    yield put(setGoodsLoadStatus({ status: 'loading' }));
+    yield put(setEntitiesLoadStatus({ status: 'loading' }));
     // todo: remove in prod (?), showcase delay
-    yield delay(500);
+    // yield delay(500);
 
     const [selectedCategory, selectedModifier, offset, offsetPerPage] = [
       {
@@ -57,7 +57,7 @@ function* entitiesWorker(action: { type: string }) {
 
     if (validateStatus.error !== undefined) {
       yield put(
-        setGoodsLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
+        setEntitiesLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
       );
       return;
     }
@@ -73,7 +73,7 @@ function* entitiesWorker(action: { type: string }) {
 
     if (fetchStatus.error !== undefined) {
       yield put(
-        setGoodsLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+        setEntitiesLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
       );
       return;
     }
@@ -87,13 +87,13 @@ function* entitiesWorker(action: { type: string }) {
         yield put(increaseOffset());
       }
 
-      yield put(setGoodsLoadStatus({ status: 'success' }));
+      yield put(setEntitiesLoadStatus({ status: 'success' }));
       return;
     }
 
     if (fetchStatus.response.failure !== undefined) {
       yield put(
-        setGoodsLoadStatus({
+        setEntitiesLoadStatus({
           status: 'failure',
           message: String(fetchStatus.response.failure.detail),
         }),

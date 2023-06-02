@@ -6,12 +6,12 @@ import type {
   TGoodsCategoriesIncomingSuccessFields,
 } from '../../../services/api';
 import { getCategories } from '../../../services/api';
-import { fetchCategoriesAsync, setCategories, setGoodsLoadStatus } from '../../slices';
+import { fetchCategoriesAsync, setCategories, setCategoriesLoadStatus } from '../../slices';
 
 function* categoriesWorker(action: { type: string }) {
   const abortController = new AbortController();
   try {
-    yield put(setGoodsLoadStatus({ status: 'loading' }));
+    yield put(setCategoriesLoadStatus({ status: 'loading' }));
 
     const fetchStatus = (yield safe(
       call(getCategories, { abortSignal: abortController.signal }),
@@ -24,21 +24,21 @@ function* categoriesWorker(action: { type: string }) {
 
     if (fetchStatus.error !== undefined) {
       yield put(
-        setGoodsLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+        setCategoriesLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
       );
       return;
     }
 
     if (fetchStatus.response.success !== undefined) {
       const { categories } = fetchStatus.response.success.data;
-      yield put(setGoodsLoadStatus({ status: 'success' }));
+      yield put(setCategoriesLoadStatus({ status: 'success' }));
       yield put(setCategories({ categories }));
       return;
     }
 
     if (fetchStatus.response.failure !== undefined) {
       yield put(
-        setGoodsLoadStatus({
+        setCategoriesLoadStatus({
           status: 'failure',
           message: String(fetchStatus.response.failure.detail),
         }),

@@ -1,4 +1,4 @@
-import { Box, Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
@@ -80,8 +80,17 @@ const App: FC = () => {
             </Route>
             <Route exact path="/lk">
               <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
-                <div>
-                  <p>very cool lk</p>
+                <Flex
+                  w={'100%'}
+                  h={'100%'}
+                  direction={'column'}
+                  justifyContent={'center'}
+                  alignItems={'center'}
+                  gap={3}
+                >
+                  <Text fontWeight={'bold'} variant={'md'}>
+                    Very cool lk
+                  </Text>
                   <Button
                     onClick={() => {
                       void d(logoutUserAsync());
@@ -89,7 +98,7 @@ const App: FC = () => {
                   >
                     Logout
                   </Button>
-                </div>
+                </Flex>
               </AuthenticatedAccessContainer>
             </Route>
             {/* <Route exact path="/dashboard">

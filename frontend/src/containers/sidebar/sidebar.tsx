@@ -6,14 +6,16 @@ import { SIDEBAR_TEMPLATE } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchCategoriesAsync,
+  goodsCategoriesLoadingStatusSelector,
   goodsCategoriesSelector,
-  goodsLoadingStatusSelector,
+  goodsEntitiesLoadingStatusSelector,
   goodsSelectedCategoryIdxSelector,
   setSelectedCategoryIdx,
   uiSelectedSectionIdxSelector,
   uiSidebarStateSelector,
 } from '../../store';
 import { changeRoute } from '../functional';
+import { sleep } from '../../helpers/util';
 
 interface ISidebarContainer {
   [key: string]: unknown;
@@ -25,7 +27,8 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
   const isSidebarOpened = useAppSelector(uiSidebarStateSelector);
   const selectedSectionIdx = useAppSelector(uiSelectedSectionIdxSelector);
   const selectedCategoryIdx = useAppSelector(goodsSelectedCategoryIdxSelector);
-  const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
+  const entitiesLoadingStatus = useAppSelector(goodsEntitiesLoadingStatusSelector);
+  const categoriesLoadingStatus = useAppSelector(goodsCategoriesLoadingStatusSelector);
 
   const [unfoldedIdxs, setUnfoldedIdxs] = useState<number[]>([]);
 
@@ -47,11 +50,19 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
 
   // fetch global categories
   useEffect(() => {
-    // constant retry in case of fail
-    if (loadingStatus !== 'loading' && categories.length <= 0) {
+    if (categoriesLoadingStatus === 'idle') {
       void d(fetchCategoriesAsync());
+      return;
     }
-  }, [loadingStatus, categories, d]);
+
+    // constant retry in case of fail
+    if (categoriesLoadingStatus === 'failure' && categories.length <= 0) {
+      void sleep(5000).then(() => {
+        void d(fetchCategoriesAsync());
+        return;
+      });
+    }
+  }, [categoriesLoadingStatus, categories, d]);
 
   return (
     <Flex
@@ -80,6 +91,7 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
               title={title}
               icon={icon}
               hasCategory={subCategory === 'catalogue'}
+              categoriesLoadingStatus={categoriesLoadingStatus}
               isSidebarOpened={isSidebarOpened}
               isSelected={selectedSectionIdx === idxSection}
               isCategoryUnfolded={isUnfolded}

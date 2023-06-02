@@ -6,7 +6,9 @@ const goodsHasMoreEntitiesSelector = (state: TRootState) => state.goods.hasMoreE
 const goodsTotalEntitiesQtySelector = (state: TRootState) => state.goods.totalQty;
 const goodsOffsetSelector = (state: TRootState) => state.goods.offset;
 const goodsOffsetPerPageSelector = (state: TRootState) => state.goods.offsetPerPage;
-const goodsLoadingStatusSelector = (state: TRootState) => state.goods.loadingStatus;
+const goodsEntitiesLoadingStatusSelector = (state: TRootState) => state.goods.entitiesLoadingStatus;
+const goodsCategoriesLoadingStatusSelector = (state: TRootState) =>
+  state.goods.categoriesLoadingStatus;
 const goodsCategoriesSelector = (state: TRootState) => state.goods.categories;
 const goodsSelectedCategoryIdxSelector = (state: TRootState) => state.goods.selectedCategoryIdx;
 const goodsSelectedModifierIdxSelector = (state: TRootState) => state.goods.selectedModifierIdx;
@@ -59,7 +61,8 @@ export {
   goodsTotalEntitiesQtySelector,
   goodsOffsetSelector,
   goodsOffsetPerPageSelector,
-  goodsLoadingStatusSelector,
+  goodsEntitiesLoadingStatusSelector,
+  goodsCategoriesLoadingStatusSelector,
   goodsCategoriesSelector,
   goodsSelectedCategorySelector,
   goodsSelectedModifierSelector,
