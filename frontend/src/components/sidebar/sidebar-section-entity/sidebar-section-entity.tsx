@@ -5,24 +5,24 @@ import type { FC } from 'react';
 import { memo } from 'react';
 import { COLORS } from '../../../chakra-setup';
 
-interface ISidebarParentEntity {
+interface ISidebarSectionEntity {
   isSidebarOpened: boolean;
   icon: (props: IconProps) => JSX.Element;
   title: string;
   isSelected: boolean;
-  hasSub: boolean;
-  isSubUnfolded: boolean;
+  hasCategory: boolean;
+  isCategoryUnfolded: boolean;
   onSubUnfold: () => void;
   onSelect: () => void;
 }
 
-const SidebarParentEntity: FC<ISidebarParentEntity> = ({
+const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
   isSidebarOpened,
   icon: Icon,
   title,
   isSelected,
-  hasSub,
-  isSubUnfolded,
+  hasCategory,
+  isCategoryUnfolded,
   onSubUnfold,
   onSelect,
 }) => {
@@ -93,7 +93,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
           {title}
         </Text>
 
-        {hasSub && (
+        {hasCategory && (
           <Box
             ml={'auto'}
             mr={5}
@@ -105,7 +105,7 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
             }}
           >
             <Circle size={'18px'} border={'2px'} borderColor={secondary}>
-              {isSubUnfolded ? (
+              {isCategoryUnfolded ? (
                 <ChevronUpIcon color={inactiveAlt} />
               ) : (
                 <ChevronDownIcon color={inactiveAlt} />
@@ -118,6 +118,6 @@ const SidebarParentEntity: FC<ISidebarParentEntity> = ({
   );
 };
 
-const SidebarParentEntityMemo = memo(SidebarParentEntity);
+const SidebarSectionEntityMemo = memo(SidebarSectionEntity);
 
-export { SidebarParentEntityMemo };
+export { SidebarSectionEntityMemo };

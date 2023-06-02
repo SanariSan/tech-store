@@ -1,9 +1,9 @@
 import { Button, Flex, Input, Text, useColorModeValue } from '@chakra-ui/react';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
-import { changeRoute } from '../../containers/functional/history-catcher';
-import type { TLogin } from './login.type';
 import { COLORS } from '../../chakra-setup';
+import { changeRoute } from '../../containers/functional';
+import type { TLogin } from './login.type';
 
 const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
   const { handleSubmit, errors, touched } = rest;

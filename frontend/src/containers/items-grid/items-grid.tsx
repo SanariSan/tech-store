@@ -1,12 +1,9 @@
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
-import memoizeOne from 'memoize-one';
-import type { FC, MutableRefObject } from 'react';
+import type { FC } from 'react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import type { VariableSizeGrid as Grid } from 'react-window';
 import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import type { TEntities } from '../../store';
 import {
   goodsHasMoreEntitiesSelector,
   goodsOffsetPerPageSelector,
@@ -19,37 +16,8 @@ import {
 } from '../../store';
 import { ModifiersContainer } from '../modifiers';
 import { AutoSizedGridWrapContainerMemo } from './grid';
-import type { TItemData } from './grid/grid.type';
-
-const createItemData = memoizeOne(
-  (
-    entitiesList: TItemData['entitiesList'],
-    columnCount: TItemData['columnCount'],
-    onLikeCb: TItemData['onLikeCb'],
-    onDislikeCb: TItemData['onDislikeCb'],
-    onBuyCb: TItemData['onBuyCb'],
-    isThemeChanging: TItemData['isThemeChanging'],
-    variant: TItemData['variant'],
-  ) => ({
-    entitiesList,
-    columnCount,
-    onLikeCb,
-    onDislikeCb,
-    onBuyCb,
-    isThemeChanging,
-    variant,
-  }),
-);
-
-type TItemsGridContainerProps = {
-  title: string;
-  breadcrumbList: Parameters<typeof BreadcrumbComponentMemo>['0']['list'];
-  modifiersList: Parameters<typeof ModifiersContainer>['0']['list'];
-  entitiesList: TEntities;
-  onEntitiesEndReachCb?: () => void;
-  gridRef: MutableRefObject<Grid | null>;
-  variant: 'infinite' | 'static';
-};
+import type { TItemsGridContainerProps } from './items-grid.type';
+import { createItemData } from './memoize.items-grid';
 
 const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   title,
@@ -72,6 +40,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
 
   const [scrollPos, setScrollPos] = useState({ top: 0, left: 0 });
   const [rowColPos, setRowColPos] = useState({ rowIndex: 0, columnIndex: 0 });
+  const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
 
   const [colorModeChangeStatusProxy, setColorModeChangeStatusProxy] =
     useState(colorModeChangeStatus);
@@ -186,21 +155,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     };
   }, [colorModeChangeStatus, colorModeChangeAnimationDuration, isMobile]);
 
-  // scroll to nearest row start on theme change so screenshot matches page state
-  // may be buggy, still works
-  useEffect(() => {
-    if (gridRef.current !== null && colorModeChangeStatus === 'ongoing') {
-      gridRef.current.scrollToItem({
-        columnIndex: rowColPos.columnIndex,
-        rowIndex: rowColPos.rowIndex,
-        align: 'end',
-      });
-    }
-  }, [gridRef, colorModeChangeStatus, rowColPos]);
-
-  const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
-
-  // reset flag since it's affecting useIsScrolling grid prop
+  // reset flag since it's affecting useIsScrolling grid prop, not affected by that, but still
   useEffect(() => {
     if (forceRerenderFlag) {
       setForceRerenderFlag(false);

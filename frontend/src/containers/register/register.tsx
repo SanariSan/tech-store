@@ -15,7 +15,6 @@ const RegisterContainer: FC = () => {
 
   const onSubmit = useCallback(
     (values: TRegisterFormValues, actions: FormikHelpers<TRegisterFormValues>) => {
-      console.log({ values });
       void dispatch(
         registerUserAsync({
           email: values.email,

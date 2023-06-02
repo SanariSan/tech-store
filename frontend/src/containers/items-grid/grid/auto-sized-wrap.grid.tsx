@@ -1,6 +1,6 @@
 import { useBreakpointValue } from '@chakra-ui/react';
 import type { MutableRefObject } from 'react';
-import { useEffect, memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { VariableSizeGrid as Grid } from 'react-window';
 import type { TItemData } from './grid.type';
 import { ItemContainerMemo } from './item.grid';

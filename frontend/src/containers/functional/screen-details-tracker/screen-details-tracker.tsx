@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import { memo, useEffect } from 'react';
 import { useAppDispatch } from '../../../hooks/redux';
 import { useScreenDetails } from '../../../hooks/use-screen-details';
-import { setScreenDetails } from '../../../store';
+import { setScreenDetailsUi } from '../../../store';
 
 type TScreenDetailsTrackerContainer = {
   [key: string]: unknown;
@@ -17,7 +17,7 @@ const ScreenDetailsTrackerContainer: FC<TScreenDetailsTrackerContainer> = () => 
   } = useScreenDetails();
 
   useEffect(() => {
-    void d(setScreenDetails({ w, h }));
+    void d(setScreenDetailsUi({ w, h }));
   }, [w, h, d]);
 
   return null;

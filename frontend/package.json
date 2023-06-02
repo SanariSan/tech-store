@@ -64,6 +64,7 @@
     "redux-persist": "^6.0.0",
     "redux-saga": "^1.2.1",
     "reselect": "^4.1.8",
+    "shallow-equal": "^3.1.0",
     "stream-browserify": "^3.0.0",
     "util": "^0.12.4",
     "yup": "^1.1.1"

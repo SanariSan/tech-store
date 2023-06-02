@@ -3,14 +3,14 @@ import type { FC } from 'react';
 import { useState, memo } from 'react';
 import { COLORS } from '../../../chakra-setup';
 
-interface ISidebarSubEntity {
+interface ISidebarCategoryEntity {
   title: string;
   isSelected: boolean;
   onSelect: () => void;
   isSidebarOpened: boolean;
 }
 
-const SidebarSubEntity: FC<ISidebarSubEntity> = ({
+const SidebarCategoryEntity: FC<ISidebarCategoryEntity> = ({
   title,
   isSelected,
   onSelect,
@@ -63,6 +63,7 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
           variant={{ base: 'sm' }}
           opacity={isSidebarOpened ? 1 : 0}
           color={isSelected ? impactHover : isHovered ? impactActive : secondaryAlt}
+          textTransform={'capitalize'}
           transform={isHovered ? 'translateX(3px)' : 'none'}
           transition={
             'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1), opacity 0.1s linear, color 0.1s linear'
@@ -75,6 +76,6 @@ const SidebarSubEntity: FC<ISidebarSubEntity> = ({
   );
 };
 
-const SidebarSubEntityMemo = memo(SidebarSubEntity);
+const SidebarCategoryEntityMemo = memo(SidebarCategoryEntity);
 
-export { SidebarSubEntityMemo };
+export { SidebarCategoryEntityMemo };

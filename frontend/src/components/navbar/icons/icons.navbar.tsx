@@ -1,14 +1,14 @@
 import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import type { ColorMode } from '@chakra-ui/react';
-import { useBreakpointValue, Icon, Flex, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Icon, useBreakpointValue, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { useCallback, memo, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { BiUserCircle } from 'react-icons/bi';
 import { COLORS } from '../../../chakra-setup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
-import { setColorModeToggleCoords, uiScreenDetailsSelector } from '../../../store';
-import { CartIcon } from '../../icons';
 import { useDebounce } from '../../../hooks/use-debounce';
+import { setColorModeToggleCoordsUi, uiScreenDetailsSelector } from '../../../store';
+import { CartIcon } from '../../icons';
 
 const NavbarIconsComponent: FC<{
   isOpened: boolean;
@@ -53,7 +53,7 @@ const NavbarIconsComponent: FC<{
     if (refIcons.current !== null) {
       const { x, y } = refIcons.current.getBoundingClientRect();
       void d(
-        setColorModeToggleCoords({ x: x + colorModeIconOffset.x, y: y + colorModeIconOffset.y }),
+        setColorModeToggleCoordsUi({ x: x + colorModeIconOffset.x, y: y + colorModeIconOffset.y }),
       );
     }
   }, [d, colorModeIconOffset]);

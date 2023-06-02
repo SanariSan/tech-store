@@ -1,17 +1,17 @@
 import { Box, Image, keyframes, useColorMode } from '@chakra-ui/react';
-import type { FC, MutableRefObject } from 'react';
-import { useLayoutEffect, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useScreenshot } from '../../hooks/use-screenshot';
+import type { FC, MutableRefObject } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { sleep } from '../../helpers/util';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useScreenshot } from '../../hooks/use-screenshot';
 import {
-  finalizeColorModeChange,
+  finalizeColorModeChangeUi,
   uiColorModeAnimationDurationSelector,
   uiColorModeChangeStatusSelector,
   uiColorModeToogleCoordsSelector,
   uiScreenDetailsSelector,
 } from '../../store';
-import { sleep } from '../../helpers/util';
 
 type TFancyThemeSwitchContainer = {
   screenshotTargetRef: MutableRefObject<HTMLElement | null>;
@@ -102,7 +102,7 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
     if (imageLocal !== null && overlayCleanupTimer.current === undefined) {
       void sleep(300).then(() => {
         toggleColorMode();
-        void d(finalizeColorModeChange());
+        void d(finalizeColorModeChangeUi());
         return;
       });
 

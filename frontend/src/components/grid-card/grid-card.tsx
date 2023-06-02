@@ -6,10 +6,10 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { COLORS } from '../../chakra-setup';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import { useAppSelector } from '../../hooks/redux';
+import { useIntersection } from '../../hooks/use-intersection';
 import type { goodsEntitiesSelector } from '../../store';
 import { goodsIsInLikedSelector } from '../../store';
 import { CartIcon, HeartIcon } from '../icons';
-import { useIntersection } from '../../hooks/use-intersection';
 
 export type TGridCardComponent = Omit<
   ReturnType<typeof goodsEntitiesSelector>[number],
@@ -151,8 +151,6 @@ const GridCardComponent: FC<TGridCardComponent> = ({
           hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
           lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
           elRef={imgRef}
-          // src={'http://localhost:80/api/v1/goods/assets/h/l3.jpg'}
-          // fallbackSrc={'http://localhost:80/api/v1/goods/assets/l/l3.jpg'}
         />
         <Flex
           alignItems={'center'}

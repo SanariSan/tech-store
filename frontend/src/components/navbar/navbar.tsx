@@ -9,119 +9,26 @@ import {
   InputGroup,
   InputLeftElement,
   Spacer,
-  keyframes,
   useBreakpointValue,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
 import pfp from '../../../assets/pfp.png';
 import { COLORS } from '../../chakra-setup';
-import { changeRoute } from '../../containers/functional/history-catcher';
+import { changeRoute } from '../../containers/functional';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
-  initiateColorModeChange,
-  setIsCartOpened,
+  initiateColorModeChangeUi,
+  setIsCartOpenedUi,
   uiColorModeChangeStatusSelector,
 } from '../../store';
 import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
-
-const animationKeyframes = keyframes`
-            0% {
-              filter: brightness(100%);
-              transform: rotate(0deg) scale(1);
-            }
-            1% {
-              filter: brightness(85%);
-              transform: rotate(-3deg) scale(0.95);
-            }
-            3% {
-              filter: brightness(70%);
-              transform: rotate(3deg) scale(0.93);
-            }
-            5% {
-              filter: brightness(60%);
-              transform: rotate(-7deg) scale(0.87);
-            }
-            5.5% {
-              filter: brightness(350%);
-              transform: rotate(10deg) scale(1.1);
-            }
-            9% {
-              filter: brightness(80%);
-              transform: rotate(-10deg) scale(0.93);
-            }
-            9.5% {
-              filter: brightness(550%);
-              transform: rotate(20deg) scale(1.25);
-            }
-            14% {
-              filter: brightness(130%);
-              transform: rotate(-4deg) scale(1.1);
-            }
-            18% {
-              filter: brightness(95%);
-              transform: rotate(0deg) scale(0.95);
-            }
-            20% {
-              filter: brightness(100%);
-              transform: rotate(0deg) scale(1);
-            }
-            33% {
-              filter: brightness(90%);
-              transform: rotate(2deg) scale(0.97);
-            }
-            34% {
-              filter: brightness(80%);
-              transform: rotate(-1deg) scale(0.94);
-            }
-            36% {
-              filter: brightness(130%);
-              transform: rotate(2deg) scale(1.05);
-            }
-            39% {
-              filter: brightness(100%);
-              transform: rotate(0deg) scale(1);
-            }
-            69% {
-              filter: brightness(85%);
-              transform: rotate(2deg) scale(0.96);
-            }
-            71% {
-              filter: brightness(70%);
-              transform: rotate(-2deg) scale(0.93);
-            }
-            73% {
-              filter: brightness(60%);
-              transform: rotate(-4deg) scale(0.89);
-            }
-            73.5% {
-              filter: brightness(230%);
-              transform: rotate(14deg) scale(1.17);
-            }
-            79% {
-              filter: brightness(130%);
-              transform: rotate(-7deg) scale(1);
-            }
-            81% {
-              filter: brightness(90%);
-              transform: rotate(-4deg) scale(0.97);
-            }
-            83% {
-              filter: brightness(100%);
-              transform: rotate(0deg) scale(1);
-            }
-            100% {
-              filter: brightness(100%);
-              transform: rotate(0deg) scale(1);
-            }
-          `;
-
-const animation = `${animationKeyframes} 20s ease-in-out 5s infinite`;
+import { ANIMATION_KEYFRAMES } from './keyframes.navbar.const';
 
 interface INavbarComponent {
   onSidebarToggle: () => void;
@@ -150,13 +57,15 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
     transform: 'perspective(100px) translateZ(-2px)',
   };
 
+  const animation = useMemo(() => `${ANIMATION_KEYFRAMES} 20s ease-in-out 5s infinite`, []);
+
   const toggleToolbarCb = useCallback(() => {
     setIsToolbarOpened((_) => !_);
   }, []);
 
   const onCartToggleCb = useCallback(() => {
     toggleToolbarCb();
-    void d(setIsCartOpened({ isOpened: 'toggle' }));
+    void d(setIsCartOpenedUi({ isOpened: 'toggle' }));
   }, [d, toggleToolbarCb]);
 
   const profileClickCb = useCallback(() => {
@@ -263,7 +172,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
           isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
           currentTheme={colorMode}
           onThemeToggle={() => {
-            void d(initiateColorModeChange());
+            void d(initiateColorModeChangeUi());
           }}
           onProfileClick={profileClickCb}
         />

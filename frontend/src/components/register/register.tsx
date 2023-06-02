@@ -2,7 +2,7 @@ import { Button, Flex, Input, Text, useColorModeValue } from '@chakra-ui/react';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
 import { COLORS } from '../../chakra-setup';
-import { changeRoute } from '../../containers/functional/history-catcher';
+import { changeRoute } from '../../containers/functional';
 import type { TRegister } from './register.type';
 
 const RegisterComponent: FC<TRegister> = ({ isLoading, ...rest }) => {

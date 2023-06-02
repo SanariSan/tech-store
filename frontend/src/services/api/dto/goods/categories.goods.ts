@@ -6,13 +6,13 @@ type TBase = {
   title: string;
 };
 
-type TCategories = TBase & {
+type TCategory = TBase & {
   modifiers?: TBase[];
-  sub?: TCategories[];
+  sub?: TCategory[];
 };
 
 const maxDepth = 30;
-const createNestedSchema = (depth = 0): Schema<TCategories> => {
+const createNestedSchema = (depth = 0): Schema<TCategory | undefined> => {
   if (depth >= maxDepth) {
     return object({
       title: string().required(),
@@ -40,12 +40,12 @@ const createNestedSchema = (depth = 0): Schema<TCategories> => {
       .optional(),
   });
 
-  return schema;
+  return schema as Schema<TCategory>;
 };
 
 const GoodsCategoriesIncomingSuccessDTO = object({
   data: object({
-    categories: array().of(createNestedSchema()),
+    categories: array().of(createNestedSchema()).required(),
   }),
 });
 

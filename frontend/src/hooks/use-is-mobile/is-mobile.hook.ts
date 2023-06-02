@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { setIsMobile } from '../../store';
+import { setIsMobileUi } from '../../store';
 import { useAppDispatch } from '../redux';
 import { useScreenDetails } from '../use-screen-details';
 import { useDebounce } from '../use-debounce';
@@ -14,7 +14,7 @@ const useIsMobile = () => {
 
   const setTypeCb = useCallback(
     ({ isMobile }: { isMobile: boolean }) => {
-      d(setIsMobile({ isMobile }));
+      d(setIsMobileUi({ isMobile }));
     },
     [d],
   );

@@ -1,11 +1,11 @@
+import { Flex } from '@chakra-ui/react';
 import type { CSSProperties } from 'react';
 import { memo } from 'react';
-import { Flex } from '@chakra-ui/react';
 import { areEqual } from 'react-window';
-import type { TItemData } from './grid.type';
-import type { TEntities } from '../../../store';
-import { SkeletonPlaceholderComponentMemo } from '../../../components/skeleton';
 import { GridCardComponentMemo } from '../../../components/grid-card';
+import { SkeletonPlaceholderComponentMemo } from '../../../components/skeleton';
+import type { TEntities } from '../../../store';
+import type { TItemData } from './grid.type';
 
 const getRelativeIdx = ({
   rowIndex,
@@ -33,7 +33,7 @@ const ItemContainer = ({
   const idx = getRelativeIdx({ rowIndex, columnIndex, columnCount });
   const entity = entitiesList.current[idx] as TEntities[number] | undefined;
 
-  // prevent placeholders showing is liked section
+  // prevent placeholders showing in liked section
   let content;
   if (variant === 'infinite') {
     content =

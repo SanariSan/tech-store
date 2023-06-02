@@ -6,11 +6,12 @@ import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import { useLoadingTracker } from '../../hooks/use-loading-tracker';
 
 const LoadingTrackerProgressContainer: FC = () => {
-  const coeff = useMemo(() => 20, []);
-  const calculateExpPercentage = useMemo(
+  const coeff = 20;
+  const calculateExpPercentageCb = useCallback(
     () => (_x: number, _coeff: number) => (_x / (_x + _coeff)) * 100,
     [],
   );
+  const calculateExpPercentage = useMemo(calculateExpPercentageCb, [calculateExpPercentageCb]);
 
   const { isLoading } = useLoadingTracker();
   const isLoadingRef = useRef(isLoading);

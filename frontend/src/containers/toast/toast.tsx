@@ -3,10 +3,10 @@ import { memo } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useReactiveToast } from '../../hooks/use-reactive-toast';
 import {
-  setErrorMessage,
-  setInfoMessage,
-  setSuccessMessage,
-  setWarningMessage,
+  setErrorMessageUi,
+  setInfoMessageUi,
+  setSuccessMessageUi,
+  setWarningMessageUi,
   uiErrorSelector,
   uiInfoSelector,
   uiSuccessSelector,
@@ -25,7 +25,7 @@ const ToastsContainer: FC<TToastsContainer> = () => {
     type: 'success',
     title: success?.title,
     description: success?.description,
-    storeCleanupCb: () => d(setSuccessMessage()),
+    storeCleanupCb: () => d(setSuccessMessageUi()),
   });
 
   const warning = useAppSelector(uiWarningSelector);
@@ -33,7 +33,7 @@ const ToastsContainer: FC<TToastsContainer> = () => {
     type: 'warning',
     title: warning?.title,
     description: warning?.description,
-    storeCleanupCb: () => d(setWarningMessage()),
+    storeCleanupCb: () => d(setWarningMessageUi()),
   });
 
   const info = useAppSelector(uiInfoSelector);
@@ -41,7 +41,7 @@ const ToastsContainer: FC<TToastsContainer> = () => {
     type: 'info',
     title: info?.title,
     description: info?.description,
-    storeCleanupCb: () => d(setInfoMessage()),
+    storeCleanupCb: () => d(setInfoMessageUi()),
   });
 
   const error = useAppSelector(uiErrorSelector);
@@ -49,7 +49,7 @@ const ToastsContainer: FC<TToastsContainer> = () => {
     type: 'error',
     title: error?.title,
     description: error?.description,
-    storeCleanupCb: () => d(setErrorMessage()),
+    storeCleanupCb: () => d(setErrorMessageUi()),
   });
 
   return <></>;

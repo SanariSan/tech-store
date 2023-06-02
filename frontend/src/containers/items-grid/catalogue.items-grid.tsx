@@ -3,14 +3,12 @@ import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchMoreEntitiesAsync,
-  getCategoriesAsync,
-  goodsCategoriesSelector,
   goodsEntitiesSelector,
   goodsLoadingStatusSelector,
-  goodsSelectedCategoryRouteSelector,
   goodsSelectedCategorySelector,
   goodsSelectedModifierSelector,
-  goodsSelectedSectionSelector,
+  uiSelectedCategoryRouteBreadcrumbFormattedSelector,
+  uiSelectedSectionSelector,
 } from '../../store';
 import { ItemsGridComponentMemo } from './items-grid';
 
@@ -18,15 +16,13 @@ const CatalogueContainer = () => {
   const d = useAppDispatch();
   const entities = useAppSelector(goodsEntitiesSelector);
   const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
-  const categories = useAppSelector(goodsCategoriesSelector);
-  const selectedSection = useAppSelector(goodsSelectedSectionSelector);
+
+  const selectedSection = useAppSelector(uiSelectedSectionSelector);
   const selectedCategory = useAppSelector(goodsSelectedCategorySelector);
   const selectedModifier = useAppSelector(goodsSelectedModifierSelector);
-  const selectedCategoryRoute = useAppSelector(goodsSelectedCategoryRouteSelector);
+  const selectedCategoryRoute = useAppSelector(uiSelectedCategoryRouteBreadcrumbFormattedSelector);
   const loadingStatusRef = useRef(loadingStatus);
   const gridRef = useRef<Grid | null>(null);
-
-  const mountRenderCompleted = useRef(false);
 
   const fetchMoreEntities = useCallback(() => d(fetchMoreEntitiesAsync()), [d]);
 
@@ -36,27 +32,6 @@ const CatalogueContainer = () => {
       gridRef.current.scrollTo({ scrollTop: 0 });
     }
   }, [gridRef, selectedCategory, selectedModifier]);
-
-  // fetch global categories
-  useEffect(() => {
-    if (categories === undefined || categories.length <= 0) {
-      void d(getCategoriesAsync());
-    }
-  }, [categories, d]);
-
-  // fetch items on category/modifier change
-  // TODO: maybe move to saga (category change -> fetch entities)
-  useEffect(() => {
-    fetchMoreEntities();
-  }, [selectedCategory, selectedModifier, fetchMoreEntities]);
-
-  useEffect(() => {
-    if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
-
-    return () => {
-      mountRenderCompleted.current = false;
-    };
-  }, []);
 
   const breadcrumbList = useMemo(
     () => [selectedSection, ...selectedCategoryRoute],
@@ -76,7 +51,7 @@ const CatalogueContainer = () => {
   }, [loadingStatus]);
 
   const onEntitiesEndReachCb = useCallback(() => {
-    // prevent infinite fetch-cancel on constant calls (bcs of saga's take latest)
+    // prevent "infinite" fetch-cancel on burst calls bcs of saga's take latest (e.g. scroll up-down nonstop)
     if (loadingStatusRef.current !== 'loading') fetchMoreEntities();
   }, [fetchMoreEntities]);
 

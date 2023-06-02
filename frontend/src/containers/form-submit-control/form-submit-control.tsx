@@ -13,7 +13,7 @@ const FormSubmitControlContainer: FC<{ isLoading: boolean }> = ({ isLoading }) =
     }
   }, [isLoading, resetForm, setSubmitting]);
 
-  return <></>;
+  return null;
 };
 
 export { FormSubmitControlContainer };

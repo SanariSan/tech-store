@@ -5,6 +5,7 @@ const UI_INIT_STATE: TUiInitState = {
   warningMessage: undefined,
   infoMessage: undefined,
   errorMessage: undefined,
+  pathname: '/',
   isCartOpened: false,
   isSidebarOpened: false,
   colorModeAnimationDuration: 1500,
@@ -18,6 +19,7 @@ const UI_INIT_STATE: TUiInitState = {
     w: 0,
     h: 0,
   },
+  selectedSectionIdx: -1,
 };
 
 export { UI_INIT_STATE };

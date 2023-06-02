@@ -1,8 +1,6 @@
 import type { FormikHelpers } from 'formik';
 import { Formik } from 'formik';
 import type { FC } from 'react';
-// import { useCallback, useState, useEffect, useMemo } from 'react';
-// import { debounceLeadingWrap, debounceWrap } from '../../helpers/util';
 import { useCallback } from 'react';
 import { LoginComponent } from '../../components/login';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
@@ -17,7 +15,6 @@ const LoginContainer: FC = () => {
 
   const onSubmit = useCallback(
     (values: TLoginFormValues, actions: FormikHelpers<TLoginFormValues>) => {
-      console.log({ values });
       void dispatch(loginUserAsync({ username: values.username, password: values.password }));
     },
     [dispatch],

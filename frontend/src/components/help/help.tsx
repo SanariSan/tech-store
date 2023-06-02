@@ -14,9 +14,9 @@ import { GiTechnoHeart } from 'react-icons/gi';
 import { MdCelebration } from 'react-icons/md';
 import { COLORS } from '../../chakra-setup';
 import { useAppSelector } from '../../hooks/redux';
+import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 import { uiColorModeChangeStatusSelector, uiSidebarStateSelector } from '../../store';
 import { ParticlesComponentMemo } from './particles.help';
-import { useDelayedUnmount } from '../../hooks/use-delayed-unmount';
 
 type THelpComponent = {
   [key: string]: unknown;

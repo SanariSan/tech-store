@@ -2,12 +2,14 @@ import { Box, Button, Flex } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { AuthenticatedAccessContainer } from './containers/functional/authenticated-access';
-import { DebugContainer } from './containers/functional/debug';
-import { ErrorBoundaryGenericContainerMemo } from './containers/functional/error-boundary-generic';
-// import { ErrorBoundaryNativeContainer } from './containers/error-boundary-native';
+import {
+  AuthenticatedAccessContainer,
+  ErrorBoundaryGenericContainerMemo,
+  LocationTrackerContainerMemo,
+  ScreenDetailsTrackerContainerMemo,
+} from './containers/functional';
+import { HelpComponentMemo } from './components/help';
 import { CartContainerMemo } from './containers/cart';
-import { ScreenDetailsTrackerContainerMemo } from './containers/functional/screen-details-tracker';
 import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-grid';
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
@@ -17,7 +19,6 @@ import { ThemeSwitchContainerMemo } from './containers/theme-switch';
 import { ToastsContainerMemo } from './containers/toast/toast';
 import { useAppDispatch } from './hooks/redux';
 import { logoutUserAsync } from './store';
-import { HelpComponentMemo } from './components/help';
 
 const App: FC = () => {
   const d = useAppDispatch();
@@ -28,6 +29,7 @@ const App: FC = () => {
     <ErrorBoundaryGenericContainerMemo>
       <ThemeSwitchContainerMemo screenshotTargetRef={screenshotTargetRef} />
       <LoadingTrackerProgressContainer />
+      <LocationTrackerContainerMemo />
       <ScreenDetailsTrackerContainerMemo />
       <ToastsContainerMemo />
       <CartContainerMemo />

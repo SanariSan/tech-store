@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { COLORS } from '../../chakra-setup';
 import { NavbarComponent } from '../../components/navbar';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { setIsSidebarOpened, uiSidebarStateSelector } from '../../store';
+import { setIsSidebarOpenedUi, uiSidebarStateSelector } from '../../store';
 import { DimmerContainerMemo } from '../dimmer';
 import { SidebarContainerMemo } from '../sidebar';
 import type { TLayout } from './layout.type';
@@ -21,7 +21,7 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
   const [isDimmed, setIsDimmed] = useState(false);
   const sidebarToggleCb = useCallback(
     (payload?: { isOpened: boolean }) => {
-      void d(setIsSidebarOpened({ isOpened: payload?.isOpened ?? 'toggle' }));
+      void d(setIsSidebarOpenedUi({ isOpened: payload?.isOpened ?? 'toggle' }));
       setIsDimmed((s) => payload?.isOpened ?? !s);
     },
     [d],

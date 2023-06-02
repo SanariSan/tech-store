@@ -8,10 +8,18 @@ const goodsOffsetSelector = (state: TRootState) => state.goods.offset;
 const goodsOffsetPerPageSelector = (state: TRootState) => state.goods.offsetPerPage;
 const goodsLoadingStatusSelector = (state: TRootState) => state.goods.loadingStatus;
 const goodsCategoriesSelector = (state: TRootState) => state.goods.categories;
-const goodsSelectedSectionSelector = (state: TRootState) => state.goods.selectedSection;
-const goodsSelectedCategorySelector = (state: TRootState) => state.goods.selectedCategory;
-const goodsSelectedModifierSelector = (state: TRootState) => state.goods.selectedModifier;
-const goodsSelectedCategoryRouteSelector = (state: TRootState) => state.goods.selectedCategoryRoute;
+const goodsSelectedCategoryIdxSelector = (state: TRootState) => state.goods.selectedCategoryIdx;
+const goodsSelectedModifierIdxSelector = (state: TRootState) => state.goods.selectedModifierIdx;
+const goodsSelectedCategorySelector = createSelector(
+  goodsCategoriesSelector,
+  goodsSelectedCategoryIdxSelector,
+  (categories, categoryIdx) => categories[categoryIdx],
+);
+const goodsSelectedModifierSelector = createSelector(
+  goodsSelectedCategorySelector,
+  goodsSelectedModifierIdxSelector,
+  (category, modifierIdx) => category?.modifiers?.[modifierIdx],
+);
 const goodsEntitiesSelector = (state: TRootState) => state.goods.entities;
 const goodsLikedEntitiesSelector = (state: TRootState) => state.goods.likedEntities;
 const goodsCartEntitiesSelector = (state: TRootState) => state.goods.cart;
@@ -23,8 +31,7 @@ const goodsCartEntitiesStackedSelector = createSelector(
 
     cartEntities.forEach((entity) => {
       if (hash.has(entity.id)) {
-        // @ts-expect-error ts is trippin, hash[entity.id] can't be undefined...
-        hash.get(entity.id).qty += 1;
+        (hash.get(entity.id) as TModifiedCartEntity).qty += 1;
         return;
       }
       hash.set(entity.id, { ...entity, qty: 1 });
@@ -54,10 +61,10 @@ export {
   goodsOffsetPerPageSelector,
   goodsLoadingStatusSelector,
   goodsCategoriesSelector,
-  goodsSelectedSectionSelector,
   goodsSelectedCategorySelector,
   goodsSelectedModifierSelector,
-  goodsSelectedCategoryRouteSelector,
+  goodsSelectedCategoryIdxSelector,
+  goodsSelectedModifierIdxSelector,
   goodsEntitiesSelector,
   goodsLikedEntitiesSelector,
   goodsCartEntitiesSelector,
