@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { Fragment, memo, useCallback } from 'react';
+import { COLORS } from '../../chakra-setup';
 import { CartCardComponentMemo } from '../../components/cart-card';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
@@ -21,11 +22,10 @@ import {
   purgeCart,
   pushCartEntity,
   removeCartEntity,
-  setIsCartOpened,
-  setSuccessMessage,
+  setIsCartOpenedUi,
+  setSuccessMessageUi,
   uiCartStateSelector,
 } from '../../store';
-import { COLORS } from '../../chakra-setup';
 
 type TCartContainer = {
   [key: string]: unknown;
@@ -40,11 +40,11 @@ const CartContainer: FC<TCartContainer> = () => {
   const [bgAlt, impact, btnColor] = [
     useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
     useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
-    useColorModeValue(COLORS.blue[600], COLORS.darkBlue[600]),
+    useColorModeValue(COLORS.blue[800], COLORS.darkBlue[600]),
   ];
 
   const onClose = useCallback(() => {
-    void d(setIsCartOpened({ isOpened: false }));
+    void d(setIsCartOpenedUi({ isOpened: false }));
   }, [d]);
 
   const onAddCb = useCallback(
@@ -74,7 +74,7 @@ const CartContainer: FC<TCartContainer> = () => {
   const onSubmit = useCallback(() => {
     void d(purgeCart());
     void d(
-      setSuccessMessage({
+      setSuccessMessageUi({
         title: 'Order placed!',
         description: 'Your order is being processed now. Thank you!',
       }),
@@ -102,6 +102,7 @@ const CartContainer: FC<TCartContainer> = () => {
             alignItems={'flex-start'}
             gap={3}
           >
+            {cartEntities.length <= 0 && <Text variant={'md'}>It's lonely here 😢</Text>}
             {cartEntities.map(({ id, ...props }, idx) => (
               <Fragment key={`cart_${id}`}>
                 <CartCardComponentMemo

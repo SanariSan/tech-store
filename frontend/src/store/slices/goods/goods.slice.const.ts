@@ -5,12 +5,12 @@ const GOODS_INIT_STATE: TGoodsInitState = {
   likedEntities: [],
   categories: [],
   cart: [],
-  selectedSection: { title: 'Home', pathname: '/' },
-  selectedCategory: undefined,
-  selectedCategoryRoute: [],
-  selectedModifier: undefined,
+  selectedCategoryIdx: -1,
+  selectedModifierIdx: -1,
   offset: 0,
   offsetPerPage: 20,
+  hasMoreEntities: true,
+  totalQty: Number.POSITIVE_INFINITY,
   loadingStatus: 'idle',
 };
 

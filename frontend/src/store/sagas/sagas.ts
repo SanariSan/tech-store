@@ -1,7 +1,7 @@
 import { all, call, spawn } from 'redux-saga/effects';
 import { goodsRootWatcher } from './goods';
-import { userAuthRootWatcher } from './user';
 import { loadingRootWatcher } from './loading';
+import { userAuthRootWatcher } from './user';
 
 function* rootWatcher() {
   const sagas = [userAuthRootWatcher, goodsRootWatcher, loadingRootWatcher];

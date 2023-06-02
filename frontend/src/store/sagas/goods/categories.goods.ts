@@ -6,7 +6,7 @@ import type {
   TGoodsCategoriesIncomingSuccessFields,
 } from '../../../services/api';
 import { getCategories } from '../../../services/api';
-import { getCategoriesAsync, setCategories, setGoodsLoadStatus } from '../../slices';
+import { fetchCategoriesAsync, setCategories, setGoodsLoadStatus } from '../../slices';
 
 function* categoriesWorker(action: { type: string }) {
   const abortController = new AbortController();
@@ -53,7 +53,7 @@ function* categoriesWorker(action: { type: string }) {
 }
 
 function* categoriesWatcher() {
-  yield takeLatest(getCategoriesAsync, categoriesWorker);
+  yield takeLatest(fetchCategoriesAsync, categoriesWorker);
 }
 
 export { categoriesWatcher };

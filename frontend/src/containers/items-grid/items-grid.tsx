@@ -1,13 +1,11 @@
 import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
-import memoizeOne from 'memoize-one';
-import type { FC, MutableRefObject } from 'react';
+import type { FC } from 'react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import type { VariableSizeGrid as Grid } from 'react-window';
 import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import type { TEntities } from '../../store';
 import {
+  goodsHasMoreEntitiesSelector,
   goodsOffsetPerPageSelector,
   pushCartEntity,
   pushLikedEntity,
@@ -18,37 +16,8 @@ import {
 } from '../../store';
 import { ModifiersContainer } from '../modifiers';
 import { AutoSizedGridWrapContainerMemo } from './grid';
-import type { TItemData } from './grid/grid.type';
-
-const createItemData = memoizeOne(
-  (
-    entitiesList: TItemData['entitiesList'],
-    columnCount: TItemData['columnCount'],
-    onLikeCb: TItemData['onLikeCb'],
-    onDislikeCb: TItemData['onDislikeCb'],
-    onBuyCb: TItemData['onBuyCb'],
-    isThemeChanging: TItemData['isThemeChanging'],
-    variant: TItemData['variant'],
-  ) => ({
-    entitiesList,
-    columnCount,
-    onLikeCb,
-    onDislikeCb,
-    onBuyCb,
-    isThemeChanging,
-    variant,
-  }),
-);
-
-type TItemsGridContainerProps = {
-  title: string;
-  breadcrumbList: Parameters<typeof BreadcrumbComponentMemo>['0']['list'];
-  modifiersList: Parameters<typeof ModifiersContainer>['0']['list'];
-  entitiesList: TEntities;
-  onEntitiesEndReachCb?: () => void;
-  gridRef: MutableRefObject<Grid | null>;
-  variant: 'infinite' | 'static';
-};
+import type { TItemsGridContainerProps } from './items-grid.type';
+import { createItemData } from './memoize.items-grid';
 
 const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   title,
@@ -62,13 +31,16 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const d = useAppDispatch();
   const isMobile = useAppSelector(uiIsMobileSelector);
   const chunkSize = useAppSelector(goodsOffsetPerPageSelector);
+  const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
 
   const entitiesRef = useRef(entitiesList);
+  const mountRenderCompleted = useRef(false);
 
   const [scrollPos, setScrollPos] = useState({ top: 0, left: 0 });
   const [rowColPos, setRowColPos] = useState({ rowIndex: 0, columnIndex: 0 });
+  const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
 
   const [colorModeChangeStatusProxy, setColorModeChangeStatusProxy] =
     useState(colorModeChangeStatus);
@@ -88,9 +60,10 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const getRowCountCb = useCallback(
     () =>
       variant === 'infinite'
-        ? Math.floor(entitiesRef.current.length / columnCount) + rowsPerChunk
+        ? Math.floor(entitiesRef.current.length / columnCount) +
+          (hasMoreEntities ? rowsPerChunk : 0)
         : Math.ceil(entitiesRef.current.length / columnCount),
-    [columnCount, variant, rowsPerChunk],
+    [columnCount, variant, rowsPerChunk, hasMoreEntities],
   );
   const [rowCount, setRowCount] = useState(() => getRowCountCb());
 
@@ -132,7 +105,18 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     [colorModeChangeStatus, colorModeChangeStatusProxy],
   );
 
+  // replicate entities state to ref so it could be passed to memoized component not breaking cache
   useEffect(() => {
+    entitiesRef.current = entitiesList;
+    // update current row count in case of category-modifier change
+    setRowCount(getRowCountCb());
+  }, [entitiesList, getRowCountCb]);
+
+  // fetch more on end reaching
+  useEffect(() => {
+    if (!mountRenderCompleted.current) return;
+    if (!hasMoreEntities) return;
+
     const maxRows = rowCount;
     const rowsSeen = rowColPos.rowIndex;
     const bufferRows = 3;
@@ -141,14 +125,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
       if (onEntitiesEndReachCb !== undefined) onEntitiesEndReachCb();
       setRowCount(getRowCountCb());
     }
-  }, [rowColPos, rowCount, rowsPerChunk, getRowCountCb, onEntitiesEndReachCb]);
-
-  // replicate entities state to ref so it could be passed to memoized component not breaking cache
-  useEffect(() => {
-    entitiesRef.current = entitiesList;
-    // update current row count in case of category-modifier change
-    setRowCount(getRowCountCb());
-  }, [entitiesList, getRowCountCb]);
+  }, [rowColPos, rowCount, rowsPerChunk, getRowCountCb, onEntitiesEndReachCb, hasMoreEntities]);
 
   // reset items grid state on screen size breakpoint change
   useEffect(() => {
@@ -178,20 +155,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     };
   }, [colorModeChangeStatus, colorModeChangeAnimationDuration, isMobile]);
 
-  // scroll to nearest row start on theme change so screenshot matches page state
-  // may be buggy, still works
-  useEffect(() => {
-    if (gridRef.current !== null && colorModeChangeStatus === 'ongoing') {
-      console.log(rowColPos);
-      gridRef.current.scrollToItem({
-        columnIndex: rowColPos.columnIndex,
-        rowIndex: rowColPos.rowIndex,
-        align: 'end',
-      });
-    }
-  }, [gridRef, colorModeChangeStatus, rowColPos]);
-
-  const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
+  // reset flag since it's affecting useIsScrolling grid prop, not affected by that, but still
   useEffect(() => {
     if (forceRerenderFlag) {
       setForceRerenderFlag(false);
@@ -207,6 +171,14 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
       setForceRerenderFlag((s) => !s);
     }
   }, [gridRef, entitiesList]);
+
+  useEffect(() => {
+    if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
+
+    return () => {
+      mountRenderCompleted.current = false;
+    };
+  }, []);
 
   // compose and memoize props for memoized grid Item component
   const itemData = createItemData(

@@ -36,7 +36,7 @@ const DimmerContainer: FC<TDimmerContainer> = ({ isDimmed, onClose }) => {
       bg={'blackAlpha.600'}
       opacity={0}
       display={isMounted ? 'block' : 'none'}
-      zIndex={1}
+      zIndex={2}
       transition={'opacity 0.2s ease-in-out'}
       onClick={onClose}
     />

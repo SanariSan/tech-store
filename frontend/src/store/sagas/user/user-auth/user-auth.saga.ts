@@ -1,6 +1,5 @@
 import { all, call } from 'redux-saga/effects';
 import { userAuthStatusWatcher } from './auth-status.user-auth';
-import { loadingStatusWatcher } from './loading.user-auth';
 import { userLoginWatcher } from './login.user-auth';
 import { userLogoutWatcher } from './logout.user-auth';
 import { userRegisterWatcher } from './register.user-auth';
@@ -11,7 +10,6 @@ function* userAuthRootWatcher() {
     call(userLoginWatcher),
     call(userRegisterWatcher),
     call(userLogoutWatcher),
-    call(loadingStatusWatcher),
   ]);
 }
 

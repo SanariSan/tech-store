@@ -9,28 +9,34 @@ import {
   InputGroup,
   InputLeftElement,
   Spacer,
+  useBreakpointValue,
   useColorMode,
   useColorModeValue,
 } from '@chakra-ui/react';
-import React, { useCallback, useState } from 'react';
+import { motion } from 'framer-motion';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
 import pfp from '../../../assets/pfp.png';
 import { COLORS } from '../../chakra-setup';
+import { changeRoute } from '../../containers/functional';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
-  initiateColorModeChange,
-  setIsCartOpened,
+  initiateColorModeChangeUi,
+  setIsCartOpenedUi,
   uiColorModeChangeStatusSelector,
 } from '../../store';
 import { HamburgerIcon } from '../icons';
 import { NavbarIconsComponentMemo } from './icons';
+import { ANIMATION_KEYFRAMES } from './keyframes.navbar.const';
 
 interface INavbarComponent {
-  switchSidebarState: (payload?: { state: boolean }) => void;
+  onSidebarToggle: () => void;
 }
 
-export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState }) => {
+export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
   const d = useAppDispatch();
+  const { pathname } = useLocation();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
   const { colorMode } = useColorMode();
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
@@ -47,15 +53,43 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
   const hover = {
     transform: 'perspective(100px) translateZ(4px)',
   };
+  const active = {
+    transform: 'perspective(100px) translateZ(-2px)',
+  };
 
-  const toggleToolbar = useCallback(() => {
+  const animation = useMemo(() => `${ANIMATION_KEYFRAMES} 20s ease-in-out 5s infinite`, []);
+
+  const toggleToolbarCb = useCallback(() => {
     setIsToolbarOpened((_) => !_);
   }, []);
 
-  const onCartToggle = useCallback(() => {
-    toggleToolbar();
-    void d(setIsCartOpened({ isOpened: 'toggle' }));
-  }, [d, toggleToolbar]);
+  const onCartToggleCb = useCallback(() => {
+    toggleToolbarCb();
+    void d(setIsCartOpenedUi({ isOpened: 'toggle' }));
+  }, [d, toggleToolbarCb]);
+
+  const profileClickCb = useCallback(() => {
+    switch (pathname) {
+      case '/login':
+        changeRoute('/register');
+        break;
+      case '/register':
+        changeRoute('/login');
+        break;
+      default:
+        changeRoute('/login');
+    }
+  }, [pathname]);
+
+  const onAvatarClickCb = useBreakpointValue(
+    {
+      base: toggleToolbarCb,
+      md: profileClickCb,
+    },
+    {
+      fallback: 'desktop',
+    },
+  );
 
   return (
     <Flex
@@ -67,7 +101,15 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       px={6}
       overflowX={'hidden'}
     >
-      <Image src={logo} objectFit={'contain'} maxH={{ base: '30px', sm: 'max-content' }} />
+      <Image
+        src={logo}
+        filter={'auto'}
+        brightness={'100%'}
+        objectFit={'contain'}
+        maxH={{ base: '30px', sm: 'max-content' }}
+        as={motion.img}
+        animation={animation}
+      />
 
       <Box h={'100%'} w={'2px'} minW={'2px'} bg={secondary} />
 
@@ -87,9 +129,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
           _active={{
             color: inactive,
           }}
-          onClick={() => {
-            switchSidebarState();
-          }}
+          onClick={onSidebarToggle}
         />
 
         <InputGroup
@@ -128,24 +168,25 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
       <Flex direction={'row'} alignItems={'center'} gap={4}>
         <NavbarIconsComponentMemo
           isOpened={isToolbarOpened}
-          onCartToggle={onCartToggle}
+          onCartToggle={onCartToggleCb}
           isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
           currentTheme={colorMode}
           onThemeToggle={() => {
-            void d(initiateColorModeChange());
+            void d(initiateColorModeChangeUi());
           }}
+          onProfileClick={profileClickCb}
         />
         <Circle
           size={10}
           cursor={'pointer'}
-          onClick={toggleToolbar}
+          onClick={onAvatarClickCb}
           borderRadius={'20px'}
           background={`url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23${impact.slice(
             1,
           )}' stroke-width='3' stroke-dasharray='4%2c10' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");`}
           transform={'perspective(100px) translateZ(0px)'}
           _hover={hover}
-          _active={hover}
+          _active={active}
           _focus={hover}
         >
           <Avatar
@@ -155,6 +196,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ switchSidebarState
             borderRadius={'20px'}
             w={'80%'}
             h={'80%'}
+            animation={'none'}
           />
         </Circle>
       </Flex>

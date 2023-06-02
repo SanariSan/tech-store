@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '../../../hooks/redux';
 import { useScreenDetails } from '../../../hooks/use-screen-details';
 import { useMousePos } from '../../../hooks/use-mouse-pos';
-import { setScreenDetails } from '../../../store';
+import { setScreenDetailsUi } from '../../../store';
 
 const DebugContainer: FC = () => {
   const d = useAppDispatch();
@@ -17,7 +17,7 @@ const DebugContainer: FC = () => {
 
   useEffect(() => {
     console.log(w, h);
-    void d(setScreenDetails({ w, h }));
+    void d(setScreenDetailsUi({ w, h }));
   }, [w, h, d]);
 
   // const isAuthenticated = useAppSelector(userAuthIsAuthenticatedSelector);

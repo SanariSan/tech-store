@@ -1,10 +1,10 @@
 import { AddIcon, DeleteIcon, MinusIcon } from '@chakra-ui/icons';
 import { Box, Button, Circle, Flex, Text, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import React, { useMemo, memo } from 'react';
+import React, { memo, useMemo } from 'react';
+import { COLORS } from '../../chakra-setup';
 import { LazyImageContainer } from '../../containers/lazy-image';
 import type { goodsCartEntitiesStackedSelector } from '../../store';
-import { COLORS } from '../../chakra-setup';
 
 type TCartCardComponent = Omit<
   ReturnType<typeof goodsCartEntitiesStackedSelector>[number],

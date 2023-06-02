@@ -18,6 +18,9 @@ const Text = {
     lg: {
       fontSize: '18px',
     },
+    xxxl: {
+      fontSize: '28px',
+    },
   },
   defaultProps: {
     variant: 'base',

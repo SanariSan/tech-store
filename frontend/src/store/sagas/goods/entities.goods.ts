@@ -7,13 +7,20 @@ import type {
   TGoodsEntitiesOutgoingFields,
 } from '../../../services/api';
 import { GoodsEntitiesOutgoingDTO, getEntities, validateDTO } from '../../../services/api';
-import type { TRootState } from '../../redux.store.type';
-import { goodsSelector } from '../../selectors';
+import {
+  goodsOffsetPerPageSelector,
+  goodsOffsetSelector,
+  goodsSelectedCategorySelector,
+  goodsSelectedModifierSelector,
+} from '../../selectors';
+import type { TSelectedCategory, TSelectedModifier } from '../../slices';
 import {
   fetchMoreEntitiesAsync,
   increaseOffset,
   pushEntities,
   setGoodsLoadStatus,
+  setHasMoreEntities,
+  setTotalQty,
 } from '../../slices';
 
 function* entitiesWorker(action: { type: string }) {
@@ -23,16 +30,25 @@ function* entitiesWorker(action: { type: string }) {
     // todo: remove in prod (?), showcase delay
     yield delay(500);
 
-    const { selectedCategory, selectedModifier, offset, offsetPerPage } = (yield select(
-      goodsSelector,
-    )) as TRootState['goods'];
+    const [selectedCategory, selectedModifier, offset, offsetPerPage] = [
+      {
+        ...((yield select(goodsSelectedCategorySelector)) as TSelectedCategory | undefined),
+      },
+      {
+        ...((yield select(goodsSelectedModifierSelector)) as TSelectedModifier | undefined),
+      },
+      (yield select(goodsOffsetSelector)) as number,
+      (yield select(goodsOffsetPerPageSelector)) as number,
+    ];
+
+    console.log({ selectedCategory, selectedModifier, offset, offsetPerPage });
 
     const validateStatus = (yield safe(
       call(validateDTO, {
         schema: GoodsEntitiesOutgoingDTO,
         value: {
-          category: selectedCategory?.title,
-          modifier: selectedModifier?.title,
+          category: selectedCategory.title,
+          modifier: selectedModifier.title,
           offset,
           qty: offsetPerPage,
         },
@@ -64,7 +80,13 @@ function* entitiesWorker(action: { type: string }) {
 
     if (fetchStatus.response.success !== undefined) {
       yield put(pushEntities({ entities: fetchStatus.response.success.data.entities }));
-      yield put(increaseOffset());
+      yield put(setTotalQty({ amount: fetchStatus.response.success.data.totalQty }));
+      yield put(setHasMoreEntities({ hasMore: fetchStatus.response.success.data.hasMore }));
+
+      if (fetchStatus.response.success.data.hasMore) {
+        yield put(increaseOffset());
+      }
+
       yield put(setGoodsLoadStatus({ status: 'success' }));
       return;
     }

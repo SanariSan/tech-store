@@ -16,7 +16,6 @@ export async function getEntities({
   abortSignal: AbortSignal;
 }) {
   try {
-    console.log(params);
     const response: Response = await request({
       url: qs.stringifyUrl({ url: ROUTES.GOODS.ENTITIES, query: params }),
       abortSignal,

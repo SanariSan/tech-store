@@ -1,74 +1,14 @@
 import { createSlice, current } from '@reduxjs/toolkit';
 import type { TLoadingStatus } from '../slices.type';
 import { GOODS_INIT_STATE } from './goods.slice.const';
-import type { TCategories, TEntities, TSelectedCategory, TSelectedRoute } from './goods.slice.type';
+import type { TCategories, TEntities } from './goods.slice.type';
 
 /* eslint-disable no-param-reassign */
-
-// recursive find of target nested object
-function findCategory({
-  categoriesArr,
-  target,
-  currRoute = [],
-}: {
-  categoriesArr: TCategories;
-  target?: string;
-  currRoute?: TSelectedRoute[];
-}) {
-  if (categoriesArr === undefined) return;
-  if (target === undefined) return;
-
-  /* eslint-disable no-restricted-syntax */
-  for (const entity of categoriesArr) {
-    if (entity.title === target) {
-      return {
-        category: entity,
-        categoryRoute: [...currRoute, { title: entity.title, pathname: entity.title }],
-      };
-    }
-    if (entity.sub !== undefined) {
-      findCategory({
-        categoriesArr: entity.sub,
-        target,
-        currRoute: [...currRoute, { title: entity.title, pathname: entity.title }],
-      });
-    }
-  }
-
-  return;
-}
-
-function findModifier({ category, target }: { category?: TSelectedCategory; target?: string }) {
-  if (category === undefined) return;
-  if (category.modifiers === undefined) return;
-  if (target === undefined) return;
-
-  for (const modifier of category.modifiers) {
-    if (modifier.title === target) {
-      return { modifier };
-    }
-  }
-
-  return;
-}
 
 const goodsSlice = createSlice({
   name: 'goods',
   initialState: GOODS_INIT_STATE,
   reducers: {
-    setSelectedSection(
-      state,
-      action: {
-        payload: {
-          section: TSelectedRoute;
-        };
-        type: string;
-      },
-    ) {
-      if (state.selectedSection.title !== action.payload.section.title) {
-        state.selectedSection = action.payload.section;
-      }
-    },
     setCategories(
       state,
       action: {
@@ -80,70 +20,79 @@ const goodsSlice = createSlice({
     ) {
       state.categories = action.payload.categories;
     },
-    setSelectedCategory(
+    setSelectedCategoryIdx(
       state,
       action: {
         payload: {
-          category: string | undefined;
+          categoryIdx: number;
         };
         type: string;
       },
     ) {
-      if (state.selectedCategory === action.payload.category) {
+      if (state.selectedCategoryIdx === action.payload.categoryIdx) {
         return;
       }
 
       state.entities.length = 0;
       state.offset = 0;
 
-      if (action.payload.category === undefined) {
-        state.selectedCategory = undefined;
-        state.selectedCategoryRoute.length = 0;
+      if (current(state).categories[action.payload.categoryIdx] === undefined) {
+        state.selectedCategoryIdx = -1;
+        state.selectedModifierIdx = -1;
         return;
       }
 
-      const result = findCategory({
-        categoriesArr: current(state.categories),
-        target: action.payload.category,
-      });
-
-      if (result !== undefined) {
-        state.selectedCategory = result.category;
-        state.selectedCategoryRoute = result.categoryRoute;
-      }
+      state.selectedCategoryIdx = action.payload.categoryIdx;
+      state.selectedModifierIdx = -1;
     },
-    setSelectedModifier(
+    setSelectedModifierIdx(
       state,
       action: {
         payload: {
-          modifier: string | undefined;
+          modifierIdx: number;
         };
         type: string;
       },
     ) {
-      if (state.selectedModifier === action.payload.modifier) {
-        return;
-      }
+      if (state.selectedModifierIdx === action.payload.modifierIdx) return;
+
+      const currState = current(state);
+      const selectedCategory = currState.categories[currState.selectedCategoryIdx];
+
+      // purely for type safety, not possible until I implement modifiers that work without category
+      if (selectedCategory === undefined) return;
 
       state.entities.length = 0;
       state.offset = 0;
 
-      if (action.payload.modifier === undefined) {
-        state.selectedModifier = undefined;
+      // if non existing modifier or -1
+      if (selectedCategory.modifiers?.[action.payload.modifierIdx] === undefined) {
+        state.selectedModifierIdx = -1;
         return;
       }
 
-      const result = findModifier({
-        category: current(state.selectedCategory),
-        target: action.payload.modifier,
-      });
-
-      if (result !== undefined) {
-        state.selectedModifier = result.modifier;
-      }
+      state.selectedModifierIdx = action.payload.modifierIdx;
     },
     increaseOffset(state) {
       state.offset += state.offsetPerPage;
+    },
+    setTotalQty(
+      state,
+      action: {
+        payload: { amount: number };
+        type: string;
+      },
+    ) {
+      state.totalQty = action.payload.amount;
+    },
+    setHasMoreEntities(
+      state,
+      action: {
+        payload: { hasMore: boolean };
+        type: string;
+      },
+    ) {
+      state.hasMoreEntities = action.payload.hasMore;
     },
     pushEntities(
       state,
@@ -200,9 +149,9 @@ const goodsSlice = createSlice({
         type: string;
       },
     ) {
-      const targetEntity = current(state.entities).find(
-        (entity) => entity.id === action.payload.entityId,
-      );
+      const targetEntity =
+        current(state.entities).find((entity) => entity.id === action.payload.entityId) ??
+        current(state.likedEntities).find((entity) => entity.id === action.payload.entityId);
 
       if (targetEntity !== undefined) {
         state.cart.push(targetEntity);
@@ -240,18 +189,19 @@ const goodsSlice = createSlice({
       state.loadingStatus = action.payload.status;
     },
     // sagas
-    getCategoriesAsync() {},
-    fetchMoreEntitiesAsync(state, action: { payload: undefined; type: string }) {},
+    fetchCategoriesAsync() {},
+    fetchMoreEntitiesAsync() {},
   },
 });
 
 const goods = goodsSlice.reducer;
 const {
   setCategories,
-  setSelectedSection,
-  setSelectedCategory,
-  setSelectedModifier,
+  setSelectedCategoryIdx,
+  setSelectedModifierIdx,
   increaseOffset,
+  setTotalQty,
+  setHasMoreEntities,
   pushEntities,
   pushLikedEntity,
   removeLikedEntity,
@@ -259,17 +209,18 @@ const {
   removeCartEntity,
   purgeCart,
   setGoodsLoadStatus,
-  getCategoriesAsync,
+  fetchCategoriesAsync,
   fetchMoreEntitiesAsync,
 } = goodsSlice.actions;
 
 export {
   goods,
   setCategories,
-  setSelectedSection,
-  setSelectedCategory,
-  setSelectedModifier,
+  setSelectedCategoryIdx,
+  setSelectedModifierIdx,
   increaseOffset,
+  setTotalQty,
+  setHasMoreEntities,
   pushEntities,
   pushLikedEntity,
   pushCartEntity,
@@ -277,6 +228,6 @@ export {
   purgeCart,
   removeLikedEntity,
   setGoodsLoadStatus,
-  getCategoriesAsync,
+  fetchCategoriesAsync,
   fetchMoreEntitiesAsync,
 };

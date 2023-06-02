@@ -2,12 +2,14 @@ import { Box, Button, Flex } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { AuthenticatedAccessContainer } from './containers/functional/authenticated-access';
-import { DebugContainer } from './containers/functional/debug';
-import { ErrorBoundaryGenericContainerMemo } from './containers/functional/error-boundary-generic';
-// import { ErrorBoundaryNativeContainer } from './containers/error-boundary-native';
+import {
+  AuthenticatedAccessContainer,
+  ErrorBoundaryGenericContainerMemo,
+  LocationTrackerContainerMemo,
+  ScreenDetailsTrackerContainerMemo,
+} from './containers/functional';
+import { HelpComponentMemo } from './components/help';
 import { CartContainerMemo } from './containers/cart';
-import { ScreenDetailsTrackerContainerMemo } from './containers/functional/screen-details-tracker';
 import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-grid';
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
@@ -27,6 +29,7 @@ const App: FC = () => {
     <ErrorBoundaryGenericContainerMemo>
       <ThemeSwitchContainerMemo screenshotTargetRef={screenshotTargetRef} />
       <LoadingTrackerProgressContainer />
+      <LocationTrackerContainerMemo />
       <ScreenDetailsTrackerContainerMemo />
       <ToastsContainerMemo />
       <CartContainerMemo />
@@ -62,17 +65,31 @@ const App: FC = () => {
             </Route>
             <Route exact path={'/help'}>
               <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
-                help
+                <HelpComponentMemo />
               </Flex>
             </Route>
             <Route exact path="/login">
-              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
+              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/lk'}>
                 <LoginContainer />
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path="/register">
-              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/'}>
+              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/lk'}>
                 <RegisterContainer />
+              </AuthenticatedAccessContainer>
+            </Route>
+            <Route exact path="/lk">
+              <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
+                <div>
+                  <p>very cool lk</p>
+                  <Button
+                    onClick={() => {
+                      void d(logoutUserAsync());
+                    }}
+                  >
+                    Logout
+                  </Button>
+                </div>
               </AuthenticatedAccessContainer>
             </Route>
             {/* <Route exact path="/dashboard">
@@ -82,11 +99,6 @@ const App: FC = () => {
               </Route> 
             */}
             <Route path="/">
-              <Button
-                onClick={() => {
-                  void d(logoutUserAsync());
-                }}
-              />
               <div>Not found</div>
             </Route>
           </Switch>

@@ -69,6 +69,8 @@ export const entitiesCTR = (req: TRequestNarrowed, res: Response, next: NextFunc
     res,
     data: {
       entities: sliced,
+      totalQty: filtered.length,
+      hasMore: to < filtered.length,
     },
   }).send();
 };

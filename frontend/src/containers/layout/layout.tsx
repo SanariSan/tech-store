@@ -3,15 +3,15 @@ import type { FC } from 'react';
 import { useCallback, useState } from 'react';
 import { COLORS } from '../../chakra-setup';
 import { NavbarComponent } from '../../components/navbar';
-import { useAppSelector } from '../../hooks/redux';
-import { uiIsMobileSelector } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { setIsSidebarOpenedUi, uiSidebarStateSelector } from '../../store';
+import { DimmerContainerMemo } from '../dimmer';
 import { SidebarContainerMemo } from '../sidebar';
 import type { TLayout } from './layout.type';
-import { DimmerContainerMemo } from '../dimmer';
 
 const LayoutContainer: FC<TLayout> = ({ children }) => {
-  const isMobile = useAppSelector(uiIsMobileSelector);
-  const [isSidebarOpened, setIsSidebarOpened] = useState(() => !isMobile);
+  const d = useAppDispatch();
+  const isSidebarOpened = useAppSelector(uiSidebarStateSelector);
   const [bg, bgAlt, border] = [
     useColorModeValue(COLORS.white[200], COLORS.darkBlue[500]),
     useColorModeValue(COLORS.white[900], COLORS.darkBlue[600]),
@@ -19,13 +19,17 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
   ];
 
   const [isDimmed, setIsDimmed] = useState(false);
-  const switchSidebarState = useCallback((payload?: { state: boolean }) => {
-    setIsSidebarOpened((s) => payload?.state ?? !s);
-    setIsDimmed((s) => payload?.state ?? !s);
-  }, []);
-  const onDimmerClose = useCallback(() => {
-    switchSidebarState({ state: false });
-  }, [switchSidebarState]);
+  const sidebarToggleCb = useCallback(
+    (payload?: { isOpened: boolean }) => {
+      void d(setIsSidebarOpenedUi({ isOpened: payload?.isOpened ?? 'toggle' }));
+      setIsDimmed((s) => payload?.isOpened ?? !s);
+    },
+    [d],
+  );
+
+  const dimmerCloseCb = useCallback(() => {
+    sidebarToggleCb({ isOpened: false });
+  }, [sidebarToggleCb]);
 
   return (
     <Grid
@@ -37,11 +41,6 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
       templateAreas={`"nav"
                     "main"`}
     >
-      {/* // <GridItem */}
-      {/* //   area={'nav'}
-    //   height={75} */}
-
-      {/* // <Box h={'100%'} maxH={'100%'} w={'100%'}> */}
       <GridItem
         area={'nav'}
         w={'100%'}
@@ -56,7 +55,7 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         borderRight={'none'}
         borderTop={'none'}
       >
-        <NavbarComponent switchSidebarState={switchSidebarState} />
+        <NavbarComponent onSidebarToggle={sidebarToggleCb} />
       </GridItem>
 
       <GridItem area={'main'} position={'relative'} w={'100%'} h={'100%'}>
@@ -77,9 +76,9 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
           }}
           h={'100%'}
           transition={'width 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
-          zIndex={2}
+          zIndex={3}
         >
-          <SidebarContainerMemo isSidebarOpened={isSidebarOpened} />
+          <SidebarContainerMemo />
         </Box>
         <Box
           bg={bgAlt}
@@ -89,12 +88,11 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
           h={'100%'}
           pl={{ base: '72px', sm: '90px' }}
         >
-          <DimmerContainerMemo isDimmed={isDimmed} onClose={onDimmerClose} />
+          <DimmerContainerMemo isDimmed={isDimmed} onClose={dimmerCloseCb} />
           {children}
         </Box>
       </GridItem>
     </Grid>
-    // </Box>
   );
 };
 

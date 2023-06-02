@@ -2,7 +2,7 @@ import { useColorMode } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { finalizeColorModeChange, uiColorModeChangeStatusSelector } from '../../store';
+import { finalizeColorModeChangeUi, uiColorModeChangeStatusSelector } from '../../store';
 
 type TLightThemeSwitchContainer = {
   [key: string]: unknown;
@@ -17,7 +17,7 @@ const LightThemeSwitchContainer: FC<TLightThemeSwitchContainer> = () => {
   useEffect(() => {
     if (mountRenderCompleted.current && colorModeChangeStatus === 'ongoing') {
       toggleColorMode();
-      void d(finalizeColorModeChange());
+      void d(finalizeColorModeChangeUi());
     }
   }, [colorModeChangeStatus, toggleColorMode, d]);
 

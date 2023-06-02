@@ -1,2 +1,2 @@
-export * from './sidebar-parent-entity';
-export * from './sidebar-sub-entity';
+export * from './sidebar-category-entity';
+export * from './sidebar-section-entity';

@@ -2,12 +2,12 @@ import { Text } from '@chakra-ui/react';
 import { memo, useMemo, useRef } from 'react';
 import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppSelector } from '../../hooks/redux';
-import { goodsLikedEntitiesSelector, goodsSelectedSectionSelector } from '../../store';
+import { goodsLikedEntitiesSelector, uiSelectedSectionSelector } from '../../store';
 import { ItemsGridComponentMemo } from './items-grid';
 
 const LikedContainer = () => {
   const entities = useAppSelector(goodsLikedEntitiesSelector);
-  const selectedSection = useAppSelector(goodsSelectedSectionSelector);
+  const selectedSection = useAppSelector(uiSelectedSectionSelector);
   const gridRef = useRef<Grid | null>(null);
 
   const breadcrumbList = useMemo(() => [selectedSection], [selectedSection]);

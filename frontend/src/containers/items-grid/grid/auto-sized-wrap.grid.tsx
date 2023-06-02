@@ -1,6 +1,6 @@
 import { useBreakpointValue } from '@chakra-ui/react';
 import type { MutableRefObject } from 'react';
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo } from 'react';
 import { VariableSizeGrid as Grid } from 'react-window';
 import type { TItemData } from './grid.type';
 import { ItemContainerMemo } from './item.grid';
@@ -35,11 +35,15 @@ const AutoSizedGridWrapContainer = ({
   forceRerenderFlag: boolean;
 }) => {
   const buffer = 25;
-  const minReasonableItemSize =
-    useBreakpointValue({
+  const minReasonableItemSize = useBreakpointValue(
+    {
       base: 425 + buffer,
       sm: 490 + buffer,
-    }) ?? 425 + buffer;
+    },
+    {
+      fallback: 'base',
+    },
+  ) as number;
   const w = useMemo(() => width, [width]);
   const h = useMemo(() => height, [height]);
   const colW = useMemo(() => w / columnCount, [w, columnCount]);
@@ -47,6 +51,12 @@ const AutoSizedGridWrapContainer = ({
     () => (h < 480 ? Math.max(minReasonableItemSize, h) : Math.min(minReasonableItemSize, h)),
     [h, minReasonableItemSize],
   );
+
+  useEffect(() => {
+    if (gridRef.current !== null) {
+      gridRef.current.resetAfterIndices({ columnIndex: 0, rowIndex: 0, shouldForceUpdate: true });
+    }
+  }, [gridRef, w, h, colW, rowH]);
 
   return (
     <Grid

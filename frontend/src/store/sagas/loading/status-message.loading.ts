@@ -1,8 +1,8 @@
 import { put, takeEvery } from 'redux-saga/effects';
 import {
-  setErrorMessage,
+  setErrorMessageUi,
   setGoodsLoadStatus,
-  setSuccessMessage,
+  setSuccessMessageUi,
   setUserAuthLoadStatus,
 } from '../../slices';
 import type { TLoadingStatus } from '../../slices/slices.type';
@@ -13,7 +13,7 @@ function* statusMessageWorker(action: {
 }) {
   if (action.payload.status === 'failure') {
     yield put(
-      setErrorMessage({
+      setErrorMessageUi({
         title: 'Error',
         description: action.payload.message,
       }),
@@ -22,7 +22,7 @@ function* statusMessageWorker(action: {
 
   if (action.payload.status === 'success') {
     yield put(
-      setSuccessMessage({
+      setSuccessMessageUi({
         title: 'Success',
         description: action.payload.message,
       }),

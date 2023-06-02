@@ -1,36 +1,33 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { useEffect, Fragment, memo, useCallback, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { SidebarParentEntityMemo, SidebarSubEntityMemo } from '../../components/sidebar';
-import { SIDEBAR_TEMPLATE } from './sidebar.const';
-import { useAppDispatch } from '../../hooks/redux';
-import { setSelectedSection as setSelectedSectionStore } from '../../store';
+import { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import { SidebarCategoryEntityMemo, SidebarSectionEntityMemo } from '../../components/sidebar';
+import { SIDEBAR_TEMPLATE } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import {
+  fetchCategoriesAsync,
+  goodsCategoriesSelector,
+  goodsLoadingStatusSelector,
+  goodsSelectedCategoryIdxSelector,
+  setSelectedCategoryIdx,
+  uiSelectedSectionIdxSelector,
+  uiSidebarStateSelector,
+} from '../../store';
+import { changeRoute } from '../functional';
 
 interface ISidebarContainer {
-  isSidebarOpened: boolean;
+  [key: string]: unknown;
 }
 
-const SidebarContainer: FC<ISidebarContainer> = ({
-  isSidebarOpened,
-}: {
-  isSidebarOpened: boolean;
-}) => {
-  // ensuring right initial menu entry is chosen based on current pathname
-  const { pathname } = useLocation();
-  const [selectedSection, setSelectedSection] = useState(() =>
-    SIDEBAR_TEMPLATE.findIndex((_) => _.pathname === pathname),
-  );
-  const [selectedCategory, setSelectedCategory] = useState(-1);
-  const [unfoldedIdxs, setUnfoldedIdxs] = useState<number[]>([]);
+const SidebarContainer: FC<ISidebarContainer> = () => {
+  const d = useAppDispatch();
+  const categories = useAppSelector(goodsCategoriesSelector);
+  const isSidebarOpened = useAppSelector(uiSidebarStateSelector);
+  const selectedSectionIdx = useAppSelector(uiSelectedSectionIdxSelector);
+  const selectedCategoryIdx = useAppSelector(goodsSelectedCategoryIdxSelector);
+  const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
 
-  const updateSelectedIdxs = useCallback(
-    ({ section, category = -1 }: { section: number; category?: number }) => {
-      setSelectedSection(section);
-      setSelectedCategory(category);
-    },
-    [],
-  );
+  const [unfoldedIdxs, setUnfoldedIdxs] = useState<number[]>([]);
 
   const unfold = useCallback((idx: number) => {
     setUnfoldedIdxs((s) => [...s, idx]);
@@ -48,21 +45,13 @@ const SidebarContainer: FC<ISidebarContainer> = ({
     [collapse, unfold, unfoldedIdxs],
   );
 
-  // TODO: move this to...? probably separate component with logic for tracking location?
-  const d = useAppDispatch();
+  // fetch global categories
   useEffect(() => {
-    if (selectedSection === -1) {
-      return;
+    // constant retry in case of fail
+    if (loadingStatus !== 'loading' && categories.length <= 0) {
+      void d(fetchCategoriesAsync());
     }
-
-    const currSection = SIDEBAR_TEMPLATE[selectedSection];
-
-    void d(
-      setSelectedSectionStore({
-        section: { title: currSection.title, pathname: currSection.pathname },
-      }),
-    );
-  }, [pathname, d, selectedSection]);
+  }, [loadingStatus, categories, d]);
 
   return (
     <Flex
@@ -75,33 +64,45 @@ const SidebarContainer: FC<ISidebarContainer> = ({
       pb={6}
       pr={{ base: 1, sm: 2 }}
     >
-      {SIDEBAR_TEMPLATE.map(
-        ({ icon, title, sub, sideAction: onSelectSideActionParent }, idxSection) => {
-          const isUnfolded = unfoldedIdxs.includes(idxSection);
-          const subH =
-            isSidebarOpened && isUnfolded && sub !== null ? `${sub.length * 50}px` : '0px';
+      {SIDEBAR_TEMPLATE.map((section, idxSection) => {
+        if (section === undefined) return;
+        const { icon, title, subCategory, pathname } = section;
+        const isUnfolded = unfoldedIdxs.includes(idxSection);
+        const subH =
+          isSidebarOpened && isUnfolded && subCategory === 'catalogue'
+            ? `${categories.length * 50}px`
+            : '0px';
 
-          return (
-            <Fragment key={`side-p-${idxSection}`}>
-              {idxSection === SIDEBAR_TEMPLATE.length - 2 && <Spacer />}
+        return (
+          <Fragment key={`side-p-${idxSection}`}>
+            {idxSection === SIDEBAR_TEMPLATE.length - 2 && <Spacer />}
+            <SidebarSectionEntityMemo
+              title={title}
+              icon={icon}
+              hasCategory={subCategory === 'catalogue'}
+              isSidebarOpened={isSidebarOpened}
+              isSelected={selectedSectionIdx === idxSection}
+              isCategoryUnfolded={isUnfolded}
+              onSelect={() => {
+                changeRoute(pathname);
 
-              <SidebarParentEntityMemo
-                title={title}
-                icon={icon}
-                hasSub={sub !== null}
-                isSidebarOpened={isSidebarOpened}
-                isSelected={selectedSection === idxSection}
-                isSubUnfolded={isUnfolded}
-                onSelect={() => {
-                  onSelectSideActionParent();
-                  updateSelectedIdxs({ section: idxSection });
-                }}
-                onSubUnfold={() => {
-                  onSubUnfold(idxSection);
-                }}
-              />
+                // for now there is only 1 sub category possible - catalogue, so here's just explicit check
+                // allows to not refetch on ANY category choice + prevent refetch on subsequent section clicks
+                if (
+                  subCategory === 'catalogue' &&
+                  (selectedSectionIdx === -1 || selectedCategoryIdx !== -1)
+                ) {
+                  void d(setSelectedCategoryIdx({ categoryIdx: -1 }));
+                }
+              }}
+              onSubUnfold={() => {
+                onSubUnfold(idxSection);
+              }}
+            />
 
-              {sub !== null && (
+            {
+              // for now there is only 1 sub category possible - catalogue, so here's just explicit check
+              subCategory === 'catalogue' && categories.length > 0 && (
                 <Flex
                   direction={'column'}
                   w={'100%'}
@@ -110,31 +111,31 @@ const SidebarContainer: FC<ISidebarContainer> = ({
                   h={subH}
                   minH={subH}
                 >
-                  {sub.map(
-                    ({ title: titleSub, sideAction: onSelectSideActionSub }, idxCategory) => (
-                      <SidebarSubEntityMemo
-                        key={`side-p-${idxSection}-c-${idxCategory}`}
-                        title={titleSub}
+                  {categories.map((category, categoryIdx) => {
+                    if (category === undefined) return;
+                    const { title: titleCategory } = category;
+                    return (
+                      <SidebarCategoryEntityMemo
+                        key={`side-p-${idxSection}-c-${categoryIdx}`}
+                        title={titleCategory}
                         isSidebarOpened={isSidebarOpened}
                         isSelected={
-                          selectedSection === idxSection && selectedCategory === idxCategory
+                          selectedSectionIdx === idxSection && selectedCategoryIdx === categoryIdx
                         }
                         onSelect={() => {
-                          if (selectedSection !== idxSection) onSelectSideActionParent();
-                          if (selectedSection !== idxSection || selectedCategory !== idxCategory) {
-                            onSelectSideActionSub();
-                          }
-                          updateSelectedIdxs({ section: idxSection, category: idxCategory });
+                          if (selectedSectionIdx !== idxSection) changeRoute(pathname);
+                          if (selectedCategoryIdx !== categoryIdx)
+                            void d(setSelectedCategoryIdx({ categoryIdx }));
                         }}
                       />
-                    ),
-                  )}
+                    );
+                  })}
                 </Flex>
-              )}
-            </Fragment>
-          );
-        },
-      )}
+              )
+            }
+          </Fragment>
+        );
+      })}
     </Flex>
   );
 };
