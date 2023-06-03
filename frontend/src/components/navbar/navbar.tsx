@@ -9,6 +9,7 @@ import {
   InputGroup,
   InputLeftElement,
   Spacer,
+  Tooltip,
   useBreakpointValue,
   useColorMode,
   useColorModeValue,
@@ -17,17 +18,23 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import logo from '../../../assets/logo.png';
-import pfp from '../../../assets/pfp.png';
+import pfp from '../../../assets/pfp.webp';
 import { COLORS } from '../../chakra-setup';
 import { changeRoute } from '../../containers/functional';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
+  goodsCartEntitiesSelector,
+  guideHasTriedOpeningCartSelector,
+  guideHasTriedThemeChangeSelector,
   initiateColorModeChangeUi,
+  setHasTriedOpeningCart,
+  setHasTriedThemeChange,
   setIsCartOpenedUi,
+  uiCartStateSelector,
   uiColorModeChangeStatusSelector,
 } from '../../store';
 import { HamburgerIcon } from '../icons';
-import { NavbarIconsComponentMemo } from './icons';
+import { NavbarIconsContainerMemo } from './icons';
 import { ANIMATION_KEYFRAMES } from './keyframes.navbar.const';
 
 interface INavbarComponent {
@@ -40,6 +47,10 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
   const { colorMode } = useColorMode();
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
+  const hasTriedThemeChange = useAppSelector(guideHasTriedThemeChangeSelector);
+  const hasTriedOpeningCart = useAppSelector(guideHasTriedOpeningCartSelector);
+  const cartEntities = useAppSelector(goodsCartEntitiesSelector);
+  const isCartOpened = useAppSelector(uiCartStateSelector);
   const [inactive, secondaryAlt, secondary, hoverColor, impact, border, inputHover] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
@@ -50,12 +61,19 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
     useColorModeValue(COLORS.white[100], COLORS.darkBlue[300]),
   ];
 
-  const hover = {
-    transform: 'perspective(100px) translateZ(4px)',
-  };
-  const active = {
-    transform: 'perspective(100px) translateZ(-2px)',
-  };
+  const hover = useMemo(
+    () => ({
+      transform: 'perspective(100px) translateZ(4px)',
+    }),
+    [],
+  );
+
+  const active = useMemo(
+    () => ({
+      transform: 'perspective(100px) translateZ(-2px)',
+    }),
+    [],
+  );
 
   const animation = useMemo(() => `${ANIMATION_KEYFRAMES} 20s ease-in-out 5s infinite`, []);
 
@@ -65,6 +83,8 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
 
   const onCartToggleCb = useCallback(() => {
     toggleToolbarCb();
+
+    void d(setHasTriedOpeningCart(true));
     void d(setIsCartOpenedUi({ isOpened: 'toggle' }));
   }, [d, toggleToolbarCb]);
 
@@ -90,6 +110,13 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
       fallback: 'desktop',
     },
   );
+
+  const onThemeToggleCb = useCallback(() => {
+    void d(setHasTriedThemeChange(true));
+    void d(initiateColorModeChangeUi());
+
+    return;
+  }, [d]);
 
   return (
     <Flex
@@ -132,48 +159,58 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
           onClick={onSidebarToggle}
         />
 
-        <InputGroup
-          variant={{ base: 'base', sm: 'sm' }}
-          w={'max-content'}
-          maxW={'300px'}
-          display={{ base: 'flex', sm: 'flex' }}
-          borderStyle={'dashed'}
-          borderColor={border}
-          borderWidth={'1px'}
-          borderRadius={'20px'}
+        <Tooltip
+          label="I'm useless, don't even bother 🙃"
+          placement={'bottom'}
+          closeOnClick={false}
+          hasArrow
+          arrowSize={10}
         >
-          <InputLeftElement
-            pl={'20px'}
-            pointerEvents="none"
-            children={<Search2Icon boxSize={4} color="gray.300" />}
-          />
-          <Input
-            type="text"
-            // variant={{ base: 'base', sm: 'sm' }}
-            // TODO: figure out why Input preset not working
-            fontSize={{ base: '14px', sm: '16px' }}
-            placeholder="Search"
-            bg={hoverColor}
-            _hover={{
-              bg: inputHover,
-            }}
+          <InputGroup
+            variant={{ base: 'base', sm: 'sm' }}
+            w={'max-content'}
+            maxW={'300px'}
+            display={{ base: 'flex', sm: 'flex' }}
+            borderStyle={'dashed'}
+            borderColor={border}
+            borderWidth={'1px'}
             borderRadius={'20px'}
-            pl={12}
-          />
-        </InputGroup>
+          >
+            <InputLeftElement
+              pl={'20px'}
+              pointerEvents="none"
+              children={<Search2Icon boxSize={4} color="gray.300" />}
+            />
+            <Input
+              type="text"
+              // variant={{ base: 'base', sm: 'sm' }}
+              // TODO: figure out why Input preset not working
+              fontSize={{ base: '14px', sm: '16px' }}
+              placeholder="Search"
+              bg={hoverColor}
+              _hover={{
+                bg: inputHover,
+              }}
+              borderRadius={'20px'}
+              pl={12}
+            />
+          </InputGroup>
+        </Tooltip>
       </Flex>
 
       <Spacer />
 
       <Flex direction={'row'} alignItems={'center'} gap={4}>
-        <NavbarIconsComponentMemo
+        <NavbarIconsContainerMemo
           isOpened={isToolbarOpened}
           onCartToggle={onCartToggleCb}
           isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
           currentTheme={colorMode}
-          onThemeToggle={() => {
-            void d(initiateColorModeChangeUi());
-          }}
+          hasTriedThemeChange={hasTriedThemeChange}
+          hasTriedOpeningCart={hasTriedOpeningCart}
+          isCartEmpty={cartEntities.length === 0}
+          isCartOpened={isCartOpened}
+          onThemeToggle={onThemeToggleCb}
           onProfileClick={profileClickCb}
         />
         <Circle
@@ -185,6 +222,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
             1,
           )}' stroke-width='3' stroke-dasharray='4%2c10' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");`}
           transform={'perspective(100px) translateZ(0px)'}
+          transition={'transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           _hover={hover}
           _active={active}
           _focus={hover}

@@ -18,6 +18,7 @@ import { ModifiersContainer } from '../modifiers';
 import { AutoSizedGridWrapContainerMemo } from './grid';
 import type { TItemsGridContainerProps } from './items-grid.type';
 import { createItemData } from './memoize.items-grid';
+import { useThrottledState } from '../../hooks/use-throttled-state';
 
 const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   title,
@@ -34,6 +35,11 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
+  const throttledColorModeChangeStatus = useThrottledState({
+    state: colorModeChangeStatus,
+    replicateCondition: colorModeChangeStatus === 'completed',
+    delay: isMobile ? colorModeChangeAnimationDuration : colorModeChangeAnimationDuration + 350,
+  });
 
   const entitiesRef = useRef(entitiesList);
   const mountRenderCompleted = useRef(false);
@@ -41,9 +47,6 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const [scrollPos, setScrollPos] = useState({ top: 0, left: 0 });
   const [rowColPos, setRowColPos] = useState({ rowIndex: 0, columnIndex: 0 });
   const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
-
-  const [colorModeChangeStatusProxy, setColorModeChangeStatusProxy] =
-    useState(colorModeChangeStatus);
   const columnCount =
     useBreakpointValue(
       {
@@ -101,8 +104,8 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   );
 
   const isThemeChanging = useMemo(
-    () => colorModeChangeStatus !== 'completed' || colorModeChangeStatusProxy !== 'completed',
-    [colorModeChangeStatus, colorModeChangeStatusProxy],
+    () => colorModeChangeStatus !== 'completed' || throttledColorModeChangeStatus !== 'completed',
+    [colorModeChangeStatus, throttledColorModeChangeStatus],
   );
 
   // replicate entities state to ref so it could be passed to memoized component not breaking cache
@@ -131,29 +134,6 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   useEffect(() => {
     onResize();
   }, [columnCount, onResize]);
-
-  // color mode change local controller
-  useEffect(() => {
-    // instantly replicate ongoing state locally
-    if (colorModeChangeStatus === 'ongoing') {
-      setColorModeChangeStatusProxy('ongoing');
-      return;
-    }
-
-    const delay = isMobile
-      ? colorModeChangeAnimationDuration
-      : colorModeChangeAnimationDuration + 750;
-
-    // extra delay to let color theme animation properly finish, then replicate 'finished' state
-    const timer = setTimeout(() => {
-      setColorModeChangeStatusProxy(colorModeChangeStatus);
-      return;
-    }, delay);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [colorModeChangeStatus, colorModeChangeAnimationDuration, isMobile]);
 
   // reset flag since it's affecting useIsScrolling grid prop, not affected by that, but still
   useEffect(() => {

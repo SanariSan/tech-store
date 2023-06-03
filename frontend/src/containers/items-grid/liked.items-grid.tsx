@@ -24,14 +24,24 @@ const LikedContainer = () => {
         variant="static"
       />
       {entities.length <= 0 && (
-        <Text
-          position={'absolute'}
-          top={{ base: '250px', sm: '175px' }}
-          left={{ base: '100px', sm: '125px', md: '140px' }}
-          variant={{ base: 'sm', sm: 'md' }}
-        >
-          Nothing here yet 😥
-        </Text>
+        <>
+          <Text
+            position={'absolute'}
+            top={{ base: '250px', sm: '175px' }}
+            left={{ base: '100px', sm: '125px', md: '140px' }}
+            variant={{ base: 'sm', sm: 'md' }}
+          >
+            Nothing here yet... 😥
+          </Text>
+          <Text
+            position={'absolute'}
+            top={{ base: '275px', sm: '200px' }}
+            left={{ base: '100px', sm: '125px', md: '140px' }}
+            variant={{ base: 'sm', sm: 'md' }}
+          >
+            Go like something! 🤨
+          </Text>
+        </>
       )}
     </>
   );

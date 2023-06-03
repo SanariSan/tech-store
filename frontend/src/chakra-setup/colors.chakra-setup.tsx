@@ -1,22 +1,15 @@
 const COLORS = {
   yellow: {
-    // hover
     300: '#ffd666',
-    // dark button, accent, notif, selected sub-category, price
     400: '#ffc831',
-    // unused for now
     500: '#ffbb00',
   },
   blue: {
     // 25: '#f9fafb',
     300: '#dfe3e8',
-    // dark font secondary / unselected
     400: '#c4cdd5',
-    // dark icon hower
     500: '#919eab',
-    // dark icon default
     600: '#637381',
-    // dark menu bg hower
     800: '#212b36',
   },
   white: {
@@ -38,6 +31,9 @@ const COLORS = {
     400: '#F56565',
     500: '#E53E3E',
     600: '#C53030',
+  },
+  black: {
+    900: '#000000',
   },
 };
 

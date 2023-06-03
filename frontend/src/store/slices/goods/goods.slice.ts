@@ -192,7 +192,6 @@ const goodsSlice = createSlice({
       state,
       action: { payload: { status: TLoadingStatus; message?: string }; type: string },
     ) {
-      console.log(action.payload.status);
       state.categoriesLoadingStatus = action.payload.status;
     },
     // sagas

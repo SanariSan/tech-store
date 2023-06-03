@@ -46,8 +46,18 @@ div,
 span {
   transition: background-color 0.2s linear, color 0.15s $trans, height 0.3s $trans,
     max-height 0.3s $trans, min-height 0.3s $trans, max-width 0.3s $trans, border-color 0.3s $trans,
-    grid-template-columns 0.4s $trans, transform 0.3s $trans;
+    grid-template-columns 0.4s $trans;
   //width 0.3s $trans,
+}
+
+// have to be defined here???
+// if I do in local scss module it doesn't work
+#tsparticles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 * {

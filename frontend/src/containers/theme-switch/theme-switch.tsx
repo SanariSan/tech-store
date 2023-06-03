@@ -14,7 +14,7 @@ const ThemeSwitchContainer: FC<TThemeSwitchContainer> = ({ screenshotTargetRef }
   const isMobile = useAppSelector(uiIsMobileSelector);
   useIsMobile();
 
-  if (isMobile) return <LightThemeSwitchContainerMemo />;
+  // if (isMobile) return <LightThemeSwitchContainerMemo />;
   return <FancyThemeSwitchContainerMemo screenshotTargetRef={screenshotTargetRef} />;
 };
 

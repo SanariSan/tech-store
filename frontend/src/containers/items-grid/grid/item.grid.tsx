@@ -61,7 +61,7 @@ const ItemContainer = ({
   }
 
   return (
-    <Flex justifyContent={'center'} alignItems={'center'} px={6} key={`${idx}`} style={style}>
+    <Flex justifyContent={'center'} alignItems={'center'} px={8} key={`${idx}`} style={style}>
       {content}
     </Flex>
   );
