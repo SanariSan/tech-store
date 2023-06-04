@@ -118,6 +118,7 @@ const HomeMainContentComponent: FC<THomeMainContent> = ({ isThemeChanging }) => 
           alignItems={'center'}
           gap={3}
           position={'relative'}
+          transition={'transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           _hover={hover}
           _active={hover}
           _focus={hover}
@@ -170,6 +171,7 @@ const HomeMainContentComponent: FC<THomeMainContent> = ({ isThemeChanging }) => 
           gap={3}
           px={3}
           position={'relative'}
+          transition={'transform 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           _hover={hover}
           _active={hover}
           _focus={hover}

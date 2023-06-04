@@ -2,7 +2,7 @@ import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import type { ColorMode, PlacementWithLogical } from '@chakra-ui/react';
 import { Flex, Icon, Tooltip, useBreakpointValue, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { useState, memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BiUserCircle } from 'react-icons/bi';
 import { COLORS } from '../../../chakra-setup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
@@ -140,6 +140,7 @@ const NavbarIconsContainer: FC<{
       borderWidth={{ base: '1px', md: '0px' }}
       borderRadius={'100px'}
       ref={refIcons}
+      zIndex={1}
     >
       <Icon
         display={{ base: 'flex', md: 'none' }}

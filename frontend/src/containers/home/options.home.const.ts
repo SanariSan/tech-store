@@ -22,7 +22,7 @@ export const OPTIONS: ISourceOptions = {
       value: 'transparent',
     },
   },
-  fpsLimit: 120,
+  fpsLimit: 60,
   interactivity: {
     events: {
       onClick: {
@@ -77,8 +77,9 @@ export const OPTIONS: ISourceOptions = {
         enable: true,
         area: 800,
       },
-      value: 25,
+      value: 12,
     },
+    reduceDuplicates: true,
     opacity: {
       value: 0.5,
     },
@@ -124,7 +125,7 @@ export const OPTIONS: ISourceOptions = {
       ],
     },
     size: {
-      value: { min: 10, max: 16 },
+      value: { min: 12, max: 18 },
     },
   },
   detectRetina: true,

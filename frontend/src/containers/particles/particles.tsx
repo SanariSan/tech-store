@@ -2,14 +2,13 @@ import type { FC } from 'react';
 import { memo, useCallback, useEffect, useRef } from 'react';
 import Particles from 'react-particles';
 import { loadFull } from 'tsparticles';
-import type { Container, Engine } from 'tsparticles-engine';
-import { OPTIONS } from './options.home.const';
+import type { Container, Engine, ISourceOptions } from 'tsparticles-engine';
 
-type TParticlesComponent = {
+type TParticlesContainer = {
+  options: ISourceOptions;
   isPaused: boolean;
 };
-
-const ParticlesComponent: FC<TParticlesComponent> = ({ isPaused }) => {
+const ParticlesContainer: FC<TParticlesContainer> = ({ isPaused, options }) => {
   const containerRef = useRef<Container>();
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadFull(engine);
@@ -26,10 +25,10 @@ const ParticlesComponent: FC<TParticlesComponent> = ({ isPaused }) => {
   }, [isPaused]);
 
   return (
-    <Particles id="tsparticles" init={particlesInit} loaded={particlesLoaded} options={OPTIONS} />
+    <Particles id="tsparticles" init={particlesInit} loaded={particlesLoaded} options={options} />
   );
 };
 
-const ParticlesComponentMemo = memo(ParticlesComponent);
+const ParticlesContainerMemo = memo(ParticlesContainer);
 
-export { ParticlesComponentMemo };
+export { ParticlesContainerMemo };

@@ -8,6 +8,7 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Portal,
   Spacer,
   Tooltip,
   useBreakpointValue,
@@ -60,6 +61,12 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
     useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
     useColorModeValue(COLORS.white[100], COLORS.darkBlue[300]),
   ];
+
+  const usePortal =
+    useBreakpointValue({
+      base: true,
+      md: false,
+    }) ?? true;
 
   const hover = useMemo(
     () => ({
@@ -201,18 +208,36 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
       <Spacer />
 
       <Flex direction={'row'} alignItems={'center'} gap={4}>
-        <NavbarIconsContainerMemo
-          isOpened={isToolbarOpened}
-          onCartToggle={onCartToggleCb}
-          isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
-          currentTheme={colorMode}
-          hasTriedThemeChange={hasTriedThemeChange}
-          hasTriedOpeningCart={hasTriedOpeningCart}
-          isCartEmpty={cartEntities.length === 0}
-          isCartOpened={isCartOpened}
-          onThemeToggle={onThemeToggleCb}
-          onProfileClick={profileClickCb}
-        />
+        {usePortal ? (
+          <Portal>
+            <NavbarIconsContainerMemo
+              isOpened={isToolbarOpened}
+              onCartToggle={onCartToggleCb}
+              isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
+              currentTheme={colorMode}
+              hasTriedThemeChange={hasTriedThemeChange}
+              hasTriedOpeningCart={hasTriedOpeningCart}
+              isCartEmpty={cartEntities.length === 0}
+              isCartOpened={isCartOpened}
+              onThemeToggle={onThemeToggleCb}
+              onProfileClick={profileClickCb}
+            />
+          </Portal>
+        ) : (
+          <NavbarIconsContainerMemo
+            isOpened={isToolbarOpened}
+            onCartToggle={onCartToggleCb}
+            isThemeToggleAvailable={colorModeChangeStatus === 'completed'}
+            currentTheme={colorMode}
+            hasTriedThemeChange={hasTriedThemeChange}
+            hasTriedOpeningCart={hasTriedOpeningCart}
+            isCartEmpty={cartEntities.length === 0}
+            isCartOpened={isCartOpened}
+            onThemeToggle={onThemeToggleCb}
+            onProfileClick={profileClickCb}
+          />
+        )}
+
         <Circle
           size={10}
           cursor={'pointer'}

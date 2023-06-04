@@ -2,9 +2,8 @@ import { Box, Button, Flex, Text } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { HelpComponentMemo } from './components/help';
-import { HomeContainerMemo } from './components/home';
 import { CartContainerMemo } from './containers/cart';
+import { DashboardContainerMemo } from './containers/dashboard';
 import {
   AuthenticatedAccessContainer,
   ErrorBoundaryGenericContainerMemo,
@@ -12,6 +11,9 @@ import {
   ScreenDetailsTrackerContainerMemo,
   changeRoute,
 } from './containers/functional';
+import { GuideContainerMemo } from './containers/guide';
+import { HelpComponentMemo } from './containers/help';
+import { HomeContainerMemo } from './containers/home';
 import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-grid';
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
@@ -19,13 +21,8 @@ import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { ThemeSwitchContainerMemo } from './containers/theme-switch';
 import { ToastsContainerMemo } from './containers/toast/toast';
-import { useAppDispatch } from './hooks/redux';
-import { logoutUserAsync } from './store';
-import { GuideContainerMemo } from './containers/guide';
 
 const App: FC = () => {
-  const d = useAppDispatch();
-
   const screenshotTargetRef = useRef(null);
 
   return (
@@ -71,44 +68,26 @@ const App: FC = () => {
               <HelpComponentMemo />
             </Route>
             <Route exact path="/login">
-              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/lk'}>
+              <AuthenticatedAccessContainer
+                mustBeAuthenticated={false}
+                redirectLocation={'/dashboard'}
+              >
                 <LoginContainer />
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path="/register">
-              <AuthenticatedAccessContainer mustBeAuthenticated={false} redirectLocation={'/lk'}>
+              <AuthenticatedAccessContainer
+                mustBeAuthenticated={false}
+                redirectLocation={'/dashboard'}
+              >
                 <RegisterContainer />
               </AuthenticatedAccessContainer>
             </Route>
-            <Route exact path="/lk">
+            <Route exact path="/dashboard">
               <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
-                <Flex
-                  w={'100%'}
-                  h={'100%'}
-                  direction={'column'}
-                  justifyContent={'center'}
-                  alignItems={'center'}
-                  gap={3}
-                >
-                  <Text fontWeight={'bold'} variant={'md'}>
-                    Very cool lk
-                  </Text>
-                  <Button
-                    onClick={() => {
-                      void d(logoutUserAsync());
-                    }}
-                  >
-                    Logout
-                  </Button>
-                </Flex>
+                <DashboardContainerMemo />
               </AuthenticatedAccessContainer>
             </Route>
-            {/* <Route exact path="/dashboard">
-            <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
-              <DashboardContainer />
-              </AuthenticatedAccessContainer>
-              </Route> 
-            */}
             <Route path="/">
               <Flex
                 w={'100%'}

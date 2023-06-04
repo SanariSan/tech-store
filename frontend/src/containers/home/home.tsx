@@ -1,7 +1,6 @@
 import { Flex } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo, useMemo } from 'react';
-
 import { useAppSelector } from '../../hooks/redux';
 import { useThrottledState } from '../../hooks/use-throttled-state';
 import {
@@ -10,8 +9,9 @@ import {
   uiIsMobileSelector,
   uiSidebarStateSelector,
 } from '../../store';
-import { HomeMainContentComponentMemo } from './main-content.home';
-import { ParticlesComponentMemo } from './particles.home';
+import { OPTIONS } from './options.home.const';
+import { ParticlesContainerMemo } from '../particles';
+import { HomeMainContentComponentMemo } from '../../components/home/main-content.home';
 
 type THomeComponent = {
   [key: string]: unknown;
@@ -34,7 +34,7 @@ const HomeContainer: FC<THomeComponent> = () => {
 
   return (
     <Flex w={'100%'} h={'100%'} position={'relative'}>
-      <ParticlesComponentMemo isPaused={isSidebarOpened || isThemeChanging} />
+      <ParticlesContainerMemo options={OPTIONS} isPaused={isSidebarOpened || isThemeChanging} />
       <HomeMainContentComponentMemo isThemeChanging={isThemeChanging} />
     </Flex>
   );
