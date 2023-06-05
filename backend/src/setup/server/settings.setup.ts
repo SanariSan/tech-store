@@ -10,11 +10,7 @@ import { publishLog } from '../../modules/access-layer/events/pubsub';
 import { ELOG_LEVEL } from '../../general.type';
 
 function setupSettingsExpress(app: Express) {
-  const {
-    // CORS_URL,
-    NODE_ENV,
-    COOKIE_SECRET,
-  } = process.env;
+  const { CORS_URL, NODE_ENV, COOKIE_SECRET } = process.env;
 
   const RedisStore = connectRedis(session);
   const redisClient = CacheDBConnectionManager.getInstance().getConnection();
@@ -23,7 +19,8 @@ function setupSettingsExpress(app: Express) {
   // origin: CORS_URL for static env url
   // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
   app.set('env', NODE_ENV);
-  app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
+  // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
+  app.set('trust proxy', true);
   app.use(
     cors({
       origin: true,
@@ -52,6 +49,20 @@ function setupSettingsExpress(app: Express) {
   app.use(express.urlencoded({ limit: '100mb', extended: false }));
   app.set('x-powered-by', false);
 
+  let domain: string = CORS_URL;
+
+  // cut http-s prefix
+  if (/^https?:\/+/.test(CORS_URL)) {
+    domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
+  }
+
+  // cut subdomain
+  if (/^\w+\.\w+\.\w+$/.test(domain)) {
+    domain = domain.slice(domain.indexOf('.') + 1);
+  }
+
+  publishLog(ELOG_LEVEL.DEBUG, domain);
+
   app.use(
     session({
       store: new RedisStore({
@@ -65,9 +76,10 @@ function setupSettingsExpress(app: Express) {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,
         // secure: NODE_ENV === 'production' ? true : 'auto',
-        secure: false,
+        secure: true,
         // sameSite: NODE_ENV === 'production' ? 'lax' : 'none',
         sameSite: NODE_ENV === 'production' ? 'none' : 'none',
+        domain,
       },
     }),
   );
