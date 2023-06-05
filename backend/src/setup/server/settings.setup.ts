@@ -15,12 +15,16 @@ function setupSettingsExpress(app: Express) {
   const RedisStore = connectRedis(session);
   const redisClient = CacheDBConnectionManager.getInstance().getConnection();
 
+  app.use((req, res, next) => {
+    console.log(JSON.stringify(req.headers));
+    next();
+  });
   // origin: true for mirroring Front 'Origin' header back
   // origin: CORS_URL for static env url
   // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-  app.set('trust proxy', true);
+  app.set('trust proxy', 2);
   app.use(
     cors({
       origin: true,
@@ -101,6 +105,11 @@ function setupSettingsExpress(app: Express) {
       ip,
       url: req.url,
     });
+    next();
+  });
+
+  app.use((req, res, next) => {
+    console.log(JSON.stringify(req.headers));
     next();
   });
 
