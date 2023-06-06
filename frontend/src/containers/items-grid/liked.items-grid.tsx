@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import { memo, useMemo, useRef } from 'react';
 import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppSelector } from '../../hooks/redux';
@@ -14,7 +14,7 @@ const LikedContainer = () => {
   const modifiersList = useMemo(() => [], []);
 
   return (
-    <>
+    <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
       <ItemsGridComponentMemo
         gridRef={gridRef}
         title={'Your favourite items all in one place!'}
@@ -43,7 +43,7 @@ const LikedContainer = () => {
           </Text>
         </>
       )}
-    </>
+    </Flex>
   );
 };
 

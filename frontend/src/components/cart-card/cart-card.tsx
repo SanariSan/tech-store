@@ -84,8 +84,10 @@ const CartCardComponent: FC<TCartCardComponent> = ({
             objectFit={{ base: 'cover', sm: 'cover' }}
             backgroundColor={'transparent'}
             h={'100%'}
-            hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
-            lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
+            hSrc={hsrc}
+            lSrc={lsrc}
+            // hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
+            // lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
             // src={'http://localhost:80/api/v1/goods/assets/h/l3.jpg'}
             // fallbackSrc={'http://localhost:80/api/v1/goods/assets/l/l3.jpg'}
           />

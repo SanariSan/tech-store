@@ -89,7 +89,11 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
   }, [colorModeChangeStatus, overlayAnimationDuration]);
 
   useEffect(() => {
-    if (mountRenderCompleted.current && colorModeChangeStatus === 'ongoing') {
+    if (
+      process.env.NODE_ENV === 'development' &&
+      mountRenderCompleted.current &&
+      colorModeChangeStatus === 'ongoing'
+    ) {
       takeScreenshotCb();
     }
   }, [colorModeChangeStatus, takeScreenshotCb]);

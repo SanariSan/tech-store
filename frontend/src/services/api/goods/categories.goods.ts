@@ -1,3 +1,5 @@
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishError } from '../../../modules/access-layer/events/pubsub';
 import { request } from '../../request-base.services';
 import {
   GoodsCategoriesIncomingFailureDTO,
@@ -32,7 +34,7 @@ export async function getCategories({ abortSignal }: { abortSignal: AbortSignal 
   } catch (error) {
     // const text = (await response.clone().text()).slice(200);
     // throw new Error((error as Error).message);
-    console.error(error);
+    publishError(ELOG_LEVEL.DEBUG, error as Error);
     throw new Error('Internal error');
   }
 }

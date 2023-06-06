@@ -12,7 +12,7 @@ import saga from '../../../assets/redux-saga.webp';
 import redux from '../../../assets/redux.webp';
 import ts from '../../../assets/ts.webp';
 
-export const OPTIONS: ISourceOptions = {
+export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions => ({
   fullScreen: {
     enable: false,
     zIndex: 0,
@@ -75,9 +75,9 @@ export const OPTIONS: ISourceOptions = {
     number: {
       density: {
         enable: true,
-        area: 800,
+        area: isMobile ? 350 : 800,
       },
-      value: 12,
+      value: isMobile ? 15 : 12,
     },
     reduceDuplicates: true,
     opacity: {
@@ -129,4 +129,4 @@ export const OPTIONS: ISourceOptions = {
     },
   },
   detectRetina: true,
-};
+});

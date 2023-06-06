@@ -9,7 +9,7 @@ import {
   uiIsMobileSelector,
   uiSidebarStateSelector,
 } from '../../store';
-import { OPTIONS } from './options.home.const';
+import { getOptions } from './options.home.const';
 import { ParticlesContainerMemo } from '../particles';
 import { HomeMainContentComponentMemo } from '../../components/home/main-content.home';
 
@@ -32,9 +32,11 @@ const HomeContainer: FC<THomeComponent> = () => {
     [colorModeChangeStatus, throttledColorModeChangeStatus],
   );
 
+  const options = useMemo(() => getOptions({ isMobile }), [isMobile]);
+
   return (
     <Flex w={'100%'} h={'100%'} position={'relative'}>
-      <ParticlesContainerMemo options={OPTIONS} isPaused={isSidebarOpened || isThemeChanging} />
+      <ParticlesContainerMemo options={options} isPaused={isSidebarOpened || isThemeChanging} />
       <HomeMainContentComponentMemo isThemeChanging={isThemeChanging} />
     </Flex>
   );

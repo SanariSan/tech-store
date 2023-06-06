@@ -148,8 +148,10 @@ const GridCardComponent: FC<TGridCardComponent> = ({
           objectFit={{ base: 'cover', sm: 'cover' }}
           backgroundColor={'transparent'}
           h={'100%'}
-          hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
-          lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
+          hSrc={hsrc}
+          lSrc={lsrc}
+          // hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
+          // lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
           elRef={imgRef}
         />
         <Flex

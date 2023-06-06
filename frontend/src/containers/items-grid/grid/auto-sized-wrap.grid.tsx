@@ -35,15 +35,16 @@ const AutoSizedGridWrapContainer = ({
   forceRerenderFlag: boolean;
 }) => {
   const buffer = 25;
-  const minReasonableItemSize = useBreakpointValue(
-    {
-      base: 425 + buffer,
-      sm: 490 + buffer,
-    },
-    {
-      fallback: 'base',
-    },
-  ) as number;
+  const minReasonableItemSize =
+    useBreakpointValue(
+      {
+        base: 425 + buffer,
+        sm: 490 + buffer,
+      },
+      {
+        fallback: 'base',
+      },
+    ) ?? 425 + buffer;
   const w = useMemo(() => width, [width]);
   const h = useMemo(() => height, [height]);
   const colW = useMemo(() => w / columnCount, [w, columnCount]);
@@ -73,7 +74,11 @@ const AutoSizedGridWrapContainer = ({
       onScroll={onScrollCb}
       onItemsRendered={onItemsRenderedCb}
       ref={gridRef}
-      style={{ overscrollBehavior: 'contain' }}
+      style={{
+        overscrollBehavior: 'contain',
+        overflowY: 'scroll',
+        overflowX: w < 400 ? 'scroll' : 'hidden',
+      }}
       // most sane force rerendering 💀
       useIsScrolling={forceRerenderFlag}
     >

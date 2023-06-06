@@ -22,12 +22,13 @@ import {
   setHasMoreEntities,
   setTotalQty,
 } from '../../slices';
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishLog } from '../../../modules/access-layer/events/pubsub';
 
 function* entitiesWorker(action: { type: string }) {
   const abortController = new AbortController();
   try {
     yield put(setEntitiesLoadStatus({ status: 'loading' }));
-    // todo: remove in prod (?), showcase delay
     // yield delay(500);
 
     const [selectedCategory, selectedModifier, offset, offsetPerPage] = [
@@ -40,8 +41,6 @@ function* entitiesWorker(action: { type: string }) {
       (yield select(goodsOffsetSelector)) as number,
       (yield select(goodsOffsetPerPageSelector)) as number,
     ];
-
-    console.log({ selectedCategory, selectedModifier, offset, offsetPerPage });
 
     const validateStatus = (yield safe(
       call(validateDTO, {
@@ -69,7 +68,7 @@ function* entitiesWorker(action: { type: string }) {
       failure?: TGoodsEntitiesIncomingFailureFields;
     }>;
 
-    console.dir(fetchStatus);
+    publishLog(ELOG_LEVEL.DEBUG, fetchStatus);
 
     if (fetchStatus.error !== undefined) {
       yield put(

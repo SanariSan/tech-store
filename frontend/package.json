@@ -4,6 +4,7 @@
   "main": "./logic/index.js",
   "author": "SanariSan <SanariSan@users.noreply.github.com>",
   "license": "MIT",
+  "proxy": "https://test.nodejs.monster",
   "scripts": {
     "start": "node ./node_modules/cross-env/src/bin/cross-env.js REACT_APP_NODE_ENV=development react-app-rewired start",
     "startp": "node ./node_modules/cross-env/src/bin/cross-env.js REACT_APP_NODE_ENV=production react-app-rewired start",
@@ -31,6 +32,7 @@
     "buffer": "^6.0.3",
     "classnames": "^2.3.1",
     "cross-env": "^7.0.3",
+    "cross-fetch": "^3.1.6",
     "crypto-browserify": "^3.12.0",
     "customize-cra": "^1.0.0",
     "events": "^3.3.0",
@@ -38,7 +40,6 @@
     "framer-motion": "^10.11.6",
     "history": "^4.0.0",
     "html2canvas": "^1.4.1",
-    "isomorphic-fetch": "^3.0.0",
     "js-base64": "^3.7.2",
     "jsonwebtoken": "^8.5.1",
     "memoize-one": "^6.0.0",
@@ -74,7 +75,6 @@
   "devDependencies": {
     "@redux-devtools/core": "^3.13.1",
     "@types/classnames": "^2.3.1",
-    "@types/isomorphic-fetch": "^0.0.36",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node": "^16",
     "@types/node-sass": "^4.11.3",

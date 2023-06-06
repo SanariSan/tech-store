@@ -7,6 +7,8 @@ import type {
 } from '../../../services/api';
 import { getCategories } from '../../../services/api';
 import { fetchCategoriesAsync, setCategories, setCategoriesLoadStatus } from '../../slices';
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishLog } from '../../../modules/access-layer/events/pubsub';
 
 function* categoriesWorker(action: { type: string }) {
   const abortController = new AbortController();
@@ -20,7 +22,7 @@ function* categoriesWorker(action: { type: string }) {
       failure?: TGoodsCategoriesIncomingFailureFields;
     }>;
 
-    console.dir(fetchStatus);
+    publishLog(ELOG_LEVEL.DEBUG, fetchStatus);
 
     if (fetchStatus.error !== undefined) {
       yield put(

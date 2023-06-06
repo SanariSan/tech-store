@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+import fetch from 'cross-fetch';
 import { sleep } from '../helpers/util';
 import { DEFAULT_FETCH_HEADERS, DEFAULT_FETCH_OPTIONS } from './request-base.services.const';
 import type { IRequestOptions } from './request-base.services.type';
@@ -67,8 +67,8 @@ async function request({
   // for manually interrupting from outside
   abortSignal = new AbortController().signal,
 }: IRequestOptions) {
-  const requestInternal = (localAbortController: AbortController) =>
-    fetch(url, {
+  const requestInternal = (localAbortController: AbortController) => {
+    const options = {
       ...DEFAULT_FETCH_OPTIONS,
       ...fetchOtions,
       headers: {
@@ -78,7 +78,10 @@ async function request({
       signal: localAbortController.signal,
       method,
       body,
-    });
+    };
+
+    return fetch(url, options);
+  };
 
   let errorReturn: Error | undefined;
   let currentAttempt = 0;

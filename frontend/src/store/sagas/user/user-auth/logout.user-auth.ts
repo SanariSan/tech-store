@@ -7,6 +7,8 @@ import type {
 } from '../../../../services/api';
 import { logoutUser } from '../../../../services/api';
 import { logoutUserAsync, setUserAuthLoadStatus, setUserIsAuthenticated } from '../../../slices';
+import { ELOG_LEVEL } from '../../../../general.type';
+import { publishLog } from '../../../../modules/access-layer/events/pubsub';
 
 function* logoutUserWorker(action: { type: string }) {
   const abortController = new AbortController();
@@ -20,7 +22,7 @@ function* logoutUserWorker(action: { type: string }) {
       failure?: TAccessLogoutIncomingFailureFields;
     }>;
 
-    console.dir(fetchStatus);
+    publishLog(ELOG_LEVEL.DEBUG, fetchStatus);
 
     if (fetchStatus.error !== undefined) {
       yield put(

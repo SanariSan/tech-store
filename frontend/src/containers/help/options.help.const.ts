@@ -1,7 +1,7 @@
 import type { ISourceOptions } from 'tsparticles-engine';
 import q from '../../../assets/q.webp';
 
-export const OPTIONS: ISourceOptions = {
+export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions => ({
   fullScreen: {
     enable: false,
     zIndex: 0,
@@ -58,9 +58,9 @@ export const OPTIONS: ISourceOptions = {
     number: {
       density: {
         enable: true,
-        area: 800,
+        area: isMobile ? 300 : 800,
       },
-      value: 5,
+      value: isMobile ? 15 : 10,
     },
     reduceDuplicates: true,
     opacity: {
@@ -73,8 +73,8 @@ export const OPTIONS: ISourceOptions = {
       },
     },
     size: {
-      value: { min: 10, max: 16 },
+      value: { min: 12, max: 18 },
     },
   },
   detectRetina: true,
-};
+});

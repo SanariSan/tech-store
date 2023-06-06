@@ -15,7 +15,7 @@ import {
   uiIsMobileSelector,
   uiSidebarStateSelector,
 } from '../../store';
-import { OPTIONS } from './options.help.const';
+import { getOptions } from './options.help.const';
 import { ParticlesContainerMemo } from '../particles';
 
 type THelpComponent = {
@@ -40,9 +40,11 @@ const HelpComponent: FC<THelpComponent> = () => {
     [colorModeChangeStatus, throttledColorModeChangeStatus],
   );
 
+  const options = useMemo(() => getOptions({ isMobile }), [isMobile]);
+
   return (
     <Box w={'100%'} h={'100%'} position={'relative'}>
-      <ParticlesContainerMemo options={OPTIONS} isPaused={isSidebarOpened || isThemeChanging} />
+      <ParticlesContainerMemo options={options} isPaused={isSidebarOpened || isThemeChanging} />
       <Flex
         w={'100%'}
         h={'100%'}

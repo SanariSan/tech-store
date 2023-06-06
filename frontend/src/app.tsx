@@ -6,6 +6,7 @@ import { CartContainerMemo } from './containers/cart';
 import { DashboardContainerMemo } from './containers/dashboard';
 import {
   AuthenticatedAccessContainer,
+  DebugContainer,
   ErrorBoundaryGenericContainerMemo,
   LocationTrackerContainerMemo,
   ScreenDetailsTrackerContainerMemo,
@@ -47,29 +48,35 @@ const App: FC = () => {
         <LayoutContainer>
           <Switch>
             <Route exact path={'/'}>
-              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+              <AuthenticatedAccessContainer mustBe={'any'}>
                 <HomeContainerMemo />
-              </Flex>
+              </AuthenticatedAccessContainer>
             </Route>
             <Route exact path={'/catalogue'}>
-              <CatalogueContainerMemo />
+              <AuthenticatedAccessContainer mustBe={'any'}>
+                <CatalogueContainerMemo />
+              </AuthenticatedAccessContainer>
             </Route>
             <Route exact path={'/liked'}>
-              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+              <AuthenticatedAccessContainer mustBe={'any'}>
                 <LikedContainerMemo />
-              </Flex>
+              </AuthenticatedAccessContainer>
             </Route>
             <Route exact path={'/settings'}>
-              <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
-                settings
-              </Flex>
+              <AuthenticatedAccessContainer mustBe={'any'}>
+                <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
+                  settings
+                </Flex>
+              </AuthenticatedAccessContainer>
             </Route>
             <Route exact path={'/help'}>
-              <HelpComponentMemo />
+              <AuthenticatedAccessContainer mustBe={'any'}>
+                <HelpComponentMemo />
+              </AuthenticatedAccessContainer>
             </Route>
             <Route exact path="/login">
               <AuthenticatedAccessContainer
-                mustBeAuthenticated={false}
+                mustBe={'unauthenticated'}
                 redirectLocation={'/dashboard'}
               >
                 <LoginContainer />
@@ -77,14 +84,14 @@ const App: FC = () => {
             </Route>
             <Route exact path="/register">
               <AuthenticatedAccessContainer
-                mustBeAuthenticated={false}
+                mustBe={'unauthenticated'}
                 redirectLocation={'/dashboard'}
               >
                 <RegisterContainer />
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path="/dashboard">
-              <AuthenticatedAccessContainer mustBeAuthenticated={true} redirectLocation={'/login'}>
+              <AuthenticatedAccessContainer mustBe={'authenticated'} redirectLocation={'/login'}>
                 <DashboardContainerMemo />
               </AuthenticatedAccessContainer>
             </Route>

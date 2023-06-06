@@ -53,7 +53,8 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
         base: 1,
         lg: 2,
         xl: 3,
-        xxl: 4,
+        '2xl': 4,
+        '3xl': 5,
       },
       {
         fallback: 'base',
@@ -117,7 +118,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
 
   // fetch more on end reaching
   useEffect(() => {
-    if (!mountRenderCompleted.current) return;
+    if (process.env.NODE_ENV === 'development' && !mountRenderCompleted.current) return;
     if (!hasMoreEntities) return;
 
     const maxRows = rowCount;

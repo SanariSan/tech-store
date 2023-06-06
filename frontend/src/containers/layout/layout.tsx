@@ -58,7 +58,7 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         <NavbarComponent onSidebarToggle={sidebarToggleCb} />
       </GridItem>
 
-      <GridItem area={'main'} position={'relative'} w={'100%'} h={'100%'}>
+      <GridItem area={'main'} position={'relative'} w={'100%'} h={'100%'} overflowY={'scroll'}>
         <Box
           bg={bg}
           borderStyle={'dashed'}

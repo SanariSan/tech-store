@@ -14,6 +14,10 @@ const THEME = extendTheme({
     // Input,
     // InputGroup,
   },
+  breakpoints: {
+    '2xl': '1700px',
+    '3xl': '2100px',
+  },
   // https://github.com/chakra-ui/chakra-ui/discussions/6095
   styles: {
     global: {

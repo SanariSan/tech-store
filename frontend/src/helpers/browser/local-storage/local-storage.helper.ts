@@ -1,3 +1,5 @@
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishLog } from '../../../modules/access-layer/events/pubsub';
 import type { TLocalStorageKey } from './local-storage.helper.type';
 
 const getLSValue = (key: TLocalStorageKey, logging = false): string | undefined => {
@@ -7,7 +9,7 @@ const getLSValue = (key: TLocalStorageKey, logging = false): string | undefined 
   try {
     parsed = item !== null ? String(item) : undefined;
   } catch {
-    if (logging) console.warn('No key in local storage, please clear cookies and refresh');
+    if (logging) publishLog(ELOG_LEVEL.DEBUG, `No key (${key}) in local storage`);
   }
 
   return parsed;
