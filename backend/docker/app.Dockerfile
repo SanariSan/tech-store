@@ -29,7 +29,7 @@ CMD [ \
     "node", \
     "./node_modules/cross-env/src/bin/cross-env.js", \
     # vars coming from gh.secrets on deploy (or passed directly if launching locally)
-    "NODE_ENV=production", \
+    # "NODE_ENV=${NODE_ENV}", \
     "CORS_URL=${CORS_URL}", \
     "API_VERSION=${API_VERSION}", \
     "DB_USER=${DB_USER}", \

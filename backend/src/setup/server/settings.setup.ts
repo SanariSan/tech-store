@@ -24,7 +24,8 @@ function setupSettingsExpress(app: Express) {
   // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-  app.set('trust proxy', 1);
+  // todo: maybe switch 0/1 dev/prod?
+  app.set('trust proxy', 0);
   app.use(
     cors({
       origin: true,
@@ -79,10 +80,9 @@ function setupSettingsExpress(app: Express) {
       cookie: {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        // secure: NODE_ENV === 'production' ? true : 'auto',
-        secure: true,
+        secure: NODE_ENV === 'production',
         // sameSite: NODE_ENV === 'production' ? 'lax' : 'none',
-        sameSite: NODE_ENV === 'production' ? 'none' : 'none',
+        sameSite: NODE_ENV === 'production' ? 'lax' : 'none',
         domain,
       },
     }),
