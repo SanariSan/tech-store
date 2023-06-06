@@ -10,15 +10,16 @@ import { publishLog } from '../../modules/access-layer/events/pubsub';
 import { ELOG_LEVEL } from '../../general.type';
 
 function setupSettingsExpress(app: Express) {
-  const { CORS_URL, NODE_ENV, COOKIE_SECRET } = process.env;
+  const { NODE_ENV, COOKIE_SECRET } = process.env;
 
   const RedisStore = connectRedis(session);
   const redisClient = CacheDBConnectionManager.getInstance().getConnection();
 
-  app.use((req, res, next) => {
-    console.log(JSON.stringify(req.headers));
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   console.log(JSON.stringify(req.headers));
+  //   next();
+  // });
+
   // origin: true for mirroring Front 'Origin' header back
   // origin: CORS_URL for static env url
   // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
@@ -54,19 +55,19 @@ function setupSettingsExpress(app: Express) {
   app.use(express.urlencoded({ limit: '100mb', extended: false }));
   app.set('x-powered-by', false);
 
-  let domain: string = CORS_URL;
+  // let domain: string = CORS_URL;
 
   // cut http-s prefix
-  if (/^https?:\/+/.test(CORS_URL)) {
-    domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
-  }
+  // if (/^https?:\/+/.test(CORS_URL)) {
+  //   domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
+  // }
 
   // cut subdomain
-  if (/^\w+\.\w+\.\w+$/.test(domain)) {
-    domain = domain.slice(domain.indexOf('.') + 1);
-  }
+  // if (/^\w+\.\w+\.\w+$/.test(domain)) {
+  //   domain = domain.slice(domain.indexOf('.') + 1);
+  // }
 
-  publishLog(ELOG_LEVEL.DEBUG, domain);
+  // publishLog(ELOG_LEVEL.DEBUG, domain);
 
   app.use(
     session({
@@ -82,8 +83,8 @@ function setupSettingsExpress(app: Express) {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         secure: NODE_ENV === 'production',
         // sameSite: NODE_ENV === 'production' ? 'lax' : 'none',
-        sameSite: NODE_ENV === 'production' ? 'lax' : 'none',
-        domain,
+        sameSite: NODE_ENV === 'production' ? 'none' : 'none',
+        // domain,
       },
     }),
   );
@@ -105,11 +106,6 @@ function setupSettingsExpress(app: Express) {
       ip,
       url: req.url,
     });
-    next();
-  });
-
-  app.use((req, res, next) => {
-    console.log(JSON.stringify(req.headers));
     next();
   });
 
