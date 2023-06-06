@@ -16,6 +16,7 @@ export function setupValidateEnv() {
     CACHE_HOST,
     CACHE_PORT,
     CACHE_PASSWORD,
+    DEV_TAG,
     // BUILD_PATH,
     // DEFAULT_SOCKS_URL,
   } = process.env as Partial<typeof process.env>;
@@ -81,6 +82,8 @@ export function setupValidateEnv() {
       });
     case CACHE_PASSWORD === undefined:
       throw new NoEnvValueError({ message: 'CACHE_PASSWORD' });
+    case DEV_TAG === undefined:
+      throw new NoEnvValueError({ message: 'DEV_TAG' });
     // case DEFAULT_SOCKS_URL === undefined: throw new NoEnvValueError('DEFAULT_SOCKS_URL');
     // case !/^socks:\/{2}(?:\d{1,3}.){3}\d{1,3}:\d{1,5}$/.test(DEFAULT_SOCKS_URL): throw new ValueTypeError('DEFAULT_SOCKS_URL', {
     //   expectedValue: 'socks://xxx.yyy.xxx.yyy:xxxxx',

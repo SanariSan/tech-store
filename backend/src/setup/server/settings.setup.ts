@@ -10,7 +10,7 @@ import { publishLog } from '../../modules/access-layer/events/pubsub';
 import { ELOG_LEVEL } from '../../general.type';
 
 function setupSettingsExpress(app: Express) {
-  const { NODE_ENV, COOKIE_SECRET } = process.env;
+  const { CORS_URL, DEV_TAG, NODE_ENV, COOKIE_SECRET } = process.env;
 
   const RedisStore = connectRedis(session);
   const redisClient = CacheDBConnectionManager.getInstance().getConnection();
@@ -55,40 +55,59 @@ function setupSettingsExpress(app: Express) {
   app.use(express.urlencoded({ limit: '100mb', extended: false }));
   app.set('x-powered-by', false);
 
-  // let domain: string = CORS_URL;
+  // todo: this seems to be not safe, find better way
+  let domain: string = CORS_URL;
 
   // cut http-s prefix
-  // if (/^https?:\/+/.test(CORS_URL)) {
-  //   domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
-  // }
+  if (/^https?:\/+/.test(CORS_URL)) {
+    domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
+  }
 
   // cut subdomain
-  // if (/^\w+\.\w+\.\w+$/.test(domain)) {
-  //   domain = domain.slice(domain.indexOf('.') + 1);
-  // }
+  if (/^\w+\.\w+\.\w+$/.test(domain)) {
+    domain = domain.slice(domain.indexOf('.') + 1);
+  }
 
-  // publishLog(ELOG_LEVEL.DEBUG, domain);
-
-  app.use(
-    session({
-      store: new RedisStore({
-        client: redisClient,
-      }),
-      secret: COOKIE_SECRET,
-      name: 'sid',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        secure: NODE_ENV === 'production',
-        // sameSite: NODE_ENV === 'production' ? 'lax' : 'none',
-        sameSite: NODE_ENV === 'production' ? 'none' : 'none',
-        // domain,
-      },
+  const devSession = session({
+    store: new RedisStore({
+      client: redisClient,
     }),
-  );
+    secret: COOKIE_SECRET,
+    name: 'dev_ts_sid',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      secure: false,
+      sameSite: 'none',
+    },
+  });
 
+  const prodSession = session({
+    store: new RedisStore({
+      client: redisClient,
+    }),
+    secret: COOKIE_SECRET,
+    name: 'ts_sid',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      secure: true,
+      sameSite: 'lax',
+    },
+  });
+
+  // conditional session handler based on header with secret
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const devTag = req.header('x-dev-tag');
+    if (devTag !== undefined && devTag === DEV_TAG) devSession(req, res, next);
+    else prodSession(req, res, next);
+  });
+
+  // track ip
   app.use((req: Request, res: Response, next: NextFunction) => {
     const xRealIp = req.headers['x-real-ip'];
     const xForwardedFor = req.headers['x-forwarded-for'];

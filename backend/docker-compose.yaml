@@ -140,6 +140,7 @@ services:
       DB_PASSWORD: '${DB_PASSWORD}'
       COOKIE_SECRET: '${COOKIE_SECRET}'
       CACHE_PASSWORD: '${CACHE_PASSWORD}'
+      DEV_TAG: '${DEV_TAG}'
       NETWORK_ACCESS: 'internal'
     # deploy:
     #   mode: replicated
