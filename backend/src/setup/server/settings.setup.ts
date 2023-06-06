@@ -24,7 +24,7 @@ function setupSettingsExpress(app: Express) {
   // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-  app.set('trust proxy', 2);
+  app.set('trust proxy', 1);
   app.use(
     cors({
       origin: true,
