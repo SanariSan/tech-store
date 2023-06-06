@@ -68,7 +68,6 @@ type TFancyThemeSwitchContainer = {
 };
 const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotTargetRef }) => {
   const d = useAppDispatch();
-  const mountRenderCompleted = useRef(false);
   const { image, takeScreenshot } = useScreenshot({ type: 'image/png' });
   const [imageLocal, setImageLocal] = useState<string | null>(null);
   const { toggleColorMode } = useColorMode();
@@ -139,11 +138,7 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
   }, [colorModeChangeStatus, overlayAnimationDuration]);
 
   useEffect(() => {
-    if (
-      process.env.NODE_ENV === 'development' &&
-      mountRenderCompleted.current &&
-      colorModeChangeStatus === 'ongoing'
-    ) {
+    if (colorModeChangeStatus === 'ongoing') {
       takeScreenshotCb();
     }
   }, [colorModeChangeStatus, takeScreenshotCb]);
@@ -166,14 +161,6 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
       }, overlayAnimationDuration);
     }
   }, [imageLocal, overlayAnimationDuration, d, toggleColorMode]);
-
-  useEffect(() => {
-    if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
-
-    return () => {
-      mountRenderCompleted.current = false;
-    };
-  }, []);
 
   return (
     <FancyThemeSwitchComponentMemo
