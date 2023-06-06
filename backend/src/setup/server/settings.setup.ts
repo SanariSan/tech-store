@@ -25,7 +25,7 @@ function setupSettingsExpress(app: Express) {
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
   // todo: maybe switch 0/1 dev/prod?
-  app.set('trust proxy', 0);
+  app.set('trust proxy', 1);
   app.use(
     cors({
       origin: true,
