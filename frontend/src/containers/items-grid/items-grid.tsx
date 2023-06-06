@@ -4,8 +4,8 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useThrottledState } from '../../hooks/use-throttled-state';
 import {
-  goodsHasMoreEntitiesSelector,
   goodsOffsetPerPageSelector,
   pushCartEntity,
   pushLikedEntity,
@@ -18,21 +18,19 @@ import { ModifiersContainer } from '../modifiers';
 import { AutoSizedGridWrapContainerMemo } from './grid';
 import type { TItemsGridContainerProps } from './items-grid.type';
 import { createItemData } from './memoize.items-grid';
-import { useThrottledState } from '../../hooks/use-throttled-state';
 
 const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   title,
   breadcrumbList,
   modifiersList,
   entitiesList,
+  hasMoreEntities,
   onEntitiesEndReachCb,
   gridRef,
-  variant,
 }) => {
   const d = useAppDispatch();
   const isMobile = useAppSelector(uiIsMobileSelector);
   const chunkSize = useAppSelector(goodsOffsetPerPageSelector);
-  const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
   const throttledColorModeChangeStatus = useThrottledState({
@@ -63,11 +61,9 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const rowsPerChunk = useMemo(() => Math.ceil(chunkSize / columnCount), [chunkSize, columnCount]);
   const getRowCountCb = useCallback(
     () =>
-      variant === 'infinite'
-        ? Math.floor(entitiesRef.current.length / columnCount) +
-          (hasMoreEntities ? rowsPerChunk : 0)
-        : Math.ceil(entitiesRef.current.length / columnCount),
-    [columnCount, variant, rowsPerChunk, hasMoreEntities],
+      // rought rows amount (+) buffer rows for placeholders if hasMoreEntities
+      Math.ceil(entitiesRef.current.length / columnCount) + (hasMoreEntities ? rowsPerChunk : 0),
+    [columnCount, rowsPerChunk, hasMoreEntities],
   );
   const [rowCount, setRowCount] = useState(() => getRowCountCb());
 
@@ -169,7 +165,7 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     onDislikeCb,
     onBuyCb,
     isThemeChanging,
-    variant,
+    hasMoreEntities,
   );
 
   return (

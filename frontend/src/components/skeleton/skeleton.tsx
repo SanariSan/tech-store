@@ -15,7 +15,7 @@ const SkeletonPlaceholderComponent: FC<TSkeleton> = ({ isLoading }) => {
 
   return (
     <Skeleton
-      minW={{ base: '250px', sm: '400px' }}
+      minW={{ base: '230px', sm: '330px' }}
       maxW={{ base: '230px', sm: '450px' }}
       minH={{ base: '350px', sm: '475px' }}
       w={'100%'}

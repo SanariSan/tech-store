@@ -16,16 +16,15 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import logo from '../../../assets/logo.png';
 import pfp from '../../../assets/pfp.webp';
 import { COLORS } from '../../chakra-setup';
 import { changeRoute } from '../../containers/functional';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
-  goodsCartEntitiesSelector,
   guideHasTriedOpeningCartSelector,
+  guideHasTriedPuttingEntitesToCartSelector,
   guideHasTriedThemeChangeSelector,
   initiateColorModeChangeUi,
   setHasTriedOpeningCart,
@@ -42,15 +41,14 @@ interface INavbarComponent {
   onSidebarToggle: () => void;
 }
 
-export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
+const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
   const d = useAppDispatch();
-  const { pathname } = useLocation();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
   const { colorMode } = useColorMode();
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const hasTriedThemeChange = useAppSelector(guideHasTriedThemeChangeSelector);
   const hasTriedOpeningCart = useAppSelector(guideHasTriedOpeningCartSelector);
-  const cartEntities = useAppSelector(goodsCartEntitiesSelector);
+  const hasTriedPuttingEntitesToCart = useAppSelector(guideHasTriedPuttingEntitesToCartSelector);
   const isCartOpened = useAppSelector(uiCartStateSelector);
   const [inactive, secondaryAlt, secondary, hoverColor, impact, border, inputHover] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
@@ -96,17 +94,8 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
   }, [d, toggleToolbarCb]);
 
   const profileClickCb = useCallback(() => {
-    switch (pathname) {
-      case '/login':
-        changeRoute('/register');
-        break;
-      case '/register':
-        changeRoute('/login');
-        break;
-      default:
-        changeRoute('/login');
-    }
-  }, [pathname]);
+    changeRoute('/login');
+  }, []);
 
   const onAvatarClickCb = useBreakpointValue(
     {
@@ -133,7 +122,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
       py={4}
       gap={{ base: 4, sm: 6 }}
       px={6}
-      overflowX={'hidden'}
+      overflow={'hidden'}
     >
       <Image
         src={logo}
@@ -217,7 +206,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
               currentTheme={colorMode}
               hasTriedThemeChange={hasTriedThemeChange}
               hasTriedOpeningCart={hasTriedOpeningCart}
-              isCartEmpty={cartEntities.length === 0}
+              hasTriedPuttingEntitesToCart={hasTriedPuttingEntitesToCart}
               isCartOpened={isCartOpened}
               onThemeToggle={onThemeToggleCb}
               onProfileClick={profileClickCb}
@@ -231,7 +220,7 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
             currentTheme={colorMode}
             hasTriedThemeChange={hasTriedThemeChange}
             hasTriedOpeningCart={hasTriedOpeningCart}
-            isCartEmpty={cartEntities.length === 0}
+            hasTriedPuttingEntitesToCart={hasTriedPuttingEntitesToCart}
             isCartOpened={isCartOpened}
             onThemeToggle={onThemeToggleCb}
             onProfileClick={profileClickCb}
@@ -266,3 +255,5 @@ export const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle })
     </Flex>
   );
 };
+
+export const NavbarComponentMemo = memo(NavbarComponent);

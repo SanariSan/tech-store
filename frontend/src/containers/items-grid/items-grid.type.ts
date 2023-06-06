@@ -9,9 +9,9 @@ type TItemsGridContainerProps = {
   breadcrumbList: Parameters<typeof BreadcrumbComponentMemo>['0']['list'];
   modifiersList: Parameters<typeof ModifiersContainer>['0']['list'];
   entitiesList: TEntities;
+  hasMoreEntities: boolean;
   onEntitiesEndReachCb?: () => void;
   gridRef: MutableRefObject<Grid | null>;
-  variant: 'infinite' | 'static';
 };
 
 export type { TItemsGridContainerProps };

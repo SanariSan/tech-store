@@ -13,6 +13,56 @@ import {
   uiScreenDetailsSelector,
 } from '../../store';
 
+type TFancyThemeSwitchComponent = {
+  isVisible: boolean;
+  bg: string | undefined;
+  colorModeChangeStatus: ReturnType<typeof uiColorModeChangeStatusSelector>;
+  colorModeChangeStatusProxy: ReturnType<typeof uiColorModeChangeStatusSelector>;
+  animation: string;
+};
+
+const FancyThemeSwitchComponent: FC<TFancyThemeSwitchComponent> = ({
+  colorModeChangeStatus,
+  colorModeChangeStatusProxy,
+  bg,
+  isVisible,
+  animation,
+}) => (
+  <>
+    {colorModeChangeStatus === 'ongoing' ||
+      (colorModeChangeStatusProxy === 'ongoing' && (
+        // overlay Box will stay until animation is fully done
+        // prevents user from interrupting anything
+        <Box
+          position={'absolute'}
+          zIndex={999_999}
+          w={'100%'}
+          h={'100%'}
+          left={0}
+          top={0}
+          background={'transparent'}
+        />
+      ))}
+    {isVisible && (
+      <Image
+        as={motion.img}
+        position={'absolute'}
+        zIndex={999_999}
+        w={'100%'}
+        h={'100%'}
+        backgroundImage={bg}
+        left={0}
+        top={0}
+        transform={'perspective(500px) translateX(1px) translateY(1px) translateZ(1px)'}
+        opacity={0}
+        animation={animation}
+      />
+    )}
+  </>
+);
+
+const FancyThemeSwitchComponentMemo = memo(FancyThemeSwitchComponent);
+
 type TFancyThemeSwitchContainer = {
   screenshotTargetRef: MutableRefObject<HTMLElement | null>;
 };
@@ -126,36 +176,13 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
   }, []);
 
   return (
-    <>
-      {colorModeChangeStatus === 'ongoing' ||
-        (colorModeChangeStatusProxy === 'ongoing' && (
-          // overlay Box will stay until animation is fully done
-          // prevents user from interrupting anything
-          <Box
-            position={'absolute'}
-            zIndex={999_999}
-            w={'100%'}
-            h={'100%'}
-            left={0}
-            top={0}
-            background={'transparent'}
-          />
-        ))}
-      <Image
-        as={motion.image}
-        position={'absolute'}
-        zIndex={999_999}
-        w={'100%'}
-        h={'100%'}
-        backgroundImage={imageLocal !== null ? image : undefined}
-        left={0}
-        top={0}
-        transform={'perspective(500px) translateX(1px) translateY(1px) translateZ(1px)'}
-        opacity={0}
-        animation={animation}
-        display={imageLocal !== null ? 'block' : 'none'}
-      />
-    </>
+    <FancyThemeSwitchComponentMemo
+      isVisible={imageLocal !== null}
+      bg={imageLocal !== null ? image : undefined}
+      colorModeChangeStatus={colorModeChangeStatus}
+      colorModeChangeStatusProxy={colorModeChangeStatusProxy}
+      animation={animation}
+    />
   );
 };
 

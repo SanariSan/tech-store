@@ -9,12 +9,14 @@ import {
   goodsSelectedModifierSelector,
   uiSelectedCategoryRouteBreadcrumbFormattedSelector,
   uiSelectedSectionSelector,
+  goodsHasMoreEntitiesSelector,
 } from '../../store';
 import { ItemsGridComponentMemo } from './items-grid';
 
 const CatalogueContainer = () => {
   const d = useAppDispatch();
   const entities = useAppSelector(goodsEntitiesSelector);
+  const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
   const loadingStatus = useAppSelector(goodsEntitiesLoadingStatusSelector);
 
   const selectedSection = useAppSelector(uiSelectedSectionSelector);
@@ -61,9 +63,9 @@ const CatalogueContainer = () => {
       breadcrumbList={breadcrumbList}
       modifiersList={modifiersList}
       entitiesList={entities}
+      hasMoreEntities={hasMoreEntities}
       onEntitiesEndReachCb={onEntitiesEndReachCb}
       gridRef={gridRef}
-      variant="infinite"
     />
   );
 };

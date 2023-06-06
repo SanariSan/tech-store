@@ -7,6 +7,7 @@ import { ItemsGridComponentMemo } from './items-grid';
 
 const LikedContainer = () => {
   const entities = useAppSelector(goodsLikedEntitiesSelector);
+
   const selectedSection = useAppSelector(uiSelectedSectionSelector);
   const gridRef = useRef<Grid | null>(null);
 
@@ -21,7 +22,7 @@ const LikedContainer = () => {
         breadcrumbList={breadcrumbList}
         modifiersList={modifiersList}
         entitiesList={entities}
-        variant="static"
+        hasMoreEntities={false}
       />
       {entities.length <= 0 && (
         <>

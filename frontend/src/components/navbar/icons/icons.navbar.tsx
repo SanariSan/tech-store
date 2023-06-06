@@ -16,7 +16,7 @@ const NavbarIconsContainer: FC<{
   currentTheme: ColorMode;
   hasTriedThemeChange: boolean;
   hasTriedOpeningCart: boolean;
-  isCartEmpty: boolean;
+  hasTriedPuttingEntitesToCart: boolean;
   isCartOpened: boolean;
   onCartToggle: () => void;
   onThemeToggle: () => void;
@@ -27,7 +27,7 @@ const NavbarIconsContainer: FC<{
   currentTheme,
   hasTriedThemeChange,
   hasTriedOpeningCart,
-  isCartEmpty,
+  hasTriedPuttingEntitesToCart,
   isCartOpened,
   onCartToggle,
   onThemeToggle,
@@ -76,8 +76,14 @@ const NavbarIconsContainer: FC<{
 
   const cartTooltipIsOpened =
     useBreakpointValue({
-      base: !hasTriedOpeningCart && appearDelayExpired && isOpened && !isCartEmpty && !isCartOpened,
-      md: !hasTriedOpeningCart && appearDelayExpired && !isCartEmpty && !isCartOpened,
+      base:
+        hasTriedPuttingEntitesToCart &&
+        !hasTriedOpeningCart &&
+        appearDelayExpired &&
+        isOpened &&
+        !isCartOpened,
+      md:
+        hasTriedPuttingEntitesToCart && !hasTriedOpeningCart && appearDelayExpired && !isCartOpened,
     }) ?? false;
 
   const updateIconsCoordsCb = useCallback(() => {

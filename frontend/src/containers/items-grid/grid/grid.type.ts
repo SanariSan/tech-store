@@ -8,5 +8,5 @@ export type TItemData = {
   onDislikeCb: ({ id }: { id: string }) => void;
   onBuyCb: ({ id }: { id: string }) => void;
   isThemeChanging: boolean;
-  variant: 'infinite' | 'static';
+  hasMoreEntities: boolean;
 };

@@ -8,18 +8,33 @@ const guideSlice = createSlice({
   initialState: GUIDE_INIT_STATE,
   reducers: {
     setHasTriedThemeChange(state, action: { payload: boolean }) {
-      state.hasTriedThemeChange = action.payload;
+      if (state.hasTriedThemeChange !== action.payload) state.hasTriedThemeChange = action.payload;
     },
     setHasTriedOpeningCart(state, action: { payload: boolean }) {
-      state.hasTriedOpeningCart = action.payload;
+      if (state.hasTriedOpeningCart !== action.payload) state.hasTriedOpeningCart = action.payload;
+    },
+    setHasTriedPuttingEntitesToCart(state, action: { payload: boolean }) {
+      if (state.hasTriedPuttingEntitesToCart !== action.payload)
+        state.hasTriedPuttingEntitesToCart = action.payload;
     },
     setHasTriedAuth(state, action: { payload: boolean }) {
-      state.hasTriedAuth = action.payload;
+      if (state.hasTriedAuth !== action.payload) state.hasTriedAuth = action.payload;
     },
   },
 });
 
 const guide = guideSlice.reducer;
-const { setHasTriedThemeChange, setHasTriedOpeningCart, setHasTriedAuth } = guideSlice.actions;
+const {
+  setHasTriedThemeChange,
+  setHasTriedOpeningCart,
+  setHasTriedPuttingEntitesToCart,
+  setHasTriedAuth,
+} = guideSlice.actions;
 
-export { guide, setHasTriedThemeChange, setHasTriedOpeningCart, setHasTriedAuth };
+export {
+  guide,
+  setHasTriedThemeChange,
+  setHasTriedOpeningCart,
+  setHasTriedPuttingEntitesToCart,
+  setHasTriedAuth,
+};

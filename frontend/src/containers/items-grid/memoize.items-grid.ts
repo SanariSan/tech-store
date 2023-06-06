@@ -8,7 +8,7 @@ type TItemDataMemo = (
   onDislikeCb: TItemData['onDislikeCb'],
   onBuyCb: TItemData['onBuyCb'],
   isThemeChanging: TItemData['isThemeChanging'],
-  variant: TItemData['variant'],
+  hasMoreEntities: TItemData['hasMoreEntities'],
 ) => {
   entitiesList: TItemData['entitiesList'];
   columnCount: TItemData['columnCount'];
@@ -16,18 +16,26 @@ type TItemDataMemo = (
   onDislikeCb: TItemData['onDislikeCb'];
   onBuyCb: TItemData['onBuyCb'];
   isThemeChanging: TItemData['isThemeChanging'];
-  variant: TItemData['variant'];
+  hasMoreEntities: TItemData['hasMoreEntities'];
 };
 
 const createItemData = memoizeOne<TItemDataMemo>(
-  (entitiesList, columnCount, onLikeCb, onDislikeCb, onBuyCb, isThemeChanging, variant) => ({
+  (
     entitiesList,
     columnCount,
     onLikeCb,
     onDislikeCb,
     onBuyCb,
     isThemeChanging,
-    variant,
+    hasMoreEntities,
+  ) => ({
+    entitiesList,
+    columnCount,
+    onLikeCb,
+    onDislikeCb,
+    onBuyCb,
+    isThemeChanging,
+    hasMoreEntities,
   }),
 );
 

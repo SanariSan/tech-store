@@ -4,6 +4,8 @@ import type { TSidebarTemplateEntity } from '../../../const/const.type';
 import { uiPathnameSelector } from '../../selectors';
 import {
   fetchMoreEntitiesAsync,
+  pushCartEntity,
+  setHasTriedPuttingEntitesToCart,
   setPathnameUi,
   setSelectedCategoryIdx,
   setSelectedModifierIdx,
@@ -29,9 +31,14 @@ function* fetchOnParamsChangeWorker(action: { type: string }) {
   yield put(fetchMoreEntitiesAsync());
 }
 
+function* switchGuideHasTriedPuttingEntitesToCartWorker(action: { type: string }) {
+  yield put(setHasTriedPuttingEntitesToCart(true));
+}
+
 function* sideChainWatcher() {
   yield takeLatest([setPathnameUi], deriveSelectedSectionFromPathnameWorker);
   yield takeLatest([setSelectedCategoryIdx, setSelectedModifierIdx], fetchOnParamsChangeWorker);
+  yield takeLatest([pushCartEntity], switchGuideHasTriedPuttingEntitesToCartWorker);
 }
 
 export { sideChainWatcher };

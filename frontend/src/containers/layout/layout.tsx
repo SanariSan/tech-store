@@ -2,7 +2,7 @@ import { Box, Grid, GridItem, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useCallback, useState } from 'react';
 import { COLORS } from '../../chakra-setup';
-import { NavbarComponent } from '../../components/navbar';
+import { NavbarComponentMemo } from '../../components/navbar';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { setIsSidebarOpenedUi, uiSidebarStateSelector } from '../../store';
 import { DimmerContainerMemo } from '../dimmer';
@@ -55,10 +55,17 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
         borderRight={'none'}
         borderTop={'none'}
       >
-        <NavbarComponent onSidebarToggle={sidebarToggleCb} />
+        <NavbarComponentMemo onSidebarToggle={sidebarToggleCb} />
       </GridItem>
 
-      <GridItem area={'main'} position={'relative'} w={'100%'} h={'100%'} overflowY={'scroll'}>
+      <GridItem
+        area={'main'}
+        position={'relative'}
+        w={'100%'}
+        h={'100%'}
+        overflowY={'auto'}
+        overflowX={'hidden'}
+      >
         <Box
           bg={bg}
           borderStyle={'dashed'}
@@ -67,8 +74,8 @@ const LayoutContainer: FC<TLayout> = ({ children }) => {
           borderLeft={'none'}
           borderTop={'none'}
           borderBottom={'none'}
-          // chrome places visible scrollbar on pc even when no overflow, so mobile only
-          overflowY={{ base: 'scroll', lg: 'hidden' }}
+          overflowY={'auto'}
+          overflowX={'hidden'}
           position={'absolute'}
           w={{
             base: isSidebarOpened ? '200px' : '72px',

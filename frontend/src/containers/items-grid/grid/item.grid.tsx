@@ -28,29 +28,27 @@ const ItemContainer = ({
   style: CSSProperties;
   data: TItemData;
 }) => {
-  const { entitiesList, columnCount, isThemeChanging, onBuyCb, onDislikeCb, onLikeCb, variant } =
-    data;
+  const {
+    entitiesList,
+    columnCount,
+    isThemeChanging,
+    hasMoreEntities,
+    onBuyCb,
+    onDislikeCb,
+    onLikeCb,
+  } = data;
   const idx = getRelativeIdx({ rowIndex, columnIndex, columnCount });
   const entity = entitiesList.current[idx] as TEntities[number] | undefined;
 
-  // prevent placeholders showing in liked section
+  // infinite catalogue/liked
   let content;
-  if (variant === 'infinite') {
-    content =
-      entity === undefined || isThemeChanging ? (
-        <SkeletonPlaceholderComponentMemo isLoading={true} />
-      ) : (
-        <GridCardComponentMemo
-          onLike={onLikeCb}
-          onDislike={onDislikeCb}
-          onBuy={onBuyCb}
-          {...entity}
-        />
-      );
+
+  if (isThemeChanging) {
+    content = <SkeletonPlaceholderComponentMemo isLoading={true} />;
+  } else if (entity === undefined) {
+    content = hasMoreEntities ? <SkeletonPlaceholderComponentMemo isLoading={true} /> : null;
   } else {
-    content = isThemeChanging ? (
-      <SkeletonPlaceholderComponentMemo isLoading={true} />
-    ) : entity === undefined ? null : (
+    content = (
       <GridCardComponentMemo
         onLike={onLikeCb}
         onDislike={onDislikeCb}
@@ -61,7 +59,18 @@ const ItemContainer = ({
   }
 
   return (
-    <Flex justifyContent={'center'} alignItems={'center'} px={8} key={`${idx}`} style={style}>
+    <Flex
+      justifyContent={'center'}
+      alignItems={'center'}
+      key={`${idx}`}
+      style={{
+        ...style,
+        // absolute offset based on current cell position
+        left: columnIndex * ((style.width as number) + 25) + 25,
+        // min cell width is min grid card width + buffer to not clip into screen side
+        width: Math.max((style.width as number) - 50, 230 + 25),
+      }}
+    >
       {content}
     </Flex>
   );
