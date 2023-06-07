@@ -79,8 +79,9 @@ function setupSettingsExpress(app: Express) {
     cookie: {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      secure: false,
-      sameSite: 'none',
+      sameSite: 'lax',
+      // secure: false,
+      // sameSite: 'none',
     },
   });
 
