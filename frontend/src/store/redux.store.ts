@@ -66,6 +66,7 @@ const Store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }).concat(sagaMiddleware),
+  devTools: process.env.REACT_APP_NODE_ENV === 'development',
   /* eslint-enable unicorn/prefer-spread */
 });
 
