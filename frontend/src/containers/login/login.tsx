@@ -1,17 +1,22 @@
 import type { FormikHelpers } from 'formik';
 import { Formik } from 'formik';
 import type { FC } from 'react';
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { LoginComponent } from '../../components/login';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { loginUserAsync, userAuthLoadingStatusSelector } from '../../store';
-import { FormSubmitControlContainer } from '../form-submit-control';
+import { FormControlContainerMemo } from '../form-control';
 import type { TLoginFormValues } from './login.const';
-import { INITIAL_VALUES, VALIDATION_SCHEMA } from './login.const';
+import { VALIDATION_SCHEMA } from './login.const';
 
 const LoginContainer: FC = () => {
   const userAuthLoadingState = useAppSelector(userAuthLoadingStatusSelector);
   const dispatch = useAppDispatch();
+
+  const [formValues] = useState<TLoginFormValues>({
+    username: '',
+    password: '',
+  });
 
   const onSubmit = useCallback(
     (values: TLoginFormValues, actions: FormikHelpers<TLoginFormValues>) => {
@@ -21,11 +26,11 @@ const LoginContainer: FC = () => {
   );
 
   return (
-    <Formik initialValues={INITIAL_VALUES} validationSchema={VALIDATION_SCHEMA} onSubmit={onSubmit}>
+    <Formik initialValues={formValues} validationSchema={VALIDATION_SCHEMA} onSubmit={onSubmit}>
       {(formikConfig) => (
         <>
           <LoginComponent isLoading={userAuthLoadingState === 'loading'} {...formikConfig} />
-          <FormSubmitControlContainer isLoading={userAuthLoadingState === 'loading'} />
+          <FormControlContainerMemo isLoading={userAuthLoadingState === 'loading'} />
         </>
       )}
     </Formik>

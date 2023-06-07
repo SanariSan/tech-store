@@ -18,12 +18,12 @@ const VALIDATION_SCHEMA = object({
 
 type TRegisterFormValues = InferType<typeof VALIDATION_SCHEMA>;
 
-const INITIAL_VALUES: TRegisterFormValues = {
-  email: '0a8046d4d@gmail.com',
-  username: '0a8046d4d',
-  password: 'pwd123456',
-  passwordRe: 'pwd123456',
-};
+// const INITIAL_VALUES: TRegisterFormValues = {
+//   email: '0a8046d4d@gmail.com',
+//   username: '0a8046d4d',
+//   password: 'pwd123456',
+//   passwordRe: 'pwd123456',
+// };
 
 export type { TRegisterFormValues };
-export { VALIDATION_SCHEMA, INITIAL_VALUES };
+export { VALIDATION_SCHEMA };

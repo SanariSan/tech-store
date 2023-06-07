@@ -1,21 +1,20 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { useMemo, Fragment, memo, useCallback, useEffect, useState } from 'react';
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { SidebarCategoryEntityMemo, SidebarSectionEntityMemo } from '../../components/sidebar';
 import { SIDEBAR_TEMPLATE } from '../../const';
+import { sleep } from '../../helpers/util';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchCategoriesAsync,
   goodsCategoriesLoadingStatusSelector,
   goodsCategoriesSelector,
-  goodsEntitiesLoadingStatusSelector,
   goodsSelectedCategoryIdxSelector,
   setSelectedCategoryIdx,
   uiSelectedSectionIdxSelector,
   uiSidebarStateSelector,
 } from '../../store';
 import { changeRoute } from '../functional';
-import { sleep } from '../../helpers/util';
 
 interface ISidebarContainer {
   [key: string]: unknown;
@@ -102,6 +101,7 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
 
                 // for now there is only 1 sub category possible - catalogue, so here's just explicit check
                 // allows to not refetch on ANY category choice + prevent refetch on subsequent section clicks
+                // So, if target category is catalogue AND (there was no section selected b4 OR there WAS category selected)
                 if (
                   subCategory === 'catalogue' &&
                   (selectedSectionIdx === -1 || selectedCategoryIdx !== -1)
