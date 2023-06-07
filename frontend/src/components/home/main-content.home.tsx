@@ -5,7 +5,6 @@ import {
   Icon,
   LinkBox,
   LinkOverlay,
-  Skeleton,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -15,6 +14,7 @@ import { GiTechnoHeart } from 'react-icons/gi';
 import { MdCelebration } from 'react-icons/md';
 import pfpGh from '../../../assets/pfp_gh.webp';
 import { COLORS } from '../../chakra-setup';
+import { SkeletonPlaceholderComponentMemo } from '../skeleton';
 import {
   HB_ANIMATION_KEYFRAMES,
   PFP_ANIMATION_KEYFRAMES,
@@ -94,14 +94,11 @@ const HomeMainContentComponent: FC<THomeMainContent> = ({ isThemeChanging }) => 
             </LinkOverlay>
           </LinkBox>
         ) : (
-          <Skeleton
-            h={'100%'}
-            w={'100%'}
-            opacity={1}
+          <SkeletonPlaceholderComponentMemo
+            width={'100%'}
+            height={'100%'}
             borderRadius={'9999999px'}
-            startColor={'gray.100'}
-            endColor={'gray.600'}
-            transition={'opacity 1s linear'}
+            isLoading={true}
           />
         )}
       </Box>

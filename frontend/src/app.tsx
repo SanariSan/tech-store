@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { useRef } from 'react';
 import { Route, Switch } from 'react-router-dom';
@@ -6,11 +6,9 @@ import { CartContainerMemo } from './containers/cart';
 import { DashboardContainerMemo } from './containers/dashboard';
 import {
   AuthenticatedAccessContainer,
-  DebugContainer,
   ErrorBoundaryGenericContainerMemo,
   LocationTrackerContainerMemo,
   ScreenDetailsTrackerContainerMemo,
-  changeRoute,
 } from './containers/functional';
 import { GuideContainerMemo } from './containers/guide';
 import { HelpComponentMemo } from './containers/help';
@@ -19,10 +17,11 @@ import { CatalogueContainerMemo, LikedContainerMemo } from './containers/items-g
 import { LayoutContainer } from './containers/layout';
 import { LoadingTrackerProgressContainer } from './containers/loading-tracker-progress';
 import { LoginContainer } from './containers/login';
+import { NotFoundContainerMemo } from './containers/not-found';
 import { RegisterContainer } from './containers/register';
+import { SettingsContainerMemo } from './containers/settings';
 import { ThemeSwitchContainerMemo } from './containers/theme-switch';
 import { ToastsContainerMemo } from './containers/toast/toast';
-import { SettingsContainerMemo } from './containers/settings';
 
 const App: FC = () => {
   const screenshotTargetRef = useRef(null);
@@ -95,23 +94,7 @@ const App: FC = () => {
               </AuthenticatedAccessContainer>
             </Route>
             <Route path="/">
-              <Flex
-                w={'100%'}
-                h={'100%'}
-                direction={'column'}
-                justifyContent={'center'}
-                alignItems={'center'}
-                gap={3}
-              >
-                <Text variant={'lg'}>Not found</Text>
-                <Button
-                  onClick={() => {
-                    changeRoute('/');
-                  }}
-                >
-                  Go home
-                </Button>
-              </Flex>
+              <NotFoundContainerMemo />
             </Route>
           </Switch>
         </LayoutContainer>

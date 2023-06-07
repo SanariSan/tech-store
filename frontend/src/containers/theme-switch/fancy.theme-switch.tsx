@@ -1,7 +1,7 @@
-import { Box, Image, keyframes, useColorMode } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { keyframes, useColorMode } from '@chakra-ui/react';
 import type { FC, MutableRefObject } from 'react';
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FancyThemeSwitchComponentMemo } from '../../components/theme-switch';
 import { sleep } from '../../helpers/util';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useScreenshot } from '../../hooks/use-screenshot';
@@ -12,56 +12,6 @@ import {
   uiColorModeToogleCoordsSelector,
   uiScreenDetailsSelector,
 } from '../../store';
-
-type TFancyThemeSwitchComponent = {
-  isVisible: boolean;
-  bg: string | undefined;
-  colorModeChangeStatus: ReturnType<typeof uiColorModeChangeStatusSelector>;
-  colorModeChangeStatusProxy: ReturnType<typeof uiColorModeChangeStatusSelector>;
-  animation: string;
-};
-
-const FancyThemeSwitchComponent: FC<TFancyThemeSwitchComponent> = ({
-  colorModeChangeStatus,
-  colorModeChangeStatusProxy,
-  bg,
-  isVisible,
-  animation,
-}) => (
-  <>
-    {colorModeChangeStatus === 'ongoing' ||
-      (colorModeChangeStatusProxy === 'ongoing' && (
-        // overlay Box will stay until animation is fully done
-        // prevents user from interrupting anything
-        <Box
-          position={'absolute'}
-          zIndex={999_999}
-          w={'100%'}
-          h={'100%'}
-          left={0}
-          top={0}
-          background={'transparent'}
-        />
-      ))}
-    {isVisible && (
-      <Image
-        as={motion.img}
-        position={'absolute'}
-        zIndex={999_999}
-        w={'100%'}
-        h={'100%'}
-        backgroundImage={bg}
-        left={0}
-        top={0}
-        transform={'perspective(500px) translateX(1px) translateY(1px) translateZ(1px)'}
-        opacity={0}
-        animation={animation}
-      />
-    )}
-  </>
-);
-
-const FancyThemeSwitchComponentMemo = memo(FancyThemeSwitchComponent);
 
 type TFancyThemeSwitchContainer = {
   screenshotTargetRef: MutableRefObject<HTMLElement | null>;

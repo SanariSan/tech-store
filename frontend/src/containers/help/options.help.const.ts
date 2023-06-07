@@ -1,7 +1,5 @@
 import type { ISourceOptions } from 'tsparticles-engine';
 // import q from '../../../assets/q.webp';
-// import q from '../../../assets/q.webp';
-
 import q from '../../../assets/no4.webp';
 
 export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions => ({

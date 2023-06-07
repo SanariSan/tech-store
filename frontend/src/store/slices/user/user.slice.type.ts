@@ -6,6 +6,7 @@ type TUserAuthInitState = {
   isAuthenticated: TIsAuthenticated;
   loadingStatus: TLoadingStatus;
   username?: string;
+  email?: string;
 };
 
 export type { TUserAuthInitState, TIsAuthenticated };

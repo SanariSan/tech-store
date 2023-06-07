@@ -22,6 +22,7 @@ import pfp from '../../../assets/pfp.webp';
 import { COLORS } from '../../chakra-setup';
 import { changeRoute } from '../../containers/functional';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useThrottledState } from '../../hooks/use-throttled-state';
 import {
   guideHasTriedOpeningCartSelector,
   guideHasTriedPuttingEntitesToCartSelector,
@@ -31,9 +32,12 @@ import {
   setHasTriedThemeChange,
   setIsCartOpenedUi,
   uiCartStateSelector,
+  uiColorModeAnimationDurationSelector,
   uiColorModeChangeStatusSelector,
+  uiIsMobileSelector,
 } from '../../store';
 import { HamburgerIcon } from '../icons';
+import { SkeletonPlaceholderComponentMemo } from '../skeleton';
 import { NavbarIconsContainerMemo } from './icons';
 import { ANIMATION_KEYFRAMES } from './keyframes.navbar.const';
 
@@ -45,11 +49,25 @@ const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
   const d = useAppDispatch();
   const [isToolbarOpened, setIsToolbarOpened] = useState(false);
   const { colorMode } = useColorMode();
-  const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const hasTriedThemeChange = useAppSelector(guideHasTriedThemeChangeSelector);
   const hasTriedOpeningCart = useAppSelector(guideHasTriedOpeningCartSelector);
   const hasTriedPuttingEntitesToCart = useAppSelector(guideHasTriedPuttingEntitesToCartSelector);
   const isCartOpened = useAppSelector(uiCartStateSelector);
+
+  const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
+  const isMobile = useAppSelector(uiIsMobileSelector);
+  const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
+  const throttledColorModeChangeStatus = useThrottledState({
+    state: colorModeChangeStatus,
+    replicateCondition: colorModeChangeStatus === 'completed',
+    delay: isMobile ? colorModeChangeAnimationDuration : colorModeChangeAnimationDuration + 150,
+  });
+
+  const isThemeChanging = useMemo(
+    () => colorModeChangeStatus !== 'completed' || throttledColorModeChangeStatus !== 'completed',
+    [colorModeChangeStatus, throttledColorModeChangeStatus],
+  );
+
   const [inactive, secondaryAlt, secondary, hoverColor, impact, border, inputHover] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
@@ -231,7 +249,7 @@ const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
           size={10}
           cursor={'pointer'}
           onClick={onAvatarClickCb}
-          borderRadius={'20px'}
+          borderRadius={'999999px'}
           background={`url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='100' ry='100' stroke='%23${impact.slice(
             1,
           )}' stroke-width='3' stroke-dasharray='4%2c10' stroke-dashoffset='66' stroke-linecap='square'/%3e%3c/svg%3e");`}
@@ -241,15 +259,24 @@ const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
           _active={active}
           _focus={hover}
         >
-          <Avatar
-            src={pfp}
-            bg={impact}
-            objectFit={'contain'}
-            borderRadius={'20px'}
-            w={'80%'}
-            h={'80%'}
-            animation={'none'}
-          />
+          {isThemeChanging ? (
+            <SkeletonPlaceholderComponentMemo
+              width={'80%'}
+              height={'80%'}
+              borderRadius={'999999px'}
+              isLoading={true}
+            />
+          ) : (
+            <Avatar
+              src={pfp}
+              bg={impact}
+              objectFit={'contain'}
+              borderRadius={'999999px'}
+              w={'80%'}
+              h={'80%'}
+              animation={'none'}
+            />
+          )}
         </Circle>
       </Flex>
     </Flex>

@@ -11,6 +11,7 @@ import { checkUserAuthStatus } from '../../../../services/api';
 import {
   checkUserAuthStatusAsync,
   setUserAuthLoadStatus,
+  setUserInfo,
   setUserIsAuthenticated,
 } from '../../../slices';
 
@@ -42,6 +43,7 @@ function* checkUserAuthStatusWorker(action: { type: string }) {
       yield put(
         setUserIsAuthenticated({ status: fetchStatus.response.success.data.isAuthenticated }),
       );
+      yield put(setUserInfo(fetchStatus.response.success.data));
       return;
     }
 

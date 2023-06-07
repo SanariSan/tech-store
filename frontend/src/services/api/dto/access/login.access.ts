@@ -9,16 +9,19 @@ const AccessLoginOutgoingDTO = object({
 
 const AccessLoginIncomingSuccessDTO = object({
   data: object({
-    username: string().required(),
+    username: string().optional(),
+    email: string().optional(),
     isAuthenticated: boolean().required(),
   }),
-});
+})
+  .noUnknown(true)
+  .strict(true);
 
 const AccessLoginIncomingFailureDTO = DEFAULT_FAILURE_DTO.shape({
   miscellaneous: MISCELLANEOUS.shape({
     isAuthenticated: boolean().required(),
   }),
-});
+}).strict(true);
 
 type TAccessLoginOutgoingFields = InferType<typeof AccessLoginOutgoingDTO>;
 type TAccessLoginIncomingSuccessFields = InferType<typeof AccessLoginIncomingSuccessDTO>;
