@@ -1,6 +1,6 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import { useMemo, Fragment, memo, useCallback, useEffect, useState } from 'react';
 import { SidebarCategoryEntityMemo, SidebarSectionEntityMemo } from '../../components/sidebar';
 import { SIDEBAR_TEMPLATE } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
@@ -27,7 +27,6 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
   const isSidebarOpened = useAppSelector(uiSidebarStateSelector);
   const selectedSectionIdx = useAppSelector(uiSelectedSectionIdxSelector);
   const selectedCategoryIdx = useAppSelector(goodsSelectedCategoryIdxSelector);
-  const entitiesLoadingStatus = useAppSelector(goodsEntitiesLoadingStatusSelector);
   const categoriesLoadingStatus = useAppSelector(goodsCategoriesLoadingStatusSelector);
 
   const [unfoldedIdxs, setUnfoldedIdxs] = useState<number[]>([]);
@@ -47,6 +46,8 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
     },
     [collapse, unfold, unfoldedIdxs],
   );
+
+  const disabledEntries = useMemo(() => ['settings'], []);
 
   // fetch global categories
   useEffect(() => {
@@ -92,6 +93,7 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
               icon={icon}
               hasCategory={subCategory === 'catalogue'}
               categoriesLoadingStatus={categoriesLoadingStatus}
+              isDisabled={disabledEntries.includes(title)}
               isSidebarOpened={isSidebarOpened}
               isSelected={selectedSectionIdx === idxSection}
               isCategoryUnfolded={isUnfolded}

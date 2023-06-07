@@ -3,6 +3,7 @@ import { memo, useMemo, useRef } from 'react';
 import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppSelector } from '../../hooks/redux';
 import { goodsLikedEntitiesSelector, uiSelectedSectionSelector } from '../../store';
+import { SectionWrapContainerMemo } from '../section-wrap';
 import { ItemsGridComponentMemo } from './items-grid';
 
 const LikedContainer = () => {
@@ -12,39 +13,25 @@ const LikedContainer = () => {
   const gridRef = useRef<Grid | null>(null);
 
   const breadcrumbList = useMemo(() => [selectedSection], [selectedSection]);
-  const modifiersList = useMemo(() => [], []);
 
   return (
-    <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
-      <ItemsGridComponentMemo
-        gridRef={gridRef}
-        title={'Your favourite items all in one place!'}
-        breadcrumbList={breadcrumbList}
-        modifiersList={modifiersList}
-        entitiesList={entities}
-        hasMoreEntities={false}
-      />
-      {entities.length <= 0 && (
-        <>
-          <Text
-            position={'absolute'}
-            top={{ base: '250px', sm: '175px' }}
-            left={{ base: '100px', sm: '125px', md: '140px' }}
-            variant={{ base: 'sm', sm: 'md' }}
-          >
+    <SectionWrapContainerMemo
+      title={'Your favourite items all in one place!'}
+      breadcrumbList={breadcrumbList}
+    >
+      {entities.length > 0 ? (
+        <ItemsGridComponentMemo gridRef={gridRef} entitiesList={entities} hasMoreEntities={false} />
+      ) : (
+        <Flex direction={'column'} px={{ base: 6, sm: 8, md: 10 }} gap={3} pt={8}>
+          <Text variant={{ base: 'sm', sm: 'md' }} whiteSpace={'normal'}>
             Nothing here yet... 😥
           </Text>
-          <Text
-            position={'absolute'}
-            top={{ base: '275px', sm: '200px' }}
-            left={{ base: '100px', sm: '125px', md: '140px' }}
-            variant={{ base: 'sm', sm: 'md' }}
-          >
+          <Text variant={{ base: 'sm', sm: 'md' }} whiteSpace={'normal'}>
             Go like something! 🤨
           </Text>
-        </>
+        </Flex>
       )}
-    </Flex>
+    </SectionWrapContainerMemo>
   );
 };
 

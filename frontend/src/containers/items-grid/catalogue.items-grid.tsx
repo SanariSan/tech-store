@@ -3,14 +3,15 @@ import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchMoreEntitiesAsync,
-  goodsEntitiesSelector,
   goodsEntitiesLoadingStatusSelector,
+  goodsEntitiesSelector,
+  goodsHasMoreEntitiesSelector,
   goodsSelectedCategorySelector,
   goodsSelectedModifierSelector,
   uiSelectedCategoryRouteBreadcrumbFormattedSelector,
   uiSelectedSectionSelector,
-  goodsHasMoreEntitiesSelector,
 } from '../../store';
+import { SectionWrapContainerMemo } from '../section-wrap';
 import { ItemsGridComponentMemo } from './items-grid';
 
 const CatalogueContainer = () => {
@@ -58,15 +59,18 @@ const CatalogueContainer = () => {
   }, [fetchMoreEntities]);
 
   return (
-    <ItemsGridComponentMemo
-      title={'Best Selling Electronics Products - Weekly Update.'}
+    <SectionWrapContainerMemo
+      title={'Best Selling Electronics Products - Weekly Update!'}
       breadcrumbList={breadcrumbList}
       modifiersList={modifiersList}
-      entitiesList={entities}
-      hasMoreEntities={hasMoreEntities}
-      onEntitiesEndReachCb={onEntitiesEndReachCb}
-      gridRef={gridRef}
-    />
+    >
+      <ItemsGridComponentMemo
+        entitiesList={entities}
+        hasMoreEntities={hasMoreEntities}
+        onEntitiesEndReachCb={onEntitiesEndReachCb}
+        gridRef={gridRef}
+      />
+    </SectionWrapContainerMemo>
   );
 };
 

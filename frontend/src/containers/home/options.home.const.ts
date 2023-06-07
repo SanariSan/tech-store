@@ -22,7 +22,7 @@ export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions 
       value: 'transparent',
     },
   },
-  fpsLimit: 60,
+  fpsLimit: 120,
   interactivity: {
     events: {
       onClick: {

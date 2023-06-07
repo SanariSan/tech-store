@@ -11,7 +11,7 @@ import { memo } from 'react';
 import { COLORS } from '../../chakra-setup';
 
 type TBreadcrumbProps = {
-  list: Array<{ title: string; pathname: string } | undefined>;
+  list?: Array<{ title: string; pathname: string } | undefined>;
 };
 
 const BreadcrumbComponent: FC<TBreadcrumbProps> = ({ list }) => {
@@ -19,19 +19,20 @@ const BreadcrumbComponent: FC<TBreadcrumbProps> = ({ list }) => {
 
   return (
     <Breadcrumb spacing="8px" separator={<ChevronRightIcon color={secondaryAlt} />}>
-      {list.map((el) => {
-        if (el === undefined) return null;
-        const { title, pathname } = el;
-        return (
-          <BreadcrumbItem key={`${title}_${pathname}`}>
-            <BreadcrumbLink href={'#'}>
-              <Text variant={{ base: 'base', sm: 'sm' }} color={secondaryAlt}>
-                {`${title.charAt(0).toUpperCase()}${title.slice(1)}`}
-              </Text>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        );
-      })}
+      {list !== undefined &&
+        list.map((el) => {
+          if (el === undefined) return null;
+          const { title, pathname } = el;
+          return (
+            <BreadcrumbItem key={`${title}_${pathname}`}>
+              <BreadcrumbLink href={'#'}>
+                <Text variant={{ base: 'base', sm: 'sm' }} color={secondaryAlt}>
+                  {`${title.charAt(0).toUpperCase()}${title.slice(1)}`}
+                </Text>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          );
+        })}
     </Breadcrumb>
   );
 };

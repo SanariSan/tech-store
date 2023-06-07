@@ -1,5 +1,8 @@
 import type { ISourceOptions } from 'tsparticles-engine';
-import q from '../../../assets/q.webp';
+// import q from '../../../assets/q.webp';
+// import q from '../../../assets/q.webp';
+
+import q from '../../../assets/no4.webp';
 
 export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions => ({
   fullScreen: {
@@ -11,7 +14,7 @@ export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions 
       value: 'transparent',
     },
   },
-  fpsLimit: 60,
+  fpsLimit: 120,
   interactivity: {
     events: {
       onClick: {
@@ -60,7 +63,7 @@ export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions 
         enable: true,
         area: isMobile ? 300 : 800,
       },
-      value: isMobile ? 15 : 10,
+      value: isMobile ? 12 : 8,
     },
     reduceDuplicates: true,
     opacity: {
@@ -73,7 +76,7 @@ export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions 
       },
     },
     size: {
-      value: { min: 12, max: 18 },
+      value: { min: 14, max: 20 },
     },
   },
   detectRetina: true,

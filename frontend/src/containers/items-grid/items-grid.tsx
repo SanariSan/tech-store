@@ -1,8 +1,7 @@
-import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, useBreakpointValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useThrottledState } from '../../hooks/use-throttled-state';
 import {
@@ -14,15 +13,11 @@ import {
   uiColorModeChangeStatusSelector,
   uiIsMobileSelector,
 } from '../../store';
-import { ModifiersContainer } from '../modifiers';
 import { AutoSizedGridWrapContainerMemo } from './grid';
 import type { TItemsGridContainerProps } from './items-grid.type';
 import { createItemData } from './memoize.items-grid';
 
 const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
-  title,
-  breadcrumbList,
-  modifiersList,
   entitiesList,
   hasMoreEntities,
   onEntitiesEndReachCb,
@@ -169,45 +164,24 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   );
 
   return (
-    <Flex direction={'column'} w={'100%'} h={'100%'} gap={3}>
-      <Flex
-        w={'100%'}
-        minW={{ base: '230px', sm: '375px' }}
-        minH={'max-content'}
-        pt={8}
-        pb={4}
-        px={{ base: 6, sm: 8, md: 10 }}
-        gap={6}
-        direction={'column'}
-      >
-        <Flex w={'100%'} minH={'max-content'} gap={3} direction={'column'}>
-          <BreadcrumbComponentMemo list={breadcrumbList} />
-          <Text variant={{ base: 'md', sm: 'lg' }} fontWeight={'bold'} whiteSpace={'normal'}>
-            {title}
-          </Text>
-        </Flex>
-        <ModifiersContainer list={modifiersList} />
-      </Flex>
-
-      <Box w={'100%'} h={'100%'}>
-        <AutoSizer onResize={onResize}>
-          {({ height, width }) => (
-            <AutoSizedGridWrapContainerMemo
-              width={width ?? 0}
-              height={height ?? 0}
-              columnCount={columnCount}
-              gridRef={gridRef}
-              itemData={itemData}
-              onItemsRenderedCb={onItemsRenderedCb}
-              onScrollCb={onScrollCb}
-              rowCount={rowCount}
-              scrollPos={scrollPos}
-              forceRerenderFlag={forceRerenderFlag}
-            />
-          )}
-        </AutoSizer>
-      </Box>
-    </Flex>
+    <Box w={'100%'} h={'100%'}>
+      <AutoSizer onResize={onResize}>
+        {({ height, width }) => (
+          <AutoSizedGridWrapContainerMemo
+            width={width ?? 0}
+            height={height ?? 0}
+            columnCount={columnCount}
+            gridRef={gridRef}
+            itemData={itemData}
+            onItemsRenderedCb={onItemsRenderedCb}
+            onScrollCb={onScrollCb}
+            rowCount={rowCount}
+            scrollPos={scrollPos}
+            forceRerenderFlag={forceRerenderFlag}
+          />
+        )}
+      </AutoSizer>
+    </Box>
   );
 };
 

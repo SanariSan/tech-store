@@ -19,6 +19,7 @@ interface ISidebarSectionEntity {
   isSidebarOpened: boolean;
   icon: (props: IconProps) => JSX.Element;
   title: string;
+  isDisabled?: boolean;
   isSelected: boolean;
   hasCategory: boolean;
   categoriesLoadingStatus: TLoadingStatus;
@@ -32,6 +33,7 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
   icon: Icon,
   title,
   isSelected,
+  isDisabled = false,
   hasCategory,
   categoriesLoadingStatus,
   isCategoryUnfolded,
@@ -62,7 +64,7 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
         bg: isSelected ? wrapBg : hover,
       }}
       borderRadius={'0 25px 25px 0'}
-      cursor={'pointer'}
+      cursor={isDisabled ? 'not-allowed' : 'pointer'}
     >
       <Box
         opacity={isSelected ? 1 : 0}
@@ -81,12 +83,14 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
         justifyContent={'flex-start'}
         overflowX={'hidden'}
         onClick={() => {
+          if (isDisabled) return;
           onSelect();
         }}
         transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
         _hover={{
           transform: 'translateX(3px)',
         }}
+        position={'relative'}
       >
         <Icon
           boxSize={{ base: 4, sm: 5 }}
@@ -95,13 +99,15 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
           _hover={{
             color: isSelected ? impact : secondaryAlt,
           }}
+          opacity={isDisabled ? 0.4 : 1}
         />
 
         <Text
           pl={{ base: 4, sm: 5 }}
           variant={{ base: 'sm' }}
-          opacity={isSidebarOpened ? 1 : 0}
+          opacity={isSidebarOpened ? (isDisabled ? 0.4 : 1) : 0}
           transition={'opacity 0.1s linear'}
+          textTransform={'capitalize'}
         >
           {title}
         </Text>
@@ -114,6 +120,7 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
             transition={'opacity 0.1s linear'}
             onClick={(e) => {
               e.stopPropagation();
+              if (isDisabled) return;
               onSubUnfold();
             }}
           >

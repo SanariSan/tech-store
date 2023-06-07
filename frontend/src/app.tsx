@@ -22,6 +22,7 @@ import { LoginContainer } from './containers/login';
 import { RegisterContainer } from './containers/register';
 import { ThemeSwitchContainerMemo } from './containers/theme-switch';
 import { ToastsContainerMemo } from './containers/toast/toast';
+import { SettingsContainerMemo } from './containers/settings';
 
 const App: FC = () => {
   const screenshotTargetRef = useRef(null);
@@ -63,10 +64,8 @@ const App: FC = () => {
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path={'/settings'}>
-              <AuthenticatedAccessContainer mustBe={'any'}>
-                <Flex w={'100%'} h={'100%'} justifyContent={'center'} alignItems={'center'}>
-                  settings
-                </Flex>
+              <AuthenticatedAccessContainer mustBe={'authenticated'} redirectLocation={'/login'}>
+                <SettingsContainerMemo />
               </AuthenticatedAccessContainer>
             </Route>
             <Route exact path={'/help'}>

@@ -4,31 +4,31 @@ import type { TSidebarTemplate } from './const.type';
 
 export const SIDEBAR_TEMPLATE: TSidebarTemplate = [
   {
-    title: 'Home',
+    title: 'home',
     icon: HomeIcon,
     pathname: '/',
     subCategory: null,
   },
   {
-    title: 'Discover',
+    title: 'discover',
     icon: BoxIcon,
     pathname: '/catalogue',
     subCategory: 'catalogue',
   },
   {
-    title: 'Liked',
+    title: 'liked',
     icon: HeartIcon,
     pathname: '/liked',
     subCategory: null,
   },
   {
-    title: 'Settings',
+    title: 'settings',
     icon: SettingsIcon,
     pathname: '/settings',
     subCategory: null,
   },
   {
-    title: 'Help',
+    title: 'help',
     icon: QuestionIcon,
     pathname: '/help',
     subCategory: null,
