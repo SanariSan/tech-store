@@ -114,7 +114,7 @@ services:
         'no',
       ]
   online_shop_server:
-    container_name: online_shop_server
+    # container_name: online_shop_server
     image: sanarisan/online_shop_server:1
     restart: unless-stopped
     build:
@@ -142,9 +142,10 @@ services:
       CACHE_PASSWORD: '${CACHE_PASSWORD}'
       DEV_TAG: '${DEV_TAG}'
       NETWORK_ACCESS: 'internal'
-    # deploy:
-    #   mode: replicated
-    #   replicas: 2
+    # this may introduce race condition, be aware
+    deploy:
+      mode: replicated
+      replicas: 2
   online_shop_nginx:
     container_name: online_shop_nginx
     image: sanarisan/online_shop_nginx:1

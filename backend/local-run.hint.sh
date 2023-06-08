@@ -8,4 +8,4 @@ DB_PASSWORD='postgres' \
 CACHE_PASSWORD='redis' \
 VIRTUAL_HOST='localhost' \
 LETSENCRYPT_HOST='localhost' \
-docker-compose up --build --always-recreate-deps --force-recreate
+docker-compose -f ./docker-compose.dev.yaml up --build --always-recreate-deps --force-recreate

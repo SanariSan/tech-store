@@ -114,7 +114,7 @@ services:
         'no',
       ]
   online_shop_server:
-    container_name: online_shop_server
+    # container_name: online_shop_server
     image: sanarisan/online_shop_server:1
     restart: unless-stopped
     build:
@@ -127,10 +127,10 @@ services:
     depends_on:
       - online_shop_postgres
       - online_shop_redis
-    # expose:
-    #   - '${PORT}'
-    ports:
-      - '${PORT}:3000'
+    expose:
+      - '${PORT}'
+    # ports:
+    #   - '${PORT}-3001:3000'
     env_file:
       - .env
     environment:
@@ -141,6 +141,7 @@ services:
       COOKIE_SECRET: '${COOKIE_SECRET}'
       CACHE_PASSWORD: '${CACHE_PASSWORD}'
       NETWORK_ACCESS: 'internal'
+    # this may introduce race condition, be aware
     # deploy:
     #   mode: replicated
     #   replicas: 2
