@@ -12,4 +12,9 @@ RUN envsubst '$$BUILD_PATH' < /etc/nginx/sites-available/_.conf.template > /etc/
 RUN ["mkdir", "/etc/nginx/sites-enabled"]
 RUN ["ln", "-s", "/etc/nginx/sites-available/_.conf", "/etc/nginx/sites-enabled/_.conf"]
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD [\
+"/bin/bash", \
+"-c", \
+# chown mounted static dir to avoid permissions issues
+"chown -R nginx:nginx ${BUILD_PATH} ; nginx -g \"daemon off;\"" \ 
+]

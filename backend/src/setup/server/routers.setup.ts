@@ -14,7 +14,7 @@ function setupRoutersExpress(app: Express) {
     throw new NotFoundError({ message: 'Route not found' });
   });
 
-  // // serve static content | moved to nginx
+  // moved to nginx | serve static content
   // if (NODE_ENV === 'production') {
   //   app.use(express.static(path.resolve(BUILD_PATH)));
   //   app.get('*', (req, res) => {

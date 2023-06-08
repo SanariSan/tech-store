@@ -15,14 +15,8 @@ function setupSettingsExpress(app: Express) {
   const RedisStore = connectRedis(session);
   const redisClient = CacheDBConnectionManager.getInstance().getConnection();
 
-  // app.use((req, res, next) => {
-  //   console.log(JSON.stringify(req.headers));
-  //   next();
-  // });
-
   // origin: true for mirroring Front 'Origin' header back
   // origin: CORS_URL for static env url
-  // origin: process.env.NODE_ENV === 'production' ? process.env.CORS_URL : true,
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
   // todo: maybe switch 0/1 dev/prod?
@@ -80,8 +74,6 @@ function setupSettingsExpress(app: Express) {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
       sameSite: 'lax',
-      // secure: false,
-      // sameSite: 'none',
     },
   });
 
@@ -131,14 +123,12 @@ function setupSettingsExpress(app: Express) {
 
   const apiLimiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 min
-    max: 100, // Limit each IP to 30 requests per 1 min
+    max: 100, // Limit each IP to 100 requests per 1 min
     standardHeaders: true,
     legacyHeaders: false,
   });
 
-  // disabled for now
-  // images also trigger rate limit, should move them to nginx
-  // app.use(apiLimiter);
+  app.use(apiLimiter);
 }
 
 export { setupSettingsExpress };

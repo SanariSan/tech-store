@@ -7,6 +7,9 @@ volumes:
     external: false
   online-shop-front-build-volume:
     external: false
+  online-shop-backend-assets-volume:
+    external: true
+
 networks:
   inbound:
     name: inbound
@@ -163,6 +166,9 @@ services:
       - type: volume
         source: online-shop-front-build-volume
         target: '${BUILD_PATH}'
+      - type: volume
+        source: online-shop-backend-assets-volume
+        target: '${BUILD_PATH}/assets'
     environment:
       VIRTUAL_HOST: '${VIRTUAL_HOST}'
       LETSENCRYPT_HOST: '${LETSENCRYPT_HOST}'

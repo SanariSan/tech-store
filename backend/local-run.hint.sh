@@ -1,4 +1,6 @@
-docker-compose up --build --always-recreate-deps --force-recreate
+# docker-compose up --build --always-recreate-deps --force-recreate
+
+docker run --detach --rm -v "online-shop-backend-assets-volume:/assets_to" -v "./assets:/assets_from" busybox sh -c "cp -rf /assets_from/* /assets_to"
 
 CORS_URL='https://localhost' \
 API_VERSION='v1' \
