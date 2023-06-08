@@ -12,7 +12,6 @@ import type { FC } from 'react';
 import { memo, useMemo } from 'react';
 import { GiTechnoHeart } from 'react-icons/gi';
 import { MdCelebration } from 'react-icons/md';
-import pfpGh from '../../../assets/pfp_gh.webp';
 import { COLORS } from '../../chakra-setup';
 import { SkeletonPlaceholderComponentMemo } from '../skeleton';
 import {
@@ -20,6 +19,7 @@ import {
   PFP_ANIMATION_KEYFRAMES,
   PFP_BLUR_ANIMATION_KEYFRAMES,
 } from './keyframes.home.const';
+import { ASSETS } from '../../services/api';
 
 const hbAnimation = `${HB_ANIMATION_KEYFRAMES} 2s ease-in-out 2s infinite`;
 const pfpBlurAnimation = `${PFP_BLUR_ANIMATION_KEYFRAMES} 20s ease-in-out infinite`;
@@ -72,7 +72,7 @@ const HomeMainContentComponent: FC<THomeMainContent> = ({ isThemeChanging }) => 
                 zIndex={0}
                 transform="scale(1.025, 1.025)"
                 animation={pfpBlurAnimation}
-                src={pfpGh}
+                src={ASSETS.PFP_GH}
                 objectFit={'contain'}
                 borderRadius={'99999px'}
                 w={'100%'}
@@ -80,7 +80,7 @@ const HomeMainContentComponent: FC<THomeMainContent> = ({ isThemeChanging }) => 
               />
               <Avatar
                 position={'absolute'}
-                src={pfpGh}
+                src={ASSETS.PFP_GH}
                 objectFit={'contain'}
                 borderRadius={'99999px'}
                 animation={pfpAnimation}

@@ -1,6 +1,5 @@
 import type { ISourceOptions } from 'tsparticles-engine';
-// import q from '../../../assets/q.webp';
-import q from '../../../assets/no4.webp';
+import { ASSETS } from '../../services/api';
 
 export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions => ({
   fullScreen: {
@@ -70,7 +69,7 @@ export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions 
     shape: {
       type: 'image',
       image: {
-        src: q,
+        src: ASSETS.PEPE,
       },
     },
     size: {

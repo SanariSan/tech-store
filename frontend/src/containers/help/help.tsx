@@ -1,9 +1,6 @@
 import { Box, Flex, Image, Text, useColorModeValue, useToken } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo, useMemo } from 'react';
-import cross from '../../../assets/cross.webp';
-import no1 from '../../../assets/no3.webp';
-import no2 from '../../../assets/no4.webp';
 import { COLORS } from '../../chakra-setup';
 import { useAppSelector } from '../../hooks/redux';
 import { useThrottledState } from '../../hooks/use-throttled-state';
@@ -15,6 +12,7 @@ import {
 } from '../../store';
 import { getOptions } from './options.help.const';
 import { ParticlesContainerMemo } from '../particles';
+import { ASSETS } from '../../services/api';
 
 type THelpComponent = {
   [key: string]: unknown;
@@ -75,13 +73,13 @@ const HelpComponent: FC<THelpComponent> = () => {
           flexWrap={'nowrap'}
           gap={5}
         >
-          <Image src={no1} objectFit={'cover'} maxW={{ base: '100px', md: '100%' }} />
-          <Image src={no2} objectFit={'cover'} maxW={{ base: '100px', md: '100%' }} />
+          <Image src={ASSETS.ANN} objectFit={'cover'} maxW={{ base: '100px', md: '100%' }} />
+          <Image src={ASSETS.PEPE} objectFit={'cover'} maxW={{ base: '100px', md: '100%' }} />
         </Flex>
       </Flex>
       <Image
         display={colorModeChangeStatus === 'ongoing' ? 'none' : 'block'}
-        src={cross}
+        src={ASSETS.CROSS}
         w={'100%'}
         minW={'800px'}
         h={'100%'}

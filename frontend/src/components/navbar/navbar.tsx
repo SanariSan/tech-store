@@ -18,11 +18,11 @@ import {
 import { motion } from 'framer-motion';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import logo from '../../../assets/logo.png';
-import pfp from '../../../assets/pfp.webp';
 import { COLORS } from '../../chakra-setup';
 import { changeRoute } from '../../containers/functional';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useThrottledState } from '../../hooks/use-throttled-state';
+import { ASSETS } from '../../services/api';
 import {
   guideHasTriedOpeningCartSelector,
   guideHasTriedPuttingEntitesToCartSelector,
@@ -268,7 +268,7 @@ const NavbarComponent: React.FC<INavbarComponent> = ({ onSidebarToggle }) => {
             />
           ) : (
             <Avatar
-              src={pfp}
+              src={ASSETS.PFP}
               bg={impact}
               objectFit={'contain'}
               borderRadius={'999999px'}

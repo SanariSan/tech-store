@@ -1,16 +1,5 @@
 import type { ISourceOptions } from 'tsparticles-engine';
-import atom from '../../../assets/atom.webp';
-import chakra from '../../../assets/chakra.webp';
-import docker from '../../../assets/docker.webp';
-import gh from '../../../assets/gh.webp';
-import lint from '../../../assets/lint.webp';
-import nginx from '../../../assets/nginx.webp';
-import node from '../../../assets/node.webp';
-import pg from '../../../assets/pg.webp';
-import redis from '../../../assets/redis.webp';
-import saga from '../../../assets/redux-saga.webp';
-import redux from '../../../assets/redux.webp';
-import ts from '../../../assets/ts.webp';
+import { ASSETS } from '../../services/api';
 
 export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions => ({
   fullScreen: {
@@ -87,40 +76,40 @@ export const getOptions = ({ isMobile }: { isMobile: boolean }): ISourceOptions 
       type: 'images',
       images: [
         {
-          src: atom,
+          src: ASSETS.ATOM,
         },
         {
-          src: redux,
+          src: ASSETS.REDUX,
         },
         {
-          src: saga,
+          src: ASSETS.SAGA,
         },
         {
-          src: node,
+          src: ASSETS.NODE,
         },
         {
-          src: ts,
+          src: ASSETS.TS,
         },
         {
-          src: docker,
+          src: ASSETS.DOCKER,
         },
         {
-          src: redis,
+          src: ASSETS.REDIS,
         },
         {
-          src: nginx,
+          src: ASSETS.NGINX,
         },
         {
-          src: pg,
+          src: ASSETS.PG,
         },
         {
-          src: gh,
+          src: ASSETS.GH,
         },
         {
-          src: lint,
+          src: ASSETS.LINT,
         },
         {
-          src: chakra,
+          src: ASSETS.CHAKRA,
         },
       ],
     },
