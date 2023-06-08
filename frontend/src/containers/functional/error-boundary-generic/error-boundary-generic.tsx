@@ -44,14 +44,7 @@ const myErrorHandler = (error: Error, info: { componentStack: string }) => {
 const ErrorBoundaryGenericContainer: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const isActive = useRef(true);
-
-  useEffect(
-    () => () => {
-      isActive.current = false;
-    },
-    [],
-  );
+  const a = 1;
 
   return (
     <ErrorBoundary

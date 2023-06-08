@@ -7,6 +7,9 @@ volumes:
     external: false
   online-shop-front-build-volume:
     external: true
+  online-shop-backend-assets-volume:
+    external: true
+
 networks:
   inbound:
     name: inbound
@@ -114,7 +117,7 @@ services:
         'no',
       ]
   online_shop_server:
-    container_name: online_shop_server
+    # container_name: online_shop_server
     image: sanarisan/online_shop_server:1
     restart: unless-stopped
     build:
@@ -140,10 +143,12 @@ services:
       DB_PASSWORD: '${DB_PASSWORD}'
       COOKIE_SECRET: '${COOKIE_SECRET}'
       CACHE_PASSWORD: '${CACHE_PASSWORD}'
+      DEV_TAG: '${DEV_TAG}'
       NETWORK_ACCESS: 'internal'
-    # deploy:
-    #   mode: replicated
-    #   replicas: 2
+    # this may introduce race condition, be aware
+    deploy:
+      mode: replicated
+      replicas: 2
   online_shop_nginx:
     container_name: online_shop_nginx
     image: sanarisan/online_shop_nginx:1
@@ -162,6 +167,9 @@ services:
       - type: volume
         source: online-shop-front-build-volume
         target: '${BUILD_PATH}'
+      - type: volume
+        source: online-shop-backend-assets-volume
+        target: '${BUILD_PATH}/assets'
     environment:
       VIRTUAL_HOST: '${VIRTUAL_HOST}'
       LETSENCRYPT_HOST: '${LETSENCRYPT_HOST}'

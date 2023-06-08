@@ -50,6 +50,7 @@ export const accessRegisterCTR = async (
     res,
     data: {
       username: req.session.user.username,
+      email: req.session.user.email,
       isAuthenticated: true,
     },
   }).send();

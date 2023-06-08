@@ -10,16 +10,19 @@ const AccessRegisterOutgoingDTO = object({
 
 const AccessRegisterIncomingSuccessDTO = object({
   data: object({
-    username: string().required(),
+    username: string().optional(),
+    email: string().optional(),
     isAuthenticated: boolean().required(),
   }),
-});
+})
+  .noUnknown(true)
+  .strict(true);
 
 const AccessRegisterIncomingFailureDTO = DEFAULT_FAILURE_DTO.shape({
   miscellaneous: MISCELLANEOUS.shape({
     isAuthenticated: boolean().required(),
   }),
-});
+}).strict(true);
 
 type TAccessRegisterOutgoingFields = InferType<typeof AccessRegisterOutgoingDTO>;
 type TAccessRegisterIncomingSuccessFields = InferType<typeof AccessRegisterIncomingSuccessDTO>;

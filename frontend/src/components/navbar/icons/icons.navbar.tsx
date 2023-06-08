@@ -1,8 +1,8 @@
 import { BellIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
-import type { ColorMode } from '@chakra-ui/react';
-import { Flex, Icon, useBreakpointValue, useColorModeValue } from '@chakra-ui/react';
+import type { ColorMode, PlacementWithLogical } from '@chakra-ui/react';
+import { Flex, Icon, Tooltip, useBreakpointValue, useColorModeValue } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BiUserCircle } from 'react-icons/bi';
 import { COLORS } from '../../../chakra-setup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
@@ -10,10 +10,14 @@ import { useDebounce } from '../../../hooks/use-debounce';
 import { setColorModeToggleCoordsUi, uiScreenDetailsSelector } from '../../../store';
 import { CartIcon } from '../../icons';
 
-const NavbarIconsComponent: FC<{
+const NavbarIconsContainer: FC<{
   isOpened: boolean;
   isThemeToggleAvailable: boolean;
   currentTheme: ColorMode;
+  hasTriedThemeChange: boolean;
+  hasTriedOpeningCart: boolean;
+  hasTriedPuttingEntitesToCart: boolean;
+  isCartOpened: boolean;
   onCartToggle: () => void;
   onThemeToggle: () => void;
   onProfileClick: () => void;
@@ -21,6 +25,10 @@ const NavbarIconsComponent: FC<{
   isOpened,
   isThemeToggleAvailable,
   currentTheme,
+  hasTriedThemeChange,
+  hasTriedOpeningCart,
+  hasTriedPuttingEntitesToCart,
+  isCartOpened,
   onCartToggle,
   onThemeToggle,
   onProfileClick,
@@ -28,6 +36,7 @@ const NavbarIconsComponent: FC<{
   const d = useAppDispatch();
   const screenDetails = useAppSelector(uiScreenDetailsSelector);
   const refIcons = useRef<HTMLDivElement | null>(null);
+  const [appearDelayExpired, setAppearDelayExpired] = useState(false);
   const [inactive, secondaryAlt, border, bg] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
@@ -48,6 +57,34 @@ const NavbarIconsComponent: FC<{
         fallback: 'base',
       },
     ) ?? fallback;
+
+  const colorModeTooltipPos = (useBreakpointValue({
+    base: 'left',
+    md: !hasTriedOpeningCart ? 'left' : 'bottom',
+  }) ?? 'bottom') as PlacementWithLogical;
+
+  const cartTooltipPos = (useBreakpointValue({
+    base: 'left',
+    md: 'bottom',
+  }) ?? 'bottom') as PlacementWithLogical;
+
+  const colorModeTooltipIsOpened =
+    useBreakpointValue({
+      base: !hasTriedThemeChange && appearDelayExpired && isOpened && !isCartOpened,
+      md: !hasTriedThemeChange && appearDelayExpired && !isCartOpened,
+    }) ?? false;
+
+  const cartTooltipIsOpened =
+    useBreakpointValue({
+      base:
+        hasTriedPuttingEntitesToCart &&
+        !hasTriedOpeningCart &&
+        appearDelayExpired &&
+        isOpened &&
+        !isCartOpened,
+      md:
+        hasTriedPuttingEntitesToCart && !hasTriedOpeningCart && appearDelayExpired && !isCartOpened,
+    }) ?? false;
 
   const updateIconsCoordsCb = useCallback(() => {
     if (refIcons.current !== null) {
@@ -79,6 +116,20 @@ const NavbarIconsComponent: FC<{
     [inactive, isThemeToggleAvailable, onThemeToggle, secondaryAlt],
   );
 
+  useEffect(() => {
+    let timer: NodeJS.Timer;
+
+    if (!appearDelayExpired) {
+      timer = setTimeout(() => {
+        setAppearDelayExpired(true);
+      }, 5000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [appearDelayExpired]);
+
   return (
     <Flex
       direction={{ base: 'column', md: 'row' }}
@@ -95,6 +146,7 @@ const NavbarIconsComponent: FC<{
       borderWidth={{ base: '1px', md: '0px' }}
       borderRadius={'100px'}
       ref={refIcons}
+      zIndex={1}
     >
       <Icon
         display={{ base: 'flex', md: 'none' }}
@@ -111,11 +163,19 @@ const NavbarIconsComponent: FC<{
         }}
         cursor={'pointer'}
       />
-      {currentTheme === 'light' ? (
-        <MoonIcon {...themeSwitchProps} />
-      ) : (
-        <SunIcon {...themeSwitchProps} />
-      )}
+      <Tooltip
+        label="Try clicking me!"
+        placement={colorModeTooltipPos}
+        isOpen={colorModeTooltipIsOpened}
+        hasArrow
+        arrowSize={10}
+      >
+        {currentTheme === 'light' ? (
+          <MoonIcon {...themeSwitchProps} />
+        ) : (
+          <SunIcon {...themeSwitchProps} />
+        )}
+      </Tooltip>
       <BellIcon
         boxSize={{ base: 4, md: 5 }}
         color={inactive}
@@ -127,18 +187,27 @@ const NavbarIconsComponent: FC<{
         }}
         cursor={'pointer'}
       />
-      <CartIcon
-        boxSize={{ base: 4, md: 5 }}
-        color={inactive}
-        _hover={{
-          color: secondaryAlt,
-        }}
-        _active={{
-          color: inactive,
-        }}
-        onClick={onCartToggle}
-        mb={{ base: 4, md: 0 }}
-      />
+      <Tooltip
+        label="Time to spend some CASH!"
+        placement={cartTooltipPos}
+        isOpen={cartTooltipIsOpened}
+        hasArrow
+        arrowSize={10}
+      >
+        <Flex mb={{ base: 4, md: 0 }}>
+          <CartIcon
+            boxSize={{ base: 4, md: 5 }}
+            color={inactive}
+            _hover={{
+              color: secondaryAlt,
+            }}
+            _active={{
+              color: inactive,
+            }}
+            onClick={onCartToggle}
+          />
+        </Flex>
+      </Tooltip>
       <Flex
         position={{ base: 'absolute', md: 'unset' }}
         width={{ base: '70px', md: '0px' }}
@@ -153,6 +222,6 @@ const NavbarIconsComponent: FC<{
   );
 };
 
-const NavbarIconsComponentMemo = memo(NavbarIconsComponent);
+const NavbarIconsContainerMemo = memo(NavbarIconsContainer);
 
-export { NavbarIconsComponent, NavbarIconsComponentMemo };
+export { NavbarIconsContainerMemo };

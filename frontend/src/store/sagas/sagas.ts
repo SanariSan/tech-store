@@ -1,4 +1,6 @@
 import { all, call, spawn } from 'redux-saga/effects';
+import { ELOG_LEVEL } from '../../general.type';
+import { publishError } from '../../modules/access-layer/events/pubsub';
 import { goodsRootWatcher } from './goods';
 import { loadingRootWatcher } from './loading';
 import { userAuthRootWatcher } from './user';
@@ -14,7 +16,7 @@ function* rootWatcher() {
             yield call(saga);
             break;
           } catch (error) {
-            console.log(error);
+            publishError(ELOG_LEVEL.DEBUG, error as Error);
           }
         }
       }),

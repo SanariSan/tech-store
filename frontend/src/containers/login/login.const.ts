@@ -17,7 +17,7 @@ const VALIDATION_SCHEMA = object({
 
 type TLoginFormValues = InferType<typeof VALIDATION_SCHEMA>;
 
-const INITIAL_VALUES: TLoginFormValues = { username: '0a8046d4d', password: 'pwd123456' };
+// const INITIAL_VALUES: TLoginFormValues = { username: '0a8046d4d', password: 'pwd123456' };
 
 export type { TLoginFormValues };
-export { VALIDATION_SCHEMA, INITIAL_VALUES };
+export { VALIDATION_SCHEMA };

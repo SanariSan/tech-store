@@ -28,8 +28,10 @@ const userSlice = createSlice({
     ) {
       state.loadingStatus = action.payload.status;
     },
-    setUserInfo(state, action: { payload: { username?: string }; type: string }) {
-      state.username = action.payload.username;
+    setUserInfo(state, action: { payload: { username?: string; email?: string }; type: string }) {
+      Object.entries(action.payload).forEach(([key, val]) => {
+        state[key] = val;
+      });
     },
     // sagas
     checkUserAuthStatusAsync() {},

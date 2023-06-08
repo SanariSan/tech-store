@@ -1,11 +1,10 @@
-import { Box, Flex, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, useBreakpointValue } from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { BreadcrumbComponentMemo } from '../../components/breadcrumb';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
+import { useThrottledState } from '../../hooks/use-throttled-state';
 import {
-  goodsHasMoreEntitiesSelector,
   goodsOffsetPerPageSelector,
   pushCartEntity,
   pushLikedEntity,
@@ -14,26 +13,26 @@ import {
   uiColorModeChangeStatusSelector,
   uiIsMobileSelector,
 } from '../../store';
-import { ModifiersContainer } from '../modifiers';
 import { AutoSizedGridWrapContainerMemo } from './grid';
 import type { TItemsGridContainerProps } from './items-grid.type';
 import { createItemData } from './memoize.items-grid';
 
 const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
-  title,
-  breadcrumbList,
-  modifiersList,
   entitiesList,
+  hasMoreEntities,
   onEntitiesEndReachCb,
   gridRef,
-  variant,
 }) => {
   const d = useAppDispatch();
   const isMobile = useAppSelector(uiIsMobileSelector);
   const chunkSize = useAppSelector(goodsOffsetPerPageSelector);
-  const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
   const colorModeChangeStatus = useAppSelector(uiColorModeChangeStatusSelector);
   const colorModeChangeAnimationDuration = useAppSelector(uiColorModeAnimationDurationSelector);
+  const throttledColorModeChangeStatus = useThrottledState({
+    state: colorModeChangeStatus,
+    replicateCondition: colorModeChangeStatus === 'completed',
+    delay: isMobile ? colorModeChangeAnimationDuration : colorModeChangeAnimationDuration + 350,
+  });
 
   const entitiesRef = useRef(entitiesList);
   const mountRenderCompleted = useRef(false);
@@ -41,16 +40,14 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const [scrollPos, setScrollPos] = useState({ top: 0, left: 0 });
   const [rowColPos, setRowColPos] = useState({ rowIndex: 0, columnIndex: 0 });
   const [forceRerenderFlag, setForceRerenderFlag] = useState(false);
-
-  const [colorModeChangeStatusProxy, setColorModeChangeStatusProxy] =
-    useState(colorModeChangeStatus);
   const columnCount =
     useBreakpointValue(
       {
         base: 1,
         lg: 2,
         xl: 3,
-        xxl: 4,
+        '2xl': 4,
+        '3xl': 5,
       },
       {
         fallback: 'base',
@@ -59,11 +56,9 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   const rowsPerChunk = useMemo(() => Math.ceil(chunkSize / columnCount), [chunkSize, columnCount]);
   const getRowCountCb = useCallback(
     () =>
-      variant === 'infinite'
-        ? Math.floor(entitiesRef.current.length / columnCount) +
-          (hasMoreEntities ? rowsPerChunk : 0)
-        : Math.ceil(entitiesRef.current.length / columnCount),
-    [columnCount, variant, rowsPerChunk, hasMoreEntities],
+      // rought rows amount (+) buffer rows for placeholders if hasMoreEntities
+      Math.ceil(entitiesRef.current.length / columnCount) + (hasMoreEntities ? rowsPerChunk : 0),
+    [columnCount, rowsPerChunk, hasMoreEntities],
   );
   const [rowCount, setRowCount] = useState(() => getRowCountCb());
 
@@ -101,8 +96,8 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   );
 
   const isThemeChanging = useMemo(
-    () => colorModeChangeStatus !== 'completed' || colorModeChangeStatusProxy !== 'completed',
-    [colorModeChangeStatus, colorModeChangeStatusProxy],
+    () => colorModeChangeStatus !== 'completed' || throttledColorModeChangeStatus !== 'completed',
+    [colorModeChangeStatus, throttledColorModeChangeStatus],
   );
 
   // replicate entities state to ref so it could be passed to memoized component not breaking cache
@@ -114,7 +109,6 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
 
   // fetch more on end reaching
   useEffect(() => {
-    if (!mountRenderCompleted.current) return;
     if (!hasMoreEntities) return;
 
     const maxRows = rowCount;
@@ -131,29 +125,6 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
   useEffect(() => {
     onResize();
   }, [columnCount, onResize]);
-
-  // color mode change local controller
-  useEffect(() => {
-    // instantly replicate ongoing state locally
-    if (colorModeChangeStatus === 'ongoing') {
-      setColorModeChangeStatusProxy('ongoing');
-      return;
-    }
-
-    const delay = isMobile
-      ? colorModeChangeAnimationDuration
-      : colorModeChangeAnimationDuration + 750;
-
-    // extra delay to let color theme animation properly finish, then replicate 'finished' state
-    const timer = setTimeout(() => {
-      setColorModeChangeStatusProxy(colorModeChangeStatus);
-      return;
-    }, delay);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [colorModeChangeStatus, colorModeChangeAnimationDuration, isMobile]);
 
   // reset flag since it's affecting useIsScrolling grid prop, not affected by that, but still
   useEffect(() => {
@@ -188,49 +159,28 @@ const ItemsGridContainer: FC<TItemsGridContainerProps> = ({
     onDislikeCb,
     onBuyCb,
     isThemeChanging,
-    variant,
+    hasMoreEntities,
   );
 
   return (
-    <Flex direction={'column'} w={'100%'} h={'100%'} gap={3}>
-      <Flex
-        w={'100%'}
-        minW={{ base: '230px', sm: '375px' }}
-        minH={'max-content'}
-        pt={8}
-        pb={4}
-        px={{ base: 6, sm: 8, md: 10 }}
-        gap={6}
-        direction={'column'}
-      >
-        <Flex w={'100%'} minH={'max-content'} gap={3} direction={'column'}>
-          <BreadcrumbComponentMemo list={breadcrumbList} />
-          <Text variant={{ base: 'md', sm: 'lg' }} fontWeight={'bold'} whiteSpace={'normal'}>
-            {title}
-          </Text>
-        </Flex>
-        <ModifiersContainer list={modifiersList} />
-      </Flex>
-
-      <Box w={'100%'} h={'100%'}>
-        <AutoSizer onResize={onResize}>
-          {({ height, width }) => (
-            <AutoSizedGridWrapContainerMemo
-              width={width ?? 0}
-              height={height ?? 0}
-              columnCount={columnCount}
-              gridRef={gridRef}
-              itemData={itemData}
-              onItemsRenderedCb={onItemsRenderedCb}
-              onScrollCb={onScrollCb}
-              rowCount={rowCount}
-              scrollPos={scrollPos}
-              forceRerenderFlag={forceRerenderFlag}
-            />
-          )}
-        </AutoSizer>
-      </Box>
-    </Flex>
+    <Box w={'100%'} h={'100%'}>
+      <AutoSizer onResize={onResize}>
+        {({ height, width }) => (
+          <AutoSizedGridWrapContainerMemo
+            width={width ?? 0}
+            height={height ?? 0}
+            columnCount={columnCount}
+            gridRef={gridRef}
+            itemData={itemData}
+            onItemsRenderedCb={onItemsRenderedCb}
+            onScrollCb={onScrollCb}
+            rowCount={rowCount}
+            scrollPos={scrollPos}
+            forceRerenderFlag={forceRerenderFlag}
+          />
+        )}
+      </AutoSizer>
+    </Box>
   );
 };
 

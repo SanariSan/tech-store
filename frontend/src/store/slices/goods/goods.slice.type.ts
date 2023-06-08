@@ -20,7 +20,8 @@ type TGoodsInitState = {
   offsetPerPage: number;
   hasMoreEntities: boolean;
   totalQty: number;
-  loadingStatus: TLoadingStatus;
+  entitiesLoadingStatus: TLoadingStatus;
+  categoriesLoadingStatus: TLoadingStatus;
 };
 
 export type { TEntities, TCategories, TSelectedCategory, TSelectedModifier, TGoodsInitState };

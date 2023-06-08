@@ -21,6 +21,9 @@ const Text = {
     xxxl: {
       fontSize: '28px',
     },
+    xxxxl: {
+      fontSize: '36px',
+    },
   },
   defaultProps: {
     variant: 'base',

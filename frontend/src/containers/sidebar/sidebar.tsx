@@ -1,13 +1,14 @@
 import { Flex, Spacer } from '@chakra-ui/react';
 import type { FC } from 'react';
-import { Fragment, memo, useCallback, useEffect, useState } from 'react';
+import { Fragment, memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { SidebarCategoryEntityMemo, SidebarSectionEntityMemo } from '../../components/sidebar';
 import { SIDEBAR_TEMPLATE } from '../../const';
+import { sleep } from '../../helpers/util';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchCategoriesAsync,
+  goodsCategoriesLoadingStatusSelector,
   goodsCategoriesSelector,
-  goodsLoadingStatusSelector,
   goodsSelectedCategoryIdxSelector,
   setSelectedCategoryIdx,
   uiSelectedSectionIdxSelector,
@@ -25,7 +26,7 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
   const isSidebarOpened = useAppSelector(uiSidebarStateSelector);
   const selectedSectionIdx = useAppSelector(uiSelectedSectionIdxSelector);
   const selectedCategoryIdx = useAppSelector(goodsSelectedCategoryIdxSelector);
-  const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
+  const categoriesLoadingStatus = useAppSelector(goodsCategoriesLoadingStatusSelector);
 
   const [unfoldedIdxs, setUnfoldedIdxs] = useState<number[]>([]);
 
@@ -45,13 +46,23 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
     [collapse, unfold, unfoldedIdxs],
   );
 
+  const disabledEntries = useMemo(() => ['settings'], []);
+
   // fetch global categories
   useEffect(() => {
-    // constant retry in case of fail
-    if (loadingStatus !== 'loading' && categories.length <= 0) {
+    if (categoriesLoadingStatus === 'idle') {
       void d(fetchCategoriesAsync());
+      return;
     }
-  }, [loadingStatus, categories, d]);
+
+    // constant retry in case of fail
+    if (categoriesLoadingStatus === 'failure' && categories.length <= 0) {
+      void sleep(5000).then(() => {
+        void d(fetchCategoriesAsync());
+        return;
+      });
+    }
+  }, [categoriesLoadingStatus, categories, d]);
 
   return (
     <Flex
@@ -80,6 +91,8 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
               title={title}
               icon={icon}
               hasCategory={subCategory === 'catalogue'}
+              categoriesLoadingStatus={categoriesLoadingStatus}
+              isDisabled={disabledEntries.includes(title)}
               isSidebarOpened={isSidebarOpened}
               isSelected={selectedSectionIdx === idxSection}
               isCategoryUnfolded={isUnfolded}
@@ -88,6 +101,7 @@ const SidebarContainer: FC<ISidebarContainer> = () => {
 
                 // for now there is only 1 sub category possible - catalogue, so here's just explicit check
                 // allows to not refetch on ANY category choice + prevent refetch on subsequent section clicks
+                // So, if target category is catalogue AND (there was no section selected b4 OR there WAS category selected)
                 if (
                   subCategory === 'catalogue' &&
                   (selectedSectionIdx === -1 || selectedCategoryIdx !== -1)

@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { goodsSelectedModifierSelector, setSelectedModifierIdx } from '../../store';
 
 type TModifiersProps = {
-  list: Array<{
+  list?: Array<{
     title: string;
   }>;
 };
@@ -25,6 +25,9 @@ export const ModifiersContainer: FC<TModifiersProps> = ({ list }) => {
     },
     [d],
   );
+
+  if (list === undefined) return null;
+  if (list.length <= 0) return null;
 
   return (
     <Flex w={'100%'} alignItems={'center'} justifyContent={'flex-start'} flexWrap={'wrap'} gap={3}>

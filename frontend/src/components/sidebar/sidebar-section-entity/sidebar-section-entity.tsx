@@ -1,16 +1,28 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import type { IconProps } from '@chakra-ui/react';
-import { Box, Circle, Flex, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Spinner,
+  Box,
+  Circle,
+  Flex,
+  Text,
+  useColorModeValue,
+  Icon as IconChakra,
+} from '@chakra-ui/react';
 import type { FC } from 'react';
 import { memo } from 'react';
+import { AiFillWarning } from 'react-icons/ai';
 import { COLORS } from '../../../chakra-setup';
+import type { TLoadingStatus } from '../../../store/slices/slices.type';
 
 interface ISidebarSectionEntity {
   isSidebarOpened: boolean;
   icon: (props: IconProps) => JSX.Element;
   title: string;
+  isDisabled?: boolean;
   isSelected: boolean;
   hasCategory: boolean;
+  categoriesLoadingStatus: TLoadingStatus;
   isCategoryUnfolded: boolean;
   onSubUnfold: () => void;
   onSelect: () => void;
@@ -21,12 +33,14 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
   icon: Icon,
   title,
   isSelected,
+  isDisabled = false,
   hasCategory,
+  categoriesLoadingStatus,
   isCategoryUnfolded,
   onSubUnfold,
   onSelect,
 }) => {
-  const [inactive, inactiveAlt, secondaryAlt, wrapBg, accent, impact, hover, secondary] = [
+  const [inactive, inactiveAlt, secondaryAlt, wrapBg, accent, impact, hover, secondary, warning] = [
     useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[400], COLORS.blue[600]),
     useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
@@ -35,6 +49,7 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
     useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
     useColorModeValue(COLORS.white[100], COLORS.darkBlue[400]),
     useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
+    useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
   ];
 
   return (
@@ -49,7 +64,7 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
         bg: isSelected ? wrapBg : hover,
       }}
       borderRadius={'0 25px 25px 0'}
-      cursor={'pointer'}
+      cursor={isDisabled ? 'not-allowed' : 'pointer'}
     >
       <Box
         opacity={isSelected ? 1 : 0}
@@ -68,12 +83,14 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
         justifyContent={'flex-start'}
         overflowX={'hidden'}
         onClick={() => {
+          if (isDisabled) return;
           onSelect();
         }}
         transition={'transform 300ms cubic-bezier(0.215, 0.61, 0.355, 1)'}
         _hover={{
           transform: 'translateX(3px)',
         }}
+        position={'relative'}
       >
         <Icon
           boxSize={{ base: 4, sm: 5 }}
@@ -82,13 +99,15 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
           _hover={{
             color: isSelected ? impact : secondaryAlt,
           }}
+          opacity={isDisabled ? 0.4 : 1}
         />
 
         <Text
           pl={{ base: 4, sm: 5 }}
           variant={{ base: 'sm' }}
-          opacity={isSidebarOpened ? 1 : 0}
+          opacity={isSidebarOpened ? (isDisabled ? 0.4 : 1) : 0}
           transition={'opacity 0.1s linear'}
+          textTransform={'capitalize'}
         >
           {title}
         </Text>
@@ -101,16 +120,23 @@ const SidebarSectionEntity: FC<ISidebarSectionEntity> = ({
             transition={'opacity 0.1s linear'}
             onClick={(e) => {
               e.stopPropagation();
+              if (isDisabled) return;
               onSubUnfold();
             }}
           >
-            <Circle size={'18px'} border={'2px'} borderColor={secondary}>
-              {isCategoryUnfolded ? (
-                <ChevronUpIcon color={inactiveAlt} />
-              ) : (
-                <ChevronDownIcon color={inactiveAlt} />
-              )}
-            </Circle>
+            {categoriesLoadingStatus === 'loading' ? (
+              <Spinner size="xs" />
+            ) : categoriesLoadingStatus === 'failure' ? (
+              <IconChakra as={AiFillWarning} boxSize={3} color={warning} />
+            ) : (
+              <Circle size={'18px'} border={'2px'} borderColor={secondary}>
+                {isCategoryUnfolded ? (
+                  <ChevronUpIcon color={inactiveAlt} />
+                ) : (
+                  <ChevronDownIcon color={inactiveAlt} />
+                )}
+              </Circle>
+            )}
           </Box>
         )}
       </Flex>

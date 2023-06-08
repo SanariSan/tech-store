@@ -3,19 +3,22 @@ import type { VariableSizeGrid as Grid } from 'react-window';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import {
   fetchMoreEntitiesAsync,
+  goodsEntitiesLoadingStatusSelector,
   goodsEntitiesSelector,
-  goodsLoadingStatusSelector,
+  goodsHasMoreEntitiesSelector,
   goodsSelectedCategorySelector,
   goodsSelectedModifierSelector,
   uiSelectedCategoryRouteBreadcrumbFormattedSelector,
   uiSelectedSectionSelector,
 } from '../../store';
+import { SectionWrapContainerMemo } from '../section-wrap';
 import { ItemsGridComponentMemo } from './items-grid';
 
 const CatalogueContainer = () => {
   const d = useAppDispatch();
   const entities = useAppSelector(goodsEntitiesSelector);
-  const loadingStatus = useAppSelector(goodsLoadingStatusSelector);
+  const hasMoreEntities = useAppSelector(goodsHasMoreEntitiesSelector);
+  const loadingStatus = useAppSelector(goodsEntitiesLoadingStatusSelector);
 
   const selectedSection = useAppSelector(uiSelectedSectionSelector);
   const selectedCategory = useAppSelector(goodsSelectedCategorySelector);
@@ -56,15 +59,18 @@ const CatalogueContainer = () => {
   }, [fetchMoreEntities]);
 
   return (
-    <ItemsGridComponentMemo
-      title={'Best Selling Electronics Products - Weekly Update.'}
+    <SectionWrapContainerMemo
+      title={'Best Selling Electronics Products - Weekly Update!'}
       breadcrumbList={breadcrumbList}
       modifiersList={modifiersList}
-      entitiesList={entities}
-      onEntitiesEndReachCb={onEntitiesEndReachCb}
-      gridRef={gridRef}
-      variant="infinite"
-    />
+    >
+      <ItemsGridComponentMemo
+        entitiesList={entities}
+        hasMoreEntities={hasMoreEntities}
+        onEntitiesEndReachCb={onEntitiesEndReachCb}
+        gridRef={gridRef}
+      />
+    </SectionWrapContainerMemo>
   );
 };
 

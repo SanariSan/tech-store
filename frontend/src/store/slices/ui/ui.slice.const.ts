@@ -10,7 +10,7 @@ const UI_INIT_STATE: TUiInitState = {
   isSidebarOpened: false,
   colorModeAnimationDuration: 1500,
   colorModeChangeStatus: 'completed',
-  isMobile: true,
+  isMobile: false,
   colorModeToogleCoords: {
     x: 0,
     y: 0,

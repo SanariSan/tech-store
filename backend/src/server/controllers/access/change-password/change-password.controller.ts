@@ -11,7 +11,7 @@ export const changePasswordCTR = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { username } = req.session.user;
+  const { username, email } = req.session.user;
   const { oldPassword, newPassword } = req.body;
 
   let possibleUser: Awaited<ReturnType<typeof UserRepository.findByUsername>>;
@@ -53,6 +53,7 @@ export const changePasswordCTR = async (
     res,
     data: {
       username,
+      email,
       isAuthenticated: false,
     },
   }).send();

@@ -7,6 +7,7 @@ type TRegister = {
   [TKey in keyof TProps]: TProps[TKey];
 } & {
   isLoading: boolean;
+  onGenerateRandomData: () => void;
   handleSubmit: React.FormEventHandler<HTMLFormElement>;
 };
 

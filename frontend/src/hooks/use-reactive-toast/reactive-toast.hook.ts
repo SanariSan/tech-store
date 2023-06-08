@@ -1,5 +1,5 @@
 import type { UseToastOptions } from '@chakra-ui/react';
-import { useToast } from '@chakra-ui/react';
+import { useColorMode, useToast } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
 export const useReactiveToast = ({
@@ -13,6 +13,7 @@ export const useReactiveToast = ({
   description?: string;
   storeCleanupCb?: () => void;
 }) => {
+  const { colorMode } = useColorMode();
   const toast = useToast();
 
   useEffect(() => {
@@ -24,11 +25,11 @@ export const useReactiveToast = ({
       status: type,
       duration: 5000,
       position: 'top-right',
-      variant: 'subtle',
+      variant: colorMode === 'light' ? 'subtle' : 'solid',
       isClosable: true,
     });
 
     if (storeCleanupCb === undefined) return;
     storeCleanupCb();
-  }, [title, description, type, toast, storeCleanupCb]);
+  }, [title, description, type, toast, colorMode, storeCleanupCb]);
 };

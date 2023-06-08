@@ -16,6 +16,8 @@ export const accessAuthStatusCTR = (req: TRequestNarrowed, res: Response, next: 
   new SuccessResponse({
     res,
     data: {
+      username: req.session.user.username,
+      email: req.session.user.email,
       isAuthenticated: true,
     },
   }).send();

@@ -47,7 +47,7 @@ function buildCategoryRouteQueue({
   for (const categoryEntity of categoriesArr) {
     const from = categoryEntity.title;
     const q: TCategoriesExist = [];
-    const routeHash: Record<string, string | undefined> = {};
+    const routeHash: Record<string, string> = {};
 
     q.push(categoryEntity);
 
@@ -72,11 +72,11 @@ function buildCategoryRouteQueue({
           routeHash[subTitle] = parentTitle;
 
           if (subTitle === target) {
-            let start = routeHash[subTitle] as string;
+            let start = routeHash[subTitle];
             const result = [target, start];
 
             while (start !== from) {
-              start = routeHash[start] as string;
+              start = routeHash[start];
               result.push(start);
             }
 

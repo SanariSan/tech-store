@@ -6,16 +6,23 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { App } from './app';
-import { GlobalHistoryCatcherContainer } from './containers/functional';
 import { Fonts, THEME } from './chakra-setup';
+import { GlobalHistoryCatcherContainer } from './containers/functional';
+import { ELOG_LEVEL } from './general.type';
 import './index.scss';
+import { setupLogListener } from './logging';
+import { publishLog } from './modules/access-layer/events/pubsub';
 import { Persistor, Store } from './store';
 
 const history = createBrowserHistory();
 const rootElement = document.querySelector('#root') as Element;
 const root = createRoot(rootElement);
 
-console.log(`REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
+// simple inplace custom pubsub logging setup
+setupLogListener();
+
+// console.log(`REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
+publishLog(ELOG_LEVEL.DEBUG, `REACT_APP_API_URL: ${process.env.REACT_APP_API_URL}`);
 
 root.render(
   <React.StrictMode>

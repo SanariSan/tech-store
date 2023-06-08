@@ -114,7 +114,7 @@ const GridCardComponent: FC<TGridCardComponent> = ({
       alignItems={'center'}
       justifyContent={'space-between'}
       minH={{ base: '250px', sm: '375px' }}
-      minW={{ base: '230px', sm: '375px' }}
+      minW={{ base: '230px', sm: '330px' }}
       maxW={{ base: '230px', sm: '450px' }}
       h={'max-content'}
       w={'100%'}
@@ -148,8 +148,10 @@ const GridCardComponent: FC<TGridCardComponent> = ({
           objectFit={{ base: 'cover', sm: 'cover' }}
           backgroundColor={'transparent'}
           h={'100%'}
-          hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
-          lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
+          hSrc={hsrc}
+          lSrc={lsrc}
+          // hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
+          // lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
           elRef={imgRef}
         />
         <Flex

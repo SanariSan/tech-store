@@ -1,12 +1,14 @@
 import { call, cancelled, put, takeLatest } from 'redux-saga/effects';
+import { ELOG_LEVEL } from '../../../../general.type';
 import type { TSafeReturn } from '../../../../helpers/sagas';
 import { safe } from '../../../../helpers/sagas';
+import { publishLog } from '../../../../modules/access-layer/events/pubsub';
 import type {
   TAccessLoginIncomingFailureFields,
   TAccessLoginIncomingSuccessFields,
   TAccessLoginOutgoingFields,
 } from '../../../../services/api';
-import { AccessLoginOutgoingDTO, validateDTO, loginUser } from '../../../../services/api';
+import { AccessLoginOutgoingDTO, loginUser, validateDTO } from '../../../../services/api';
 import {
   loginUserAsync,
   setUserAuthLoadStatus,
@@ -40,7 +42,7 @@ function* loginUserWorker(action: { type: string; payload: Partial<TAccessLoginO
       failure?: TAccessLoginIncomingFailureFields;
     }>;
 
-    console.dir(fetchStatus);
+    publishLog(ELOG_LEVEL.DEBUG, fetchStatus);
 
     if (fetchStatus.error !== undefined) {
       yield put(

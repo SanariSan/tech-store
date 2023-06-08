@@ -1,3 +1,5 @@
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishError } from '../../../modules/access-layer/events/pubsub';
 import { request } from '../../request-base.services';
 import type { TAccessRegisterOutgoingFields } from '../dto';
 import {
@@ -39,7 +41,7 @@ export async function registerUser({
       }),
     };
   } catch (error) {
-    console.error(error);
+    publishError(ELOG_LEVEL.DEBUG, error as Error);
     throw new Error('Internal error');
   }
 }

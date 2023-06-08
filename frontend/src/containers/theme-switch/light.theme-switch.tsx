@@ -15,7 +15,7 @@ const LightThemeSwitchContainer: FC<TLightThemeSwitchContainer> = () => {
   const d = useAppDispatch();
 
   useEffect(() => {
-    if (mountRenderCompleted.current && colorModeChangeStatus === 'ongoing') {
+    if (colorModeChangeStatus === 'ongoing') {
       toggleColorMode();
       void d(finalizeColorModeChangeUi());
     }

@@ -1,4 +1,6 @@
 import qs from 'query-string';
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishError } from '../../../modules/access-layer/events/pubsub';
 import { request } from '../../request-base.services';
 import type { TGoodsEntitiesOutgoingFields } from '../dto';
 import {
@@ -38,7 +40,7 @@ export async function getEntities({
       }),
     };
   } catch (error) {
-    console.error(error);
+    publishError(ELOG_LEVEL.DEBUG, error as Error);
     throw new Error('Internal error');
   }
 }

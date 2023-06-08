@@ -12,7 +12,7 @@ import {
   setupCacheDb,
 } from './setup';
 
-function test() {}
+// function test() {}
 
 /* eslint-disable @typescript-eslint/require-await */
 
@@ -22,12 +22,12 @@ async function init() {
   setupValidateEnv();
   setupErrorHandle();
   setupCli();
+  //  setupDashboard();
   await setupCacheDb();
   await setupPersistentDb();
   setupExpress();
 
-  test();
-  //  setupDashboard();
+  // test();
 }
 
 void init();

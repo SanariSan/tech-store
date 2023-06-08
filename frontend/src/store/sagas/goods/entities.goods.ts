@@ -18,17 +18,18 @@ import {
   fetchMoreEntitiesAsync,
   increaseOffset,
   pushEntities,
-  setGoodsLoadStatus,
+  setEntitiesLoadStatus,
   setHasMoreEntities,
   setTotalQty,
 } from '../../slices';
+import { ELOG_LEVEL } from '../../../general.type';
+import { publishLog } from '../../../modules/access-layer/events/pubsub';
 
 function* entitiesWorker(action: { type: string }) {
   const abortController = new AbortController();
   try {
-    yield put(setGoodsLoadStatus({ status: 'loading' }));
-    // todo: remove in prod (?), showcase delay
-    yield delay(500);
+    yield put(setEntitiesLoadStatus({ status: 'loading' }));
+    // yield delay(500);
 
     const [selectedCategory, selectedModifier, offset, offsetPerPage] = [
       {
@@ -40,8 +41,6 @@ function* entitiesWorker(action: { type: string }) {
       (yield select(goodsOffsetSelector)) as number,
       (yield select(goodsOffsetPerPageSelector)) as number,
     ];
-
-    console.log({ selectedCategory, selectedModifier, offset, offsetPerPage });
 
     const validateStatus = (yield safe(
       call(validateDTO, {
@@ -57,7 +56,7 @@ function* entitiesWorker(action: { type: string }) {
 
     if (validateStatus.error !== undefined) {
       yield put(
-        setGoodsLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
+        setEntitiesLoadStatus({ status: 'failure', message: String(validateStatus.error.message) }),
       );
       return;
     }
@@ -69,11 +68,11 @@ function* entitiesWorker(action: { type: string }) {
       failure?: TGoodsEntitiesIncomingFailureFields;
     }>;
 
-    console.dir(fetchStatus);
+    publishLog(ELOG_LEVEL.DEBUG, fetchStatus);
 
     if (fetchStatus.error !== undefined) {
       yield put(
-        setGoodsLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
+        setEntitiesLoadStatus({ status: 'failure', message: String(fetchStatus.error.message) }),
       );
       return;
     }
@@ -87,13 +86,13 @@ function* entitiesWorker(action: { type: string }) {
         yield put(increaseOffset());
       }
 
-      yield put(setGoodsLoadStatus({ status: 'success' }));
+      yield put(setEntitiesLoadStatus({ status: 'success' }));
       return;
     }
 
     if (fetchStatus.response.failure !== undefined) {
       yield put(
-        setGoodsLoadStatus({
+        setEntitiesLoadStatus({
           status: 'failure',
           message: String(fetchStatus.response.failure.detail),
         }),

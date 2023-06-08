@@ -9,10 +9,13 @@ const AccessChangePasswordOutgoingDTO = object({
 
 const AccessChangePasswordIncomingSuccessDTO = object({
   data: object({
-    username: string().required(),
+    username: string().optional(),
+    email: string().optional(),
     isAuthenticated: boolean().required(),
   }),
-});
+})
+  .noUnknown(true)
+  .strict(true);
 
 const AccessChangePasswordIncomingFailureDTO = DEFAULT_FAILURE_DTO.shape({
   miscellaneous: MISCELLANEOUS.shape({
@@ -26,7 +29,7 @@ const AccessChangePasswordIncomingFailureDTO = DEFAULT_FAILURE_DTO.shape({
       )
       .required(),
   }),
-});
+}).strict(true);
 
 type TAccessChangePasswordOutgoingFields = InferType<typeof AccessChangePasswordOutgoingDTO>;
 type TAccessChangePasswordIncomingSuccessFields = InferType<

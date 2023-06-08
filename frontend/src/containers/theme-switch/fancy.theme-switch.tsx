@@ -1,7 +1,7 @@
-import { Box, Image, keyframes, useColorMode } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
+import { keyframes, useColorMode } from '@chakra-ui/react';
 import type { FC, MutableRefObject } from 'react';
 import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FancyThemeSwitchComponentMemo } from '../../components/theme-switch';
 import { sleep } from '../../helpers/util';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { useScreenshot } from '../../hooks/use-screenshot';
@@ -18,7 +18,6 @@ type TFancyThemeSwitchContainer = {
 };
 const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotTargetRef }) => {
   const d = useAppDispatch();
-  const mountRenderCompleted = useRef(false);
   const { image, takeScreenshot } = useScreenshot({ type: 'image/png' });
   const [imageLocal, setImageLocal] = useState<string | null>(null);
   const { toggleColorMode } = useColorMode();
@@ -89,7 +88,7 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
   }, [colorModeChangeStatus, overlayAnimationDuration]);
 
   useEffect(() => {
-    if (mountRenderCompleted.current && colorModeChangeStatus === 'ongoing') {
+    if (colorModeChangeStatus === 'ongoing') {
       takeScreenshotCb();
     }
   }, [colorModeChangeStatus, takeScreenshotCb]);
@@ -113,45 +112,14 @@ const FancyThemeSwitchContainer: FC<TFancyThemeSwitchContainer> = ({ screenshotT
     }
   }, [imageLocal, overlayAnimationDuration, d, toggleColorMode]);
 
-  useEffect(() => {
-    if (!mountRenderCompleted.current) mountRenderCompleted.current = true;
-
-    return () => {
-      mountRenderCompleted.current = false;
-    };
-  }, []);
-
   return (
-    <>
-      {colorModeChangeStatus === 'ongoing' ||
-        (colorModeChangeStatusProxy === 'ongoing' && (
-          // overlay Box will stay until animation is fully done
-          // prevents user from interrupting anything
-          <Box
-            position={'absolute'}
-            zIndex={999_999}
-            w={'100%'}
-            h={'100%'}
-            left={0}
-            top={0}
-            background={'transparent'}
-          />
-        ))}
-      <Image
-        as={motion.image}
-        position={'absolute'}
-        zIndex={999_999}
-        w={'100%'}
-        h={'100%'}
-        backgroundImage={imageLocal !== null ? image : undefined}
-        left={0}
-        top={0}
-        transform={'perspective(500px) translateX(1px) translateY(1px) translateZ(1px)'}
-        opacity={0}
-        animation={animation}
-        display={imageLocal !== null ? 'block' : 'none'}
-      />
-    </>
+    <FancyThemeSwitchComponentMemo
+      isVisible={imageLocal !== null}
+      bg={imageLocal !== null ? image : undefined}
+      colorModeChangeStatus={colorModeChangeStatus}
+      colorModeChangeStatusProxy={colorModeChangeStatusProxy}
+      animation={animation}
+    />
   );
 };
 

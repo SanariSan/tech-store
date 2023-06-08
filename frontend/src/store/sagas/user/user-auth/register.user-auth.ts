@@ -13,6 +13,8 @@ import {
   setUserInfo,
   setUserIsAuthenticated,
 } from '../../../slices';
+import { publishLog } from '../../../../modules/access-layer/events/pubsub';
+import { ELOG_LEVEL } from '../../../../general.type';
 
 function* registerUserWorker(action: {
   type: string;
@@ -43,7 +45,7 @@ function* registerUserWorker(action: {
       failure?: TAccessRegisterIncomingFailureFields;
     }>;
 
-    console.dir(fetchStatus);
+    publishLog(ELOG_LEVEL.DEBUG, fetchStatus);
 
     if (fetchStatus.error !== undefined) {
       yield put(

@@ -1,17 +1,35 @@
-import { Button, Flex, Input, Text, useColorModeValue } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Icon,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Text,
+  useColorModeValue,
+} from '@chakra-ui/react';
 import { ErrorMessage, Field, Form as FormikForm } from 'formik';
 import type { FC } from 'react';
+import { useCallback, useState } from 'react';
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { COLORS } from '../../chakra-setup';
 import { changeRoute } from '../../containers/functional';
 import type { TLogin } from './login.type';
 
 const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
   const { handleSubmit, errors, touched } = rest;
-  const [impact, btnColor, errorMsg] = [
+  const [hidden, setHidden] = useState(true);
+  const [impact, btnColor, errorMsg, inactive, secondaryAlt] = [
     useColorModeValue(COLORS.yellow[400], COLORS.yellow[400]),
     useColorModeValue(COLORS.blue[800], COLORS.darkBlue[600]),
     useColorModeValue(COLORS.red[500], COLORS.red[300]),
+    useColorModeValue(COLORS.blue[500], COLORS.blue[600]),
+    useColorModeValue(COLORS.blue[600], COLORS.blue[500]),
   ];
+
+  const toggleHidden = useCallback(() => {
+    setHidden((s) => !s);
+  }, []);
 
   return (
     <FormikForm
@@ -32,19 +50,21 @@ const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
         >
           <Text variant={'xxxl'}>Log in</Text>
 
-          <Flex direction={'column'} alignItems={'flex-start'} gap={3}>
+          <Flex direction={'column'} alignItems={'flex-start'} gap={3} w={'100%'}>
             <Text fontWeight={'bold'} variant={'md'}>
               Username
             </Text>
-            <Input
-              as={Field}
-              className="mb-1"
-              isInvalid={touched.username !== undefined && errors.username !== undefined}
-              type="text"
-              name="username"
-              aria-label="username"
-              placeholder="Enter username"
-            />
+            <InputGroup size="md">
+              <Input
+                as={Field}
+                className="mb-1"
+                isInvalid={touched.username !== undefined && errors.username !== undefined}
+                type="text"
+                name="username"
+                aria-label="username"
+                placeholder="Enter username"
+              />
+            </InputGroup>
             <ErrorMessage name="username">
               {(errorMessage: string) => (
                 <Text variant={'sm'} color={errorMsg}>
@@ -54,18 +74,35 @@ const LoginComponent: FC<TLogin> = ({ isLoading, ...rest }) => {
             </ErrorMessage>
           </Flex>
 
-          <Flex direction={'column'} alignItems={'flex-start'} gap={3}>
+          <Flex direction={'column'} alignItems={'flex-start'} gap={3} w={'100%'}>
             <Text fontWeight={'bold'} variant={'md'}>
               Password
             </Text>
-            <Input
-              as={Field}
-              className="mb-1"
-              isInvalid={touched.password !== undefined && errors.password !== undefined}
-              type="password"
-              name="password"
-              placeholder="Password"
-            />
+            <InputGroup size="md">
+              <Input
+                as={Field}
+                className="mb-1"
+                isInvalid={touched.password !== undefined && errors.password !== undefined}
+                type={hidden ? 'password' : 'text'}
+                name="password"
+                placeholder="Password"
+              />
+              <InputRightElement width="40px">
+                <Icon
+                  as={hidden ? AiFillEyeInvisible : AiFillEye}
+                  onClick={toggleHidden}
+                  boxSize={{ base: 4, sm: 5 }}
+                  color={inactive}
+                  _hover={{
+                    color: secondaryAlt,
+                  }}
+                  _active={{
+                    color: inactive,
+                  }}
+                  cursor={'pointer'}
+                />
+              </InputRightElement>
+            </InputGroup>
             <ErrorMessage name="password">
               {(errorMessage: string) => (
                 <Text variant={'sm'} color={errorMsg}>

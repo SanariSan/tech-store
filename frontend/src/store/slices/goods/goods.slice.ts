@@ -182,11 +182,17 @@ const goodsSlice = createSlice({
     purgeCart(state) {
       state.cart.length = 0;
     },
-    setGoodsLoadStatus(
+    setEntitiesLoadStatus(
       state,
       action: { payload: { status: TLoadingStatus; message?: string }; type: string },
     ) {
-      state.loadingStatus = action.payload.status;
+      state.entitiesLoadingStatus = action.payload.status;
+    },
+    setCategoriesLoadStatus(
+      state,
+      action: { payload: { status: TLoadingStatus; message?: string }; type: string },
+    ) {
+      state.categoriesLoadingStatus = action.payload.status;
     },
     // sagas
     fetchCategoriesAsync() {},
@@ -208,7 +214,8 @@ const {
   pushCartEntity,
   removeCartEntity,
   purgeCart,
-  setGoodsLoadStatus,
+  setEntitiesLoadStatus,
+  setCategoriesLoadStatus,
   fetchCategoriesAsync,
   fetchMoreEntitiesAsync,
 } = goodsSlice.actions;
@@ -227,7 +234,8 @@ export {
   removeCartEntity,
   purgeCart,
   removeLikedEntity,
-  setGoodsLoadStatus,
+  setEntitiesLoadStatus,
+  setCategoriesLoadStatus,
   fetchCategoriesAsync,
   fetchMoreEntitiesAsync,
 };
