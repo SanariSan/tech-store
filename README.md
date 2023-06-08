@@ -1,6 +1,12 @@
-# Online fullstack tech store
+<div align="center"><h1>Fullstack tech store</h1></div>
 
-Showcase project
+<div align="center"><b>Showcase project</b></div>
+<div align="center"><b><a href="https://test.nodejs.monster">https://test.nodejs.monster</a></b></div>
+
+<br />
+
+<div align="center"><img src="https://github.com/SanariSan/tech-store/blob/master/assets/main-page.png?raw=true" width="859" height="483"></div>
+<!-- <div align="center"><img src="./assets/main-page.png" width="859" height="483"></div> -->
 
 ---
 
@@ -9,10 +15,12 @@ Showcase project
 - React
 - Redux
 - Redux-Saga
-- Bootstrap
-- Sass styling + custom theme switch
-- Api with data-models (dto)
-- Build inside docker container using two volumes (staging > prod) for live static content replacement (volume mounted to backend) 
+- React-window infinite scroll grid
+- Chakra UI
+- Theme switch (actually good)
+- Api DTO validation
+- Sass base
+- Build runs inside docker container using two volumes (staging > prod) for live static content replacement (volume mounted to nginx) 
 
 
 ### Backend:
@@ -20,9 +28,10 @@ Showcase project
 - Express
 - Postgres
 - Redis
-- Nginx
-- Session authentication
-- Docker/Compose
+- Nginx static / reverse api routing
+- Session based auth
+- Rate limit
+- Docker / Compose
 - Pub-Sub logging
 
 ### General:
