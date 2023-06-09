@@ -1,7 +1,7 @@
 <div align="center"><h1>Fullstack tech store</h1></div>
 
 <div align="center"><b>Showcase project</b></div>
-<div align="center"><b><a href="https://test.nodejs.monster">https://test.nodejs.monster</a></b></div>
+<div align="center"><b><a href="https://market.nodejs.monster">https://market.nodejs.monster</a></b></div>
 
 <br />
 

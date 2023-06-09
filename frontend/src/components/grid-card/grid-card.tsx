@@ -1,5 +1,13 @@
 import { TimeIcon } from '@chakra-ui/icons';
-import { Box, Button, Circle, Flex, Text, keyframes, useColorModeValue } from '@chakra-ui/react';
+import {
+  Button,
+  Circle,
+  Flex,
+  Text,
+  keyframes,
+  useColorModeValue,
+  useToken,
+} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import type { FC } from 'react';
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
@@ -68,6 +76,7 @@ const GridCardComponent: FC<TGridCardComponent> = ({
     useColorModeValue(COLORS.blue[600], COLORS.white[900]),
     useColorModeValue(COLORS.blue[600], COLORS.darkBlue[500]),
   ];
+  const [imgBg, circleBox] = useToken('colors', [COLORS.white[900], 'whiteAlpha.300']);
 
   const cartAnimationDuration = useMemo(() => 300, []);
   const animationKeyframes = useMemo(
@@ -129,12 +138,17 @@ const GridCardComponent: FC<TGridCardComponent> = ({
       _focus={{ sm: hover }}
       ref={cardRef}
     >
-      <Box
+      <Flex
+        justifyContent={'center'}
+        alignItems={'center'}
         w={'100%'}
         minH={{ base: '200px', sm: '300px' }}
         h={{ base: '200px', sm: '300px' }}
-        pb={4}
+        p={'auto'}
         pos={'relative'}
+        bg={imgBg}
+        borderRadius={'20px'}
+        mb={'15px'}
         onMouseOver={() => {
           setIsImageFocused(true);
         }}
@@ -143,15 +157,11 @@ const GridCardComponent: FC<TGridCardComponent> = ({
         }}
       >
         <LazyImageContainer
-          marginX={'auto'}
-          borderRadius={'20px'}
           objectFit={{ base: 'cover', sm: 'cover' }}
           backgroundColor={'transparent'}
-          h={'100%'}
+          h={'75%'}
           hSrc={hsrc}
           lSrc={lsrc}
-          // hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
-          // lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
           elRef={imgRef}
         />
         <Flex
@@ -166,10 +176,11 @@ const GridCardComponent: FC<TGridCardComponent> = ({
         >
           <Flex zIndex={1} gap={3}>
             <Circle
-              opacity={isImageFocused ? 0.8 : 0}
               _hover={{ opacity: 1, background: secondary }}
+              opacity={isImageFocused ? 0.8 : 0}
               transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
+              boxShadow={`0 0 2px 1px ${circleBox}`}
               onClick={() => {
                 if (isLiked) {
                   onDislike({ id });
@@ -183,10 +194,11 @@ const GridCardComponent: FC<TGridCardComponent> = ({
               <HeartIcon color={isLiked ? liked : icons} boxSize={{ base: 4, sm: 5 }} />
             </Circle>
             <Circle
-              opacity={isImageFocused ? 0.7 : 0}
+              opacity={isImageFocused ? 0.8 : 0}
               _hover={{ opacity: 1, background: secondary }}
               transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
               size={{ base: 10, sm: 12 }}
+              boxShadow={`0 0 2px 1px ${circleBox}`}
               background={wrapBg}
             >
               <TimeIcon color={icons} boxSize={{ base: 4, sm: 5 }} />
@@ -195,8 +207,6 @@ const GridCardComponent: FC<TGridCardComponent> = ({
 
           <Flex
             pos={'absolute'}
-            // w={size?.width ?? '100%'}
-            // h={size?.height ?? '100%'}
             w={'100%'}
             h={'100%'}
             backgroundColor={dimmer}
@@ -206,11 +216,11 @@ const GridCardComponent: FC<TGridCardComponent> = ({
             top={0}
             bottom={0}
             margin={'0 auto'}
-            opacity={isImageFocused ? 0.4 : 0}
+            opacity={isImageFocused ? 0.5 : 0}
             transition={'opacity 0.3s cubic-bezier(0.215, 0.61, 0.355, 1)'}
           />
         </Flex>
-      </Box>
+      </Flex>
       <Flex
         bg={cardBg}
         borderRadius={'20px'}
@@ -219,7 +229,6 @@ const GridCardComponent: FC<TGridCardComponent> = ({
         borderWidth={'2px'}
         w={'100%'}
         h={{ base: '150px', sm: '175px' }}
-        // minH={'135px'}
         direction={'column'}
         alignItems={'flex-start'}
         px={3}

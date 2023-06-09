@@ -1,5 +1,5 @@
 import { AddIcon, DeleteIcon, MinusIcon } from '@chakra-ui/icons';
-import { Box, Button, Circle, Flex, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Circle, Flex, Text, useColorModeValue, useToken } from '@chakra-ui/react';
 import type { FC } from 'react';
 import React, { memo, useMemo } from 'react';
 import { COLORS } from '../../chakra-setup';
@@ -39,6 +39,8 @@ const CartCardComponent: FC<TCartCardComponent> = ({
     useColorModeValue(COLORS.blue[300], COLORS.darkBlue[200]),
   ];
 
+  const [imgBg] = useToken('colors', [COLORS.white[900]]);
+
   const hover = useMemo(
     () => ({
       transform: 'perspective(100px) translateZ(2px)',
@@ -71,7 +73,11 @@ const CartCardComponent: FC<TCartCardComponent> = ({
       _focus={{ sm: hover }}
     >
       <Flex direction={'row'} width={'100%'} height={'max-content'} gap={4}>
-        <Box
+        <Flex
+          justifyContent={'center'}
+          alignItems={'center'}
+          borderRadius={'20px'}
+          bg={imgBg}
           minH={{ base: '100px', sm: '125px' }}
           maxH={{ base: '125px', sm: '150px' }}
           h={{ base: '100px', sm: '125px' }}
@@ -79,19 +85,13 @@ const CartCardComponent: FC<TCartCardComponent> = ({
           minW={'90px'}
         >
           <LazyImageContainer
-            marginX={'auto'}
-            borderRadius={'20px'}
             objectFit={{ base: 'cover', sm: 'cover' }}
             backgroundColor={'transparent'}
-            h={'100%'}
+            h={'75%'}
             hSrc={hsrc}
             lSrc={lsrc}
-            // hSrc={`${process.env.REACT_APP_API_URL}${hsrc}`}
-            // lSrc={`${process.env.REACT_APP_API_URL}${lsrc}`}
-            // src={'http://localhost:80/api/v1/goods/assets/h/l3.jpg'}
-            // fallbackSrc={'http://localhost:80/api/v1/goods/assets/l/l3.jpg'}
           />
-        </Box>
+        </Flex>
         <Flex
           direction={'column'}
           alignItems={'center'}
