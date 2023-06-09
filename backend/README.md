@@ -2,10 +2,6 @@
 
 ---
 
-### Work in progress
-
----
-
 ## Hints
 
 Session:
@@ -21,17 +17,21 @@ Cookie and ID example:
 
 ## Usage <a name = "usage"></a>
 
+
+For local dev:
 ```
-docker-compose up --build
+docker run --detach --rm -v "online-shop-backend-assets-volume:/assets_to" -v "/$(pwd)/assets:/assets_from" busybox sh -c "cp -rf /assets_from/* /assets_to"
+
+CORS_URL='https://localhost' \
+API_VERSION='v1' \
+COOKIE_SECRET='12345' \
+DB_USER='postgres' \
+DB_PASSWORD='postgres' \
+CACHE_PASSWORD='redis' \
+VIRTUAL_HOST='localhost' \
+LETSENCRYPT_HOST='localhost' \
+docker-compose -f ./docker-compose.dev.yaml up --build --always-recreate-deps --force-recreate
 
 // docker-compose build --no-cache
 // ARG CACHEBUST=1
-```
-
-
-Only db:
-
-```
-docker build -t sanarisan/job_sniper_postgres:1 -f $pwd/docker/postgres.Dockerfile .
-docker run -d --rm --name job_sniper_postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=super_secret_pWd -e POSTGRES_DB=postgres -v $pwd/db/pgdata:/var/lib/postgresql/data -p 5435:5432 --shm-size=512mb sanarisan/job_sniper_postgres:1
 ```
