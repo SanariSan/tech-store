@@ -146,9 +146,9 @@ services:
       DEV_TAG: '${DEV_TAG}'
       NETWORK_ACCESS: 'internal'
     # this may introduce race condition, be aware
-    deploy:
-      mode: replicated
-      replicas: 2
+    # deploy:
+    #   mode: replicated
+    #   replicas: 2
   online_shop_nginx:
     container_name: online_shop_nginx
     image: sanarisan/online_shop_nginx:1

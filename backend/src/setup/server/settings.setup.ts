@@ -102,7 +102,7 @@ function setupSettingsExpress(app: Express) {
 
   // track ip
   app.use((req: Request, res: Response, next: NextFunction) => {
-    const xRealIp = req.headers['x-real-ip'];
+    const xRealIp = req.headers['cf-connecting-ip'] ?? req.headers['x-real-ip'];
     const xForwardedFor = req.headers['x-forwarded-for'];
     let ip: string;
 
@@ -116,6 +116,7 @@ function setupSettingsExpress(app: Express) {
 
     publishLog(ELOG_LEVEL.INFO, {
       ip,
+      reqDotIp: req.ip,
       url: req.url,
     });
     next();
@@ -132,6 +133,7 @@ function setupSettingsExpress(app: Express) {
 
   app.use((req, res, next) => {
     publishLog(ELOG_LEVEL.DEBUG, JSON.stringify(req.headers));
+    next();
   });
 }
 
