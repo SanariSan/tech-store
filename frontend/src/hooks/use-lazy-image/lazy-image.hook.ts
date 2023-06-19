@@ -11,9 +11,13 @@ function useLazyImg({ lSrc, hSrc }: TLazyImage): TLazyImageReturn {
 
     const img = new Image();
     img.src = hSrc;
-    img.addEventListener('load', () => {
+
+    const cb = () => {
       setSrc(hSrc);
-    });
+      img.removeEventListener('load', cb);
+    };
+
+    img.addEventListener('load', cb);
   }, [lSrc, hSrc]);
 
   return [src, { blur: src === lSrc }];
