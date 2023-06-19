@@ -3,7 +3,7 @@ name: Deploy frontend
 on:
     push:
         branches:
-            - dev
+            - deploy
             # - master
         paths:
             - "frontend/**"
@@ -11,44 +11,53 @@ on:
     workflow_dispatch:
 
 jobs:
-    clone-frontend:
-        name: Clone frontend from monorepo
+    clone-build-send-front:
+        name: Clone front, build in docker, send to vps
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v3.5.2
+            - name: Checkout
+              uses: actions/checkout@v3.5.2
+              with:
+                token: ${{ secrets.PAT }}
 
-            - name: Copy repository contents via scp
+            - name: Build
+              run: >
+                chmod +x ./deploy-entrypoint-build.sh &&
+          
+                CORS_URL=${{ secrets.CORS_URL }}
+                API_VERSION=${{ secrets.API_VERSION }}
+                /bin/bash ./deploy-entrypoint-build.sh
+
+            - name: Scp send
               uses: appleboy/scp-action@v0.1.4
               env:
-                  HOST: ${{ secrets.HOST }}
-                  USERNAME: ${{ secrets.USERNAME }}
-                  PORT: ${{ secrets.PORT }}
-                  KEY: ${{ secrets.SSHKEY }}
+                HOST: ${{ secrets.HOST }}
+                USERNAME: ${{ secrets.USERNAME }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSHKEY }}
               with:
-                  rm: true
-                  overwrite: true
-                  strip_components: 1
-                  source: "./frontend/*"
-                  target: "/root/code/online-shop/frontend"
+                rm: true
+                overwrite: true
+                strip_components: 1
+                source: './frontend/*'
+                target: '/root/code/online-shop/frontend'
 
-    build-front:
-        name: Build frontend
-        needs: [clone-frontend]
+    apply-build-to-volume:
+        name: Apply front build to local volume
+        needs: [clone-build-send-front]
         runs-on: ubuntu-latest
 
         steps:
-            - name: Executing remote command
+            - name: Apply front build to local volume
               uses: appleboy/ssh-action@v0.1.4
               with:
-                  HOST: ${{ secrets.HOST }}
-                  USERNAME: ${{ secrets.USERNAME }}
-                  PORT: ${{ secrets.PORT }}
-                  KEY: ${{ secrets.SSHKEY }}
-                  script: >
-                      cd /root/code/online-shop/frontend &&
-                      chmod +x ./deploy-entrypoint.sh &&
+                HOST: ${{ secrets.HOST }}
+                USERNAME: ${{ secrets.USERNAME }}
+                PORT: ${{ secrets.PORT }}
+                KEY: ${{ secrets.SSHKEY }}
+                script: >
+                    cd /root/code/online-shop/frontend &&
+                    chmod +x ./deploy-entrypoint-apply.sh &&
 
-                      CORS_URL=${{ secrets.CORS_URL }}
-                      API_VERSION=${{ secrets.API_VERSION }}
-                      ./deploy-entrypoint.sh
+                    /bin/bash ./deploy-entrypoint-apply.sh
