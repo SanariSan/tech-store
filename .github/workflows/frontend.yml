@@ -1,63 +1,63 @@
 name: Deploy frontend
 
 on:
-    push:
-        branches:
-            - deploy
-            # - master
-        paths:
-            - "frontend/**"
-            - "**/frontend.yml"
-    workflow_dispatch:
+  push:
+    branches:
+      - deploy
+      # - master
+    paths:
+      - "frontend/**"
+      - "**/frontend.yml"
+  workflow_dispatch:
 
 jobs:
-    clone-build-send-front:
-        name: Clone front, build in docker, send to vps
-        runs-on: ubuntu-latest
+  clone-build-send-front:
+    name: Clone front, build in docker, send to vps
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v3.5.2
-              with:
-                token: ${{ secrets.PAT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.2
+        with:
+          token: ${{ secrets.PAT }}
 
-            - name: Build
-              run: >
-                chmod +x ./deploy-entrypoint-build.sh &&
-          
-                CORS_URL=${{ secrets.CORS_URL }}
-                API_VERSION=${{ secrets.API_VERSION }}
-                /bin/bash ./deploy-entrypoint-build.sh
+      - name: Build
+        run: >
+          chmod +x ./deploy-entrypoint-build.sh &&
 
-            - name: Scp send
-              uses: appleboy/scp-action@v0.1.4
-              env:
-                HOST: ${{ secrets.HOST }}
-                USERNAME: ${{ secrets.USERNAME }}
-                PORT: ${{ secrets.PORT }}
-                KEY: ${{ secrets.SSHKEY }}
-              with:
-                rm: true
-                overwrite: true
-                strip_components: 1
-                source: './frontend/*'
-                target: '/root/code/online-shop/frontend'
+          CORS_URL=${{ secrets.CORS_URL }}
+          API_VERSION=${{ secrets.API_VERSION }}
+          /bin/bash ./deploy-entrypoint-build.sh
 
-    apply-build-to-volume:
-        name: Apply front build to local volume
-        needs: [clone-build-send-front]
-        runs-on: ubuntu-latest
+      - name: Scp send
+        uses: appleboy/scp-action@v0.1.4
+        env:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          KEY: ${{ secrets.SSHKEY }}
+        with:
+          rm: true
+          overwrite: true
+          strip_components: 1
+          source: "./frontend/*"
+          target: "/root/code/online-shop/frontend"
 
-        steps:
-            - name: Apply front build to local volume
-              uses: appleboy/ssh-action@v0.1.4
-              with:
-                HOST: ${{ secrets.HOST }}
-                USERNAME: ${{ secrets.USERNAME }}
-                PORT: ${{ secrets.PORT }}
-                KEY: ${{ secrets.SSHKEY }}
-                script: >
-                    cd /root/code/online-shop/frontend &&
-                    chmod +x ./deploy-entrypoint-apply.sh &&
+  apply-build-to-volume:
+    name: Apply front build to local volume
+    needs: [clone-build-send-front]
+    runs-on: ubuntu-latest
 
-                    /bin/bash ./deploy-entrypoint-apply.sh
+    steps:
+      - name: Apply front build to local volume
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          HOST: ${{ secrets.HOST }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PORT: ${{ secrets.PORT }}
+          KEY: ${{ secrets.SSHKEY }}
+          script: >
+            cd /root/code/online-shop/frontend &&
+            chmod +x ./deploy-entrypoint-apply.sh &&
+
+            /bin/bash ./deploy-entrypoint-apply.sh
