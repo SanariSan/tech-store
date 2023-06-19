@@ -129,6 +129,10 @@ function setupSettingsExpress(app: Express) {
   });
 
   app.use(apiLimiter);
+
+  app.use((req, res, next) => {
+    publishLog(ELOG_LEVEL.DEBUG, JSON.stringify(req.headers));
+  });
 }
 
 export { setupSettingsExpress };
