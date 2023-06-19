@@ -19,8 +19,7 @@ function setupSettingsExpress(app: Express) {
   // origin: CORS_URL for static env url
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-  // todo: maybe switch 0/1 dev/prod?
-  app.set('trust proxy', 1);
+  app.set('trust proxy', 2);
   app.use(
     cors({
       origin: true,
@@ -132,7 +131,7 @@ function setupSettingsExpress(app: Express) {
   app.use(apiLimiter);
 
   app.use((req, res, next) => {
-    publishLog(ELOG_LEVEL.DEBUG, JSON.stringify(req.headers));
+    publishLog(ELOG_LEVEL.DEBUG, req.headers);
     next();
   });
 }
