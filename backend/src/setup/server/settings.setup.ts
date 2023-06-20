@@ -2,15 +2,15 @@ import connectRedis from 'connect-redis';
 import cors from 'cors';
 import type { Express, NextFunction, Request, Response } from 'express';
 import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 import session from 'express-session';
 import helmet from 'helmet';
-import { rateLimit } from 'express-rate-limit';
 import { CacheDBConnectionManager } from '../../db';
-import { publishLog } from '../../modules/access-layer/events/pubsub';
 import { ELOG_LEVEL } from '../../general.type';
+import { publishLog } from '../../modules/access-layer/events/pubsub';
 
 function setupSettingsExpress(app: Express) {
-  const { CORS_URL, DEV_TAG, NODE_ENV, COOKIE_SECRET } = process.env;
+  const { DEV_TAG, NODE_ENV, COOKIE_SECRET } = process.env;
 
   const RedisStore = connectRedis(session);
   const redisClient = CacheDBConnectionManager.getInstance().getConnection();
@@ -19,8 +19,7 @@ function setupSettingsExpress(app: Express) {
   // origin: CORS_URL for static env url
   app.set('env', NODE_ENV);
   // app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
-  // todo: maybe switch 0/1 dev/prod?
-  app.set('trust proxy', 1);
+  app.set('trust proxy', 2);
   app.use(
     cors({
       origin: true,
@@ -50,17 +49,16 @@ function setupSettingsExpress(app: Express) {
   app.set('x-powered-by', false);
 
   // todo: this seems to be not safe, find better way
-  let domain: string = CORS_URL;
-
-  // cut http-s prefix
-  if (/^https?:\/+/.test(CORS_URL)) {
-    domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
-  }
-
-  // cut subdomain
-  if (/^\w+\.\w+\.\w+$/.test(domain)) {
-    domain = domain.slice(domain.indexOf('.') + 1);
-  }
+  // been maid to clip strict domain path to cookies, but not needed
+  // let domain: string = CORS_URL;
+  // // cut http-s prefix
+  // if (/^https?:\/+/.test(CORS_URL)) {
+  //   domain = CORS_URL.slice(CORS_URL.lastIndexOf('/') + 1);
+  // }
+  // // cut subdomain
+  // if (/^\w+\.\w+\.\w+$/.test(domain)) {
+  //   domain = domain.slice(domain.indexOf('.') + 1);
+  // }
 
   const devSession = session({
     store: new RedisStore({
@@ -102,20 +100,21 @@ function setupSettingsExpress(app: Express) {
 
   // track ip
   app.use((req: Request, res: Response, next: NextFunction) => {
-    const xRealIp = req.headers['x-real-ip'];
-    const xForwardedFor = req.headers['x-forwarded-for'];
-    let ip: string;
+    // const xRealIp = req.headers['cf-connecting-ip'] ?? req.headers['x-real-ip'];
+    // const xForwardedFor = req.headers['x-forwarded-for'];
+    // let ip: string;
 
-    if (xRealIp !== undefined) {
-      ip = `${xRealIp.toString()}`;
-    } else if (xForwardedFor !== undefined) {
-      [ip] = `${xForwardedFor.toString()}`.split(',');
-    } else {
-      ip = `${req.socket.remoteAddress ?? ''}`;
-    }
+    // if (xRealIp !== undefined) {
+    //   ip = `${xRealIp.toString()}`;
+    // } else if (xForwardedFor !== undefined) {
+    //   [ip] = `${xForwardedFor.toString()}`.split(',');
+    // } else {
+    //   ip = `${req.socket.remoteAddress ?? ''}`;
+    // }
 
+    // req.ip seems to be fine with the right trust proxy setup
     publishLog(ELOG_LEVEL.INFO, {
-      ip,
+      ip: req.ip,
       url: req.url,
     });
     next();
@@ -129,6 +128,12 @@ function setupSettingsExpress(app: Express) {
   });
 
   app.use(apiLimiter);
+
+  // log headers, debug only
+  // app.use((req, res, next) => {
+  //   publishLog(ELOG_LEVEL.DEBUG, req.headers);
+  //   next();
+  // });
 }
 
 export { setupSettingsExpress };

@@ -22,7 +22,7 @@ declare global {
       CACHE_PASSWORD: string;
       // production
       CORS_URL: string;
-      BUILD_PATH: string;
+      STATIC_PATH: string;
       // development
       // ...
       // JWT_SECRET: string;

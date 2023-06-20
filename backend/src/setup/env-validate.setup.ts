@@ -17,7 +17,7 @@ export function setupValidateEnv() {
     CACHE_PORT,
     CACHE_PASSWORD,
     DEV_TAG,
-    // BUILD_PATH,
+    // STATIC_PATH,
     // DEFAULT_SOCKS_URL,
   } = process.env as Partial<typeof process.env>;
 
@@ -48,8 +48,8 @@ export function setupValidateEnv() {
       });
     case CORS_URL === undefined:
       throw new NoEnvValueError({ message: 'CORS_URL' });
-    // case BUILD_PATH === undefined:
-    //   throw new NoEnvValueError({ message: 'BUILD_PATH' });
+    // case STATIC_PATH === undefined:
+    //   throw new NoEnvValueError({ message: 'STATIC_PATH' });
     case DB_HOST === undefined:
       throw new NoEnvValueError({ message: 'DB_HOST' });
     case DB_PORT === undefined:
