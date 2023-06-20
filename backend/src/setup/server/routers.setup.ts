@@ -16,10 +16,10 @@ function setupRoutersExpress(app: Express) {
 
   // moved to nginx | serve static content
   // if (NODE_ENV === 'production') {
-  //   app.use(express.static(path.resolve(BUILD_PATH)));
+  //   app.use(express.static(path.resolve(STATIC_PATH)));
   //   app.get('*', (req, res) => {
   //     console.log('static');
-  //     res.sendFile(path.resolve(BUILD_PATH, 'index.html'));
+  //     res.sendFile(path.resolve(STATIC_PATH, 'index.html'));
   //   });
   // }
 }

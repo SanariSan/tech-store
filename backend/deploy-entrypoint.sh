@@ -1,15 +1,17 @@
 #!/bin/bash
 
+PROJECT_NAME=online-shop;
+
 cp ./prod.env ./.env;
 
 docker-compose --compatibility down > /dev/null 2>&1;
 
 docker run --detach --rm \
--v "online-shop-backend-assets-volume:/assets-to" \
+-v "${PROJECT_NAME}-backend-assets-volume:/assets-to" \
 -v "/$(pwd)/assets:/assets-from" \
 busybox sh -c "cp -rf /assets-from/* /assets-to";
 
-docker run --rm \
+docker run --detach --rm \
 -v "vhost:/vhost-mounted" \
 busybox sh -c "{ echo 'client_max_body_size 25m;'; } > /vhost-mounted/${VIRTUAL_HOST}";
 

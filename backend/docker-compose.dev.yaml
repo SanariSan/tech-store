@@ -156,7 +156,7 @@ services:
       context: './'
       dockerfile: './docker/nginx.Dockerfile'
       args:
-        BUILD_PATH: '${BUILD_PATH}'
+        STATIC_PATH: '${STATIC_PATH}'
     networks:
       - default
       - inbound
@@ -165,14 +165,14 @@ services:
     volumes:
       - type: volume
         source: online-shop-front-build-volume
-        target: '${BUILD_PATH}'
+        target: '${STATIC_PATH}'
       - type: volume
         source: online-shop-backend-assets-volume
-        target: '${BUILD_PATH}/assets'
+        target: '${STATIC_PATH}/assets'
     environment:
       VIRTUAL_HOST: '${VIRTUAL_HOST}'
       LETSENCRYPT_HOST: '${LETSENCRYPT_HOST}'
-      BUILD_PATH: '${BUILD_PATH}'
+      STATIC_PATH: '${STATIC_PATH}'
     # expose:
     #   - '80'
     ports:

@@ -23,7 +23,7 @@ jobs:
 
       - name: Build
         run: >
-          cd frontend &&
+          cd ./frontend &&
           chmod +x ./deploy-entrypoint-build.sh &&
 
           CORS_URL=${{ secrets.CORS_URL }}
