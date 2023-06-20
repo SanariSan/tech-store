@@ -166,7 +166,7 @@ services:
     volumes:
       - type: volume
         source: online-shop-front-build-volume
-        target: '${STATIC_PATH}'
+        target: '${STATIC_PATH}/online-shop'
       - type: volume
         source: online-shop-backend-assets-volume
         target: '${STATIC_PATH}/assets'
