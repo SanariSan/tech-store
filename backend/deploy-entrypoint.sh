@@ -23,9 +23,9 @@ busybox sh -c "cp -rf /from-inside-staging-volume/* /to-inside-prod-volume";
 
 # chmod not working (?), but no negitive effect happens
 # ls output from nginx folder is | -rwxr-xr-x 1 nginx nginx
-docker run --detach --rm \
--v "${PROJECT_NAME}-backend-assets-volume:/current-assets" \
-busybox sh -c "chown -R 101:101 /current-assets && chmod -R u=rwx,g=rx,o=rx /current-assets";
+# docker run --detach --rm \
+# -v "${PROJECT_NAME}-backend-assets-volume:/current-assets" \
+# busybox sh -c "chown -R 101:101 /current-assets && chmod -R u=rwx,g=rx,o=rx /current-assets";
 ### assets transfer
 
 docker run --detach --rm \
