@@ -2,6 +2,7 @@
 
 PROJECT_NAME=online-shop;
 
+### build transfer
 docker run --detach --rm \
 -v "${PROJECT_NAME}-front-build-volume:/old-build" \
 busybox sh -c "rm -rf /old-build/*";
@@ -21,5 +22,6 @@ busybox sh -c "cp -rf /from-inside-staging-volume/* /to-inside-prod-volume";
 docker run --detach --rm \
 -v "${PROJECT_NAME}-front-build-volume:/current-build" \
 busybox sh -c "chown -R 101:101 /current-build && chmod -R u=rwx,g=rx,o=rx /current-build";
+### build transfer
 
 exit;
