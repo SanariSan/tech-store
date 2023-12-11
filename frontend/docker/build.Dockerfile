@@ -1,7 +1,7 @@
 FROM node:16 as modules
 WORKDIR /home/node/proj
 COPY --chown=root:root package.json yarn.lock .yarnrc ./
-RUN ["yarn", "install", "--pure-lockfile", "--frozen-lockfile"]
+RUN ["yarn", "install", "--pure-lockfile", "--frozen-lockfile", "--network-timeout" , "100000"]
 
 FROM node:16 as build
 ARG REACT_APP_API_URL
