@@ -39,7 +39,13 @@ services:
       - '${DB_PORT}'
     # ports:
     #   - '${DB_PORT}:5432'
-    command: ['postgres', '-c', 'log_statement=all']
+    command: ['postgres', 
+      '-c', 'log_statement=none',
+      # '-c', 'log_statement=ddl',
+      # '-c', 'log_statement=mod',
+      # '-c', 'log_statement=all',
+      '-c', 'log_destination=stderr'
+      ]
   online_shop_redis:
     container_name: online_shop_redis
     image: redis:7.0.5-alpine

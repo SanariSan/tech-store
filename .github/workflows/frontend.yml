@@ -35,6 +35,7 @@ jobs:
         env:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
         with:
@@ -42,7 +43,7 @@ jobs:
           overwrite: true
           strip_components: 1
           source: "./frontend/*"
-          target: "/root/code/online-shop/frontend"
+          target: "/home/${{ secrets.USERNAME }}/code/online-shop/frontend"
 
   apply-build-to-volume:
     name: Apply front build to local volume
@@ -51,14 +52,15 @@ jobs:
 
     steps:
       - name: Apply front build to local volume
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/ssh-action@v0.1.8
         with:
           HOST: ${{ secrets.HOST }}
           USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
           PORT: ${{ secrets.PORT }}
           KEY: ${{ secrets.SSHKEY }}
           script: >
-            cd /root/code/online-shop/frontend &&
+            cd /home/${{ secrets.USERNAME }}/code/online-shop/frontend &&
             chmod +x ./deploy-entrypoint-apply.sh &&
 
             /bin/bash ./deploy-entrypoint-apply.sh
