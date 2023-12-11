@@ -1,4 +1,4 @@
-// default, 0 and more
+// 0-xs px
 @mixin xs {
   @media (max-width: $screen-xs-min) {
     @content;
