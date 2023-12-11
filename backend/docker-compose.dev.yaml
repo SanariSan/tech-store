@@ -6,7 +6,7 @@ volumes:
   online-shop-backend-redis-data:
     external: false
   online-shop-front-build-volume:
-    external: false
+    external: false # set to true if using static build volume
   online-shop-backend-assets-volume:
     external: true
 
@@ -39,7 +39,16 @@ services:
     #   - '${DB_PORT}'
     ports:
       - '${DB_PORT}:5432'
-    command: ['postgres', '-c', 'log_statement=all']
+    command: [
+        'postgres',
+        '-c',
+        'log_statement=none',
+        # '-c', 'log_statement=ddl',
+        # '-c', 'log_statement=mod',
+        # '-c', 'log_statement=all',
+        '-c',
+        'log_destination=stderr',
+      ]
   online_shop_redis:
     container_name: online_shop_redis
     image: redis:7.0.5-alpine
@@ -165,7 +174,7 @@ services:
     volumes:
       - type: volume
         source: online-shop-front-build-volume
-        target: '${STATIC_PATH}'
+        target: '${STATIC_PATH}' # add /online-shop if using static build volume
       - type: volume
         source: online-shop-backend-assets-volume
         target: '${STATIC_PATH}/assets'
